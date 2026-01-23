@@ -23,9 +23,9 @@ export class AppMenu {
                         label: 'Сценарии',
                         icon: 'pi pi-fw pi-home',
                         items: [
-                            { label: 'Создать', icon: 'pi pi-fw pi-plus-circle', routerLink: ['/new-scenario'] },
-                            { label: 'Мои сценарии', icon: 'pi pi-fw pi-play-circle', routerLink: ['/scenarios'] },
-                            { label: 'Сверка сценарий', icon: 'pi pi-fw pi-arrow-right-arrow-left', routerLink: ['/'] },
+                            { label: 'Создать', icon: 'pi pi-fw pi-plus-circle', routerLink: ['/pages/new-scenario'] },
+                            { label: 'Мои сценарии', icon: 'pi pi-fw pi-play-circle', routerLink: ['/pages/scenarios'] },
+                            { label: 'Сравнение сценарий', icon: 'pi pi-fw pi-arrow-right-arrow-left', routerLink: ['/pages/comparison-scenarios'] }
                         ]
                     },
                     {

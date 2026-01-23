@@ -13,5 +13,9 @@ export default [
         path: 'comparison-scenarios',
         loadComponent: (): Promise<unknown> => import('./comparison-scenarios/comparison-scenarios').then((m) => m.ComparisonScenarios)
     },
+    {
+        path: 'home',
+        loadComponent: (): Promise<unknown> => import('./home/home').then((m) => m.Home)
+    },
     { path: '**', redirectTo: '/notfound' }
 ] as Routes;

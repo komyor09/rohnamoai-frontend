@@ -12,7 +12,8 @@ import { Card } from 'primeng/card';
     selector: 'app-layout',
     standalone: true,
     imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter, AppTopbar, AppSidebar, AppFooter, Card],
-    templateUrl: 'app.layout.html'
+    templateUrl: 'app.layout.html',
+    styleUrls: ['./app.layout.scss'],
 })
 export class AppLayout {
     overlayMenuOpenSubscription: Subscription;

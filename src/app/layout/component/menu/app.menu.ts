@@ -18,7 +18,7 @@ export class AppMenu {
             {
                 label: 'Страницы',
                 items: [
-                    { label: 'Главная', icon: 'pi pi-fw pi-home', routerLink: ['/'] },
+                    { label: 'Главная', icon: 'pi pi-fw pi-home', routerLink: ['/pages/home'],  },
                     {
                         label: 'Сценарии',
                         icon: 'pi pi-fw pi-home',

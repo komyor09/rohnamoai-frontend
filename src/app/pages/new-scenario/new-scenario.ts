@@ -11,6 +11,6 @@ export class NewScenario {
     private layoutService = inject(LayoutService);
 
     constructor() {
-        this.layoutService.setTitlePage('New Scenario');
+        this.layoutService.setTitlePage('Новая сценария');
     }
 }

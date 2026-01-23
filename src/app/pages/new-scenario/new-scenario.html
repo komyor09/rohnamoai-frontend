@@ -1,1 +1,92 @@
-<p>new-scenario works!</p>
+<div class="card">
+    <h2 class="mb-2">Новый сценарий поступления</h2>
+    <p class="text-muted-color mb-4">
+        Ответьте на несколько вопросов — система подберёт варианты и объяснит результат.
+    </p>
+
+    <!-- STEP 1: Goal -->
+    @if (step === 0) {
+        <h3 class="mb-3">Цель поступления</h3>
+        <p-selectbutton
+            [(ngModel)]="scenario.goal"
+            [options]="goals"
+            optionLabel="label"
+            optionValue="value"></p-selectbutton>
+    }
+
+    <!-- STEP 2: Region -->
+    @if (step === 1) {
+        <h3 class="mb-3">География</h3>
+        <p-select
+            [(ngModel)]="scenario.region"
+            [options]="regions"
+            class="w-full"
+            placeholder="Выберите регион"
+        />
+    }
+
+    <!-- STEP 3: Fields -->
+    @if (step === 2) {
+        <h3 class="mb-3">Интересующие направления</h3>
+        <div class="flex flex-col gap-2">
+            @for (field of fields; track field) {
+                <p-checkbox
+                    (onChange)="
+                        $event.checked
+                        ? scenario.fields.push(field)
+                        : scenario.fields.splice(scenario.fields.indexOf(field), 1)
+                    "
+                    [binary]="true"
+                    [ngModel]="scenario.fields.includes(field)"
+                />
+            }
+        </div>
+    }
+
+    <!-- STEP 4: Constraints -->
+    @if (step === 3) {
+        <h3 class="mb-3">Ограничения</h3>
+
+        <p-checkbox
+            [(ngModel)]="scenario.constraints.budgetOnly"
+            binary="true"
+            label="Только бюджетное обучение"
+        />
+
+        <div class="mt-3">
+            <p-select
+                [(ngModel)]="scenario.constraints.language"
+                [options]="languages"
+                class="w-full"
+                placeholder="Язык обучения"
+            />
+        </div>
+    }
+
+    <!-- CONTROLS -->
+    <div class="flex justify-between mt-6">
+        <button
+            (click)="back()"
+            [disabled]="step === 0"
+            class="p-button p-button-text"
+        >
+            Назад
+        </button>
+
+        @if (step < 3) {
+            <button
+                (click)="next()"
+                class="p-button p-button-primary"
+            >
+                Далее
+            </button>
+        } @else {
+            <button
+                (click)="submit()"
+                class="p-button p-button-success"
+            >
+                Создать сценарий
+            </button>
+        }
+    </div>
+</div>

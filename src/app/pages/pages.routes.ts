@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 export default [
     {
         path: 'new-scenario',
-        loadComponent: (): Promise<unknown> => import('./new-scenario/new-scenario').then((m) => m.NewScenario)
+        loadComponent: (): Promise<unknown> => import('./new-scenario/new-scenario').then((m) => m.NewScenarioComponent)
     },
     {
         path: 'scenarios',

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { LayoutService } from '@/layout/service/layout.service';
 
 @Component({
   selector: 'app-new-scenario',
@@ -7,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './new-scenario.scss'
 })
 export class NewScenario {
+    private layoutService = inject(LayoutService);
 
+    constructor() {
+        this.layoutService.setTitlePage('New Scenario');
+    }
 }

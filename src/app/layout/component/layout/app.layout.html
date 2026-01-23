@@ -2,9 +2,13 @@
     <app-topbar></app-topbar>
     <app-sidebar></app-sidebar>
     <div class="layout-main-container">
-        <div class="layout-main card">
-
-            <router-outlet></router-outlet>
+        <div class="layout-main">
+            <p-card [class.transparent]="layoutService.layoutState().transparent">
+                @if (layoutService.layoutState().pageTitle) {
+                    <h4 class="font-semibold text-xl mb-4 m-0 flex-1">{{ layoutService.layoutState().pageTitle }}</h4>
+                }
+                <router-outlet />
+            </p-card>
         </div>
         <app-footer></app-footer>
     </div>

@@ -6,11 +6,12 @@ import { AppTopbar } from '@/layout/component/topbar/app.topbar';
 import { AppSidebar } from '@/layout/component/sidebar/app.sidebar';
 import { AppFooter } from '@/layout/component/footer/app.footer';
 import { LayoutService } from '@/layout/service/layout.service';
+import { Card } from 'primeng/card';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter, AppTopbar, AppSidebar, AppFooter],
+    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter, AppTopbar, AppSidebar, AppFooter, Card],
     templateUrl: 'app.layout.html'
 })
 export class AppLayout {

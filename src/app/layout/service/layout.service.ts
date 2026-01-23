@@ -15,6 +15,8 @@ interface LayoutState {
     configSidebarVisible?: boolean;
     staticMenuMobileActive?: boolean;
     menuHoverActive?: boolean;
+    pageTitle?: string;
+    transparent: boolean;
 }
 
 interface MenuChangeEvent {
@@ -39,7 +41,9 @@ export class LayoutService {
         overlayMenuActive: false,
         configSidebarVisible: false,
         staticMenuMobileActive: false,
-        menuHoverActive: false
+        menuHoverActive: false,
+        pageTitle: '',
+        transparent: false
     };
 
     layoutConfig = signal<layoutConfig>(this._config);
@@ -183,5 +187,19 @@ export class LayoutService {
 
     reset() {
         this.resetSource.next(true);
+    }
+
+    setTitlePage(pageTitle: string): void {
+        this.layoutState.update((prev) => ({
+            ...prev,
+            pageTitle
+        }));
+    }
+
+    setTransparentBackground(isTransparent: boolean): void {
+        this.layoutState.update((prev) => ({
+            ...prev,
+            transparent: isTransparent
+        }));
     }
 }

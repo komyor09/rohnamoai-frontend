@@ -16,13 +16,22 @@ export class AppMenu {
     ngOnInit() {
         this.model = [
             {
-                label: 'Home',
+                label: 'Страницы',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] },
+                    { label: 'Главная', icon: 'pi pi-fw pi-home', routerLink: ['/'] },
                     {
-                        label: 'View Source',
-                        icon: 'pi pi-fw pi-github',
-                        url: 'https://github.com/primefaces/sakai-ng',
+                        label: 'Сценарии',
+                        icon: 'pi pi-fw pi-home',
+                        items: [
+                            { label: 'Создать', icon: 'pi pi-fw pi-plus-circle', routerLink: ['/new-scenario'] },
+                            { label: 'Мои сценарии', icon: 'pi pi-fw pi-play-circle', routerLink: ['/scenarios'] },
+                            { label: 'Сверка сценарий', icon: 'pi pi-fw pi-arrow-right-arrow-left', routerLink: ['/'] },
+                        ]
+                    },
+                    {
+                        label: 'Поддержка',
+                        icon: 'pi pi-fw pi-telegram',
+                        url: 'https://t.me/komyor_06',
                         target: '_blank'
                     }
                 ]

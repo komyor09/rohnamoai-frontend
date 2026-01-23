@@ -1,1 +1,75 @@
-<p>scenarios works!</p>
+<div class="grid grid-cols-12 gap-8">
+
+    <!-- Header -->
+    <div class="col-span-12 flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-semibold">Мои сценарии</h1>
+            <p class="text-muted-color">
+                Каждый сценарий — отдельный путь выбора поступления
+            </p>
+        </div>
+
+        <button class="p-button p-button-primary">
+            + Новый сценарий
+        </button>
+    </div>
+
+    <!-- Scenario List -->
+    <div class="col-span-12">
+        <div class="card">
+
+            @if (scenarios.length === 0) {
+                <div class="text-center text-muted-color py-6">
+                    У вас пока нет сценариев. Создайте первый сценарий поступления.
+                </div>
+            }
+
+            @for (scenario of scenarios; track scenario.id) {
+                <div
+                    class="flex justify-between items-center py-4 border-b border-surface-200 dark:border-surface-700 last:border-b-0">
+
+                    <!-- Info -->
+                    <div>
+                        <div class="font-medium text-surface-900 dark:text-surface-0">
+                            {{ scenario.title }}
+                        </div>
+                        <div class="text-sm text-muted-color">
+                            Цель: {{ scenario.goal }} · Регион: {{ scenario.region }}
+                        </div>
+                        <div class="text-xs text-muted-color mt-1">
+                            Обновлено: {{ scenario.updatedAt }}
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center gap-3">
+                        @if (scenario.status === 'completed') {
+                            <span class="text-sm text-primary">
+                                {{ scenario.resultsCount }} вариантов
+                            </span>
+                        }
+
+                        <span
+                            class="px-2 py-1 text-xs rounded"
+                            [ngClass]="getStatusStyle(scenario.status)">
+                            {{ getStatusLabel(scenario.status) }}
+                        </span>
+
+                        @if (scenario.status === 'draft') {
+                            <button class="p-button p-button-text p-button-sm">
+                                Продолжить
+                            </button>
+                        } @else {
+                            <button class="p-button p-button-text p-button-sm">
+                                Результаты
+                            </button>
+                        }
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

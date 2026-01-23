@@ -1,1 +1,414 @@
-<p>home works!</p>
+<div class="grid grid-cols-12 gap-8">
+
+    <!-- Header -->
+    <div class="col-span-12 flex justify-between items-center">
+        <div>
+            <p class="text-muted-color">
+                Вы сравниваете сценарии и понимаете последствия выбора
+            </p>
+        </div>
+        <p-button class="primary">
+            + Создать сценарий
+        </p-button>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="col-span-12">
+        <div class="grid grid-cols-12 gap-8">
+
+            <!-- Сценарии пользователя -->
+            <div class="col-span-12 md:col-span-6 xl:col-span-3">
+                <div class="card mb-0">
+                    <div class="flex justify-between mb-4">
+                        <div>
+                        <span class="block text-muted-color font-medium mb-4">
+                            Сценарии пользователя
+                        </span>
+                            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
+                                3
+                            </div>
+                        </div>
+                        <div
+                            class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border"
+                            style="width: 2.5rem; height: 2.5rem;">
+                            <i class="pi pi-sitemap text-blue-500 text-xl!"></i>
+                        </div>
+                    </div>
+                    <span class="text-primary font-medium">1 </span>
+                    <span class="text-muted-color">в процессе</span>
+                </div>
+            </div>
+
+            <!-- Подходящие специальности -->
+            <div class="col-span-12 md:col-span-6 xl:col-span-3">
+                <div class="card mb-0">
+                    <div class="flex justify-between mb-4">
+                        <div>
+                        <span class="block text-muted-color font-medium mb-4">
+                            Подходящие специальности
+                        </span>
+                            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
+                                14
+                            </div>
+                        </div>
+                        <div
+                            class="flex items-center justify-center bg-green-100 dark:bg-green-400/10 rounded-border"
+                            style="width: 2.5rem; height: 2.5rem;">
+                            <i class="pi pi-briefcase text-green-500 text-xl!"></i>
+                        </div>
+                    </div>
+                    <span class="text-primary font-medium">5 </span>
+                    <span class="text-muted-color">с высоким совпадением</span>
+                </div>
+            </div>
+
+            <!-- Средний уровень совпадения -->
+            <div class="col-span-12 md:col-span-6 xl:col-span-3">
+                <div class="card mb-0">
+                    <div class="flex justify-between mb-4">
+                        <div>
+                        <span class="block text-muted-color font-medium mb-4">
+                            Средний уровень совпадения
+                        </span>
+                            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
+                                81%
+                            </div>
+                        </div>
+                        <div
+                            class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/10 rounded-border"
+                            style="width: 2.5rem; height: 2.5rem;">
+                            <i class="pi pi-chart-line text-cyan-500 text-xl!"></i>
+                        </div>
+                    </div>
+                    <span class="text-primary font-medium">+6% </span>
+                    <span class="text-muted-color">после уточнения приоритетов</span>
+                </div>
+            </div>
+
+            <!-- Готовность к поступлению -->
+            <div class="col-span-12 md:col-span-6 xl:col-span-3">
+                <div class="card mb-0">
+                    <div class="flex justify-between mb-4">
+                        <div>
+                        <span class="block text-muted-color font-medium mb-4">
+                            Готовность к поступлению
+                        </span>
+                            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
+                                67%
+                            </div>
+                        </div>
+                        <div
+                            class="flex items-center justify-center bg-purple-100 dark:bg-purple-400/10 rounded-border"
+                            style="width: 2.5rem; height: 2.5rem;">
+                            <i class="pi pi-graduation-cap text-purple-500 text-xl!"></i>
+                        </div>
+                    </div>
+                    <span class="text-primary font-medium">
+                    Рекомендуется
+                </span>
+                    <span class="text-muted-color">
+                    завершить сценарий
+                </span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Active Scenarios -->
+    <div class="col-span-12 lg:col-span-8">
+        <div class="card">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="mb-0">Активные сценарии</h3>
+                <a class="text-sm text-primary cursor-pointer">
+                    Все сценарии
+                </a>
+            </div>
+
+            <!-- Scenario Item -->
+            <div class="flex justify-between items-center py-3 border-b border-surface-200 dark:border-surface-700">
+                <div>
+                    <div class="font-medium text-surface-900 dark:text-surface-0">
+                        Бюджетное IT-обучение
+                    </div>
+                    <div class="text-sm text-muted-color">
+                        Цель: бюджет · Регион: Душанбе · Язык: русский
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                <span class="text-sm text-primary font-medium">
+                    6 вариантов
+                </span>
+                    <span
+                        class="px-2 py-1 text-xs rounded bg-green-100 dark:bg-green-400/10 text-green-600">
+                    Завершён
+                </span>
+                    <button class="p-button p-button-text p-button-sm">
+                        Открыть
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scenario Item -->
+            <div class="flex justify-between items-center py-3 border-b border-surface-200 dark:border-surface-700">
+                <div>
+                    <div class="font-medium text-surface-900 dark:text-surface-0">
+                        Престижное образование
+                    </div>
+                    <div class="text-sm text-muted-color">
+                        Цель: престиж · Регион: СНГ · Форма: очная
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                <span class="text-sm text-primary font-medium">
+                    Черновик
+                </span>
+                    <span
+                        class="px-2 py-1 text-xs rounded bg-orange-100 dark:bg-orange-400/10 text-orange-600">
+                    Не завершён
+                </span>
+                    <button class="p-button p-button-text p-button-sm">
+                        Продолжить
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scenario Item -->
+            <div class="flex justify-between items-center py-3">
+                <div>
+                    <div class="font-medium text-surface-900 dark:text-surface-0">
+                        Работа за границей
+                    </div>
+                    <div class="text-sm text-muted-color">
+                        Цель: трудоустройство · Регион: Европа · Язык: английский
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                <span class="text-sm text-primary font-medium">
+                    8 вариантов
+                </span>
+                    <span
+                        class="px-2 py-1 text-xs rounded bg-green-100 dark:bg-green-400/10 text-green-600">
+                    Завершён
+                </span>
+                    <button class="p-button p-button-text p-button-sm">
+                        Открыть
+                    </button>
+                </div>
+            </div>
+
+            <!-- Empty state (на будущее) -->
+            <!--
+            <div class="text-center text-muted-color py-6">
+                У вас пока нет сценариев. Создайте первый сценарий поступления.
+            </div>
+            -->
+
+        </div>
+    </div>
+
+
+    <!-- Next Step -->
+    <div class="col-span-12 lg:col-span-4">
+        <div class="card bg-primary-50 dark:bg-primary-900/20">
+            <div class="flex items-center gap-2 mb-2">
+                <i class="pi pi-compass text-primary"></i>
+                <h3 class="mb-0">Следующий шаг</h3>
+            </div>
+
+            <p class="text-sm text-surface-700 dark:text-surface-200 mb-3">
+                Чтобы получить более точные рекомендации, завершите сценарий
+                <strong>«Бюджетное IT-обучение»</strong>.
+                Осталось <strong>2 шага</strong>.
+            </p>
+
+            <div class="flex flex-col gap-2">
+                <button class="p-button p-button-sm p-button-primary w-full">
+                    Продолжить сценарий
+                </button>
+
+                <button class="p-button p-button-sm p-button-text w-full">
+                    Посмотреть текущие результаты
+                </button>
+            </div>
+
+            <div class="mt-4 text-xs text-muted-color">
+                Вы можете вернуться к сценарию в любое время и изменить параметры.
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Latest Results -->
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="mb-0">Последние результаты</h3>
+                <span class="text-sm text-muted-color">
+                по завершённым сценариям
+            </span>
+            </div>
+
+            <!-- Result Item -->
+            <div class="flex justify-between items-center py-3 border-b border-surface-200 dark:border-surface-700">
+                <div>
+                    <div class="font-medium text-surface-900 dark:text-surface-0">
+                        Программная инженерия
+                    </div>
+                    <div class="text-sm text-muted-color">
+                        Таджикский национальный университет · очная форма
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <div class="text-sm font-medium text-primary">
+                            87% совпадение
+                        </div>
+                        <div class="text-xs text-muted-color">
+                            бюджет · регион совпадает
+                        </div>
+                    </div>
+                    <button class="p-button p-button-text p-button-sm">
+                        Подробнее
+                    </button>
+                </div>
+            </div>
+
+            <!-- Result Item -->
+            <div class="flex justify-between items-center py-3 border-b border-surface-200 dark:border-surface-700">
+                <div>
+                    <div class="font-medium text-surface-900 dark:text-surface-0">
+                        Информационные системы
+                    </div>
+                    <div class="text-sm text-muted-color">
+                        Технологический университет · дневное обучение
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <div class="text-sm font-medium text-primary">
+                            81% совпадение
+                        </div>
+                        <div class="text-xs text-muted-color">
+                            язык обучения · приоритет карьеры
+                        </div>
+                    </div>
+                    <button class="p-button p-button-text p-button-sm">
+                        Подробнее
+                    </button>
+                </div>
+            </div>
+
+            <!-- Result Item -->
+            <div class="flex justify-between items-center py-3">
+                <div>
+                    <div class="font-medium text-surface-900 dark:text-surface-0">
+                        Прикладная математика
+                    </div>
+                    <div class="text-sm text-muted-color">
+                        Университет экономики · бюджетная основа
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <div class="text-sm font-medium text-primary">
+                            78% совпадение
+                        </div>
+                        <div class="text-xs text-muted-color">
+                            высокий конкурс
+                        </div>
+                    </div>
+                    <button class="p-button p-button-text p-button-sm">
+                        Подробнее
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-4 text-right">
+                <a class="text-sm text-primary cursor-pointer">
+                    Посмотреть все результаты
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explainability -->
+    <div class="col-span-12">
+        <div class="card">
+            <h3 class="mb-4">Почему эти варианты подходят</h3>
+
+            <div class="grid grid-cols-12 gap-6">
+
+                <!-- Explain Item -->
+                <div class="col-span-12 md:col-span-6 xl:col-span-3">
+                    <div class="p-4 rounded border border-surface-200 dark:border-surface-700 h-full">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="pi pi-wallet text-primary"></i>
+                            <span class="font-medium">Приоритет бюджета</span>
+                        </div>
+                        <p class="text-sm text-muted-color">
+                            Варианты отобраны с учётом бюджетной формы обучения
+                            и исключением платных программ.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Explain Item -->
+                <div class="col-span-12 md:col-span-6 xl:col-span-3">
+                    <div class="p-4 rounded border border-surface-200 dark:border-surface-700 h-full">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="pi pi-map-marker text-primary"></i>
+                            <span class="font-medium">Выбранная география</span>
+                        </div>
+                        <p class="text-sm text-muted-color">
+                            Рассмотрены только вузы в выбранных регионах,
+                            без вариантов за пределами указанных зон.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Explain Item -->
+                <div class="col-span-12 md:col-span-6 xl:col-span-3">
+                    <div class="p-4 rounded border border-surface-200 dark:border-surface-700 h-full">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="pi pi-language text-primary"></i>
+                            <span class="font-medium">Язык обучения</span>
+                        </div>
+                        <p class="text-sm text-muted-color">
+                            Отобраны программы с соответствующим языком обучения,
+                            исключая неподходящие варианты.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Explain Item -->
+                <div class="col-span-12 md:col-span-6 xl:col-span-3">
+                    <div class="p-4 rounded border border-surface-200 dark:border-surface-700 h-full">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="pi pi-filter text-primary"></i>
+                            <span class="font-medium">Ограничения и условия</span>
+                        </div>
+                        <p class="text-sm text-muted-color">
+                            Исключены специальности, не соответствующие заданным
+                            ограничениям и условиям поступления.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-6 text-xs text-muted-color">
+                Система объясняет логику подбора, но не принимает решение за пользователя.
+            </div>
+        </div>
+    </div>
+
+</div>

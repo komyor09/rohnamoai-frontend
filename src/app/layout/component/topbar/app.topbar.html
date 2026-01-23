@@ -34,19 +34,19 @@
             <button (click)="toggleDarkMode()" class="layout-topbar-action" type="button">
                 <i [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
             </button>
-            <div class="relative">
-                <button
-                    [hideOnOutsideClick]="true"
-                    class="layout-topbar-action layout-topbar-action-highlight"
-                    enterActiveClass="animate-scalein"
-                    enterFromClass="hidden"
-                    leaveActiveClass="animate-fadeout"
-                    leaveToClass="hidden"
-                    pStyleClass="@next"
-                >
-                    <i class="pi pi-palette"></i>
-                </button>
-            </div>
+<!--            <div class="relative">-->
+<!--                <button-->
+<!--                    [hideOnOutsideClick]="true"-->
+<!--                    class="layout-topbar-action layout-topbar-action-highlight"-->
+<!--                    enterActiveClass="animate-scalein"-->
+<!--                    enterFromClass="hidden"-->
+<!--                    leaveActiveClass="animate-fadeout"-->
+<!--                    leaveToClass="hidden"-->
+<!--                    pStyleClass="@next"-->
+<!--                >-->
+<!--                    <i class="pi pi-palette"></i>-->
+<!--                </button>-->
+<!--            </div>-->
         </div>
 
         <button [hideOnOutsideClick]="true" class="layout-topbar-menu-button layout-topbar-action"

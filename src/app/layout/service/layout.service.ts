@@ -1,4 +1,4 @@
-import { Injectable, effect, signal, computed } from '@angular/core';
+import { computed, effect, Injectable, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 
 export interface layoutConfig {
@@ -28,9 +28,9 @@ interface MenuChangeEvent {
 export class LayoutService {
     _config: layoutConfig = {
         preset: 'Aura',
-        primary: 'emerald',
+        primary: 'blue',
         surface: null,
-        darkTheme: false,
+        darkTheme: window.matchMedia('(prefers-color-scheme: dark)').matches,
         menuMode: 'static'
     };
 
@@ -96,6 +96,15 @@ export class LayoutService {
 
             this.handleDarkModeTransition(config);
         });
+
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                this.layoutConfig.update((cfg) => ({
+                    ...cfg,
+                    darkTheme: e.matches
+                }));
+            });
+        }
     }
 
     private handleDarkModeTransition(config: layoutConfig): void {

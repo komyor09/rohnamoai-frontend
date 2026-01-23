@@ -55,7 +55,7 @@ export class AppMenuitem {
         this.menuSourceSubscription = this.layoutService.menuSource$.subscribe((value) => {
             Promise.resolve(null).then(() => {
                 if (value.routeEvent) {
-                    this.active = value.key === this.key || value.key.startsWith(this.key + '-') ? true : false;
+                    this.active = value.key === this.key || value.key.startsWith(this.key + '-');
                 } else {
                     if (value.key !== this.key && !value.key.startsWith(this.key + '-')) {
                         this.active = false;
@@ -68,7 +68,7 @@ export class AppMenuitem {
             this.active = false;
         });
 
-        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((params) => {
+        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
             if (this.item.routerLink) {
                 this.updateActiveStateFromRoute();
             }

@@ -10,6 +10,10 @@ export default [
         loadComponent: (): Promise<unknown> => import('./new-scenario/new-scenario').then((m) => m.NewScenarioComponent)
     },
     {
+        path: 'scenario-edit',
+        loadComponent: (): Promise<unknown> => import('./scenario-edit/scenario-edit').then((m) => m.ScenarioEdit)
+    },
+    {
         path: 'scenarios',
         loadComponent: (): Promise<unknown> => import('./scenarios/scenarios').then((m) => m.Scenarios)
     },

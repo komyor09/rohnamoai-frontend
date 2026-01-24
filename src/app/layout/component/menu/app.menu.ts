@@ -31,6 +31,11 @@ export class AppMenu {
                         ]
                     },
                     {
+                        label: 'Детали специальности',
+                        icon: 'pi pi-fw pi-graduation-cap',
+                        routerLink: ['/pages/specialty-details']
+                    },
+                    {
                         label: 'Поддержка',
                         icon: 'pi pi-fw pi-comments',
                         routerLink: ['/pages/support']

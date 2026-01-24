@@ -26,6 +26,10 @@ export default [
         loadComponent: (): Promise<unknown> => import('./comparison-scenarios/comparison-scenarios').then((m) => m.ComparisonScenarios)
     },
     {
+        path: 'specialty-details',
+        loadComponent: (): Promise<unknown> => import('./specialty-details/specialty-details').then((m) => m.SpecialtyDetailsComponent)
+    },
+    {
         path: 'support',
         loadComponent: (): Promise<unknown> => import('./support/support').then((m) => m.SupportComponent)
     },

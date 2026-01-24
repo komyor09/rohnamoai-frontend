@@ -6,6 +6,10 @@ export default [
         loadComponent: (): Promise<unknown> => import('./home/home').then((m) => m.Home)
     },
     {
+        path: 'profile',
+        loadComponent: (): Promise<unknown> => import('./profile/profile').then((m) => m.Profile)
+    },
+    {
         path: 'new-scenario',
         loadComponent: (): Promise<unknown> => import('./new-scenario/new-scenario').then((m) => m.NewScenarioComponent)
     },

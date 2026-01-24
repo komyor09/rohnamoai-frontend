@@ -1,1 +1,90 @@
-<p>comparison-scenarios works!</p>
+<div class="grid grid-cols-12 gap-8">
+
+    <!-- Header -->
+    <div class="col-span-12">
+        <h1 class="text-2xl font-semibold">Сравнение сценариев</h1>
+        <p class="text-muted-color">
+            Сравните разные подходы к поступлению и их последствия
+        </p>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="col-span-12">
+        <div class="card overflow-x-auto">
+
+            <table class="w-full border-collapse">
+                <thead>
+                <tr class="text-left text-sm text-muted-color border-b border-surface-200 dark:border-surface-700">
+                    <th class="py-3 pr-4">Параметр</th>
+                    @for (scenario of scenarios; track scenario.id) {
+                        <th class="py-3 pr-4">
+                            {{ scenario.title }}
+                        </th>
+                    }
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr class="border-b border-surface-200 dark:border-surface-700">
+                    <td class="py-3 font-medium">Цель</td>
+                    @for (scenario of scenarios; track scenario.id) {
+                        <td class="py-3">{{ scenario.goal }}</td>
+                    }
+                </tr>
+
+                <tr class="border-b border-surface-200 dark:border-surface-700">
+                    <td class="py-3 font-medium">Регион</td>
+                    @for (scenario of scenarios; track scenario.id) {
+                        <td class="py-3">{{ scenario.region }}</td>
+                    }
+                </tr>
+
+                <tr class="border-b border-surface-200 dark:border-surface-700">
+                    <td class="py-3 font-medium">Подходящие варианты</td>
+                    @for (scenario of scenarios; track scenario.id) {
+                        <td class="py-3">
+                            {{ scenario.resultsCount }}
+                        </td>
+                    }
+                </tr>
+
+                <tr class="border-b border-surface-200 dark:border-surface-700">
+                    <td class="py-3 font-medium">Средний уровень совпадения</td>
+                    @for (scenario of scenarios; track scenario.id) {
+                        <td class="py-3 text-primary font-medium">
+                            {{ scenario.matchRate }}%
+                        </td>
+                    }
+                </tr>
+
+                <tr class="border-b border-surface-200 dark:border-surface-700">
+                    <td class="py-3 font-medium">Только бюджет</td>
+                    @for (scenario of scenarios; track scenario.id) {
+                        <td class="py-3">
+                            {{ scenario.budgetOnly ? 'Да' : 'Нет' }}
+                        </td>
+                    }
+                </tr>
+
+                <tr>
+                    <td class="py-3 font-medium">Язык обучения</td>
+                    @for (scenario of scenarios; track scenario.id) {
+                        <td class="py-3">
+                            {{ scenario.language }}
+                        </td>
+                    }
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <!-- Hint -->
+    <div class="col-span-12 text-xs text-muted-color">
+        Сравнение помогает увидеть различия сценариев, но окончательное решение остаётся за вами.
+    </div>
+
+</div>

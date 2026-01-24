@@ -36,6 +36,11 @@ export class AppMenu {
                         routerLink: ['/pages/specialty-details']
                     },
                     {
+                        label: 'Тарифы',
+                        icon: 'pi pi-fw pi-shopping-cart',
+                        routerLink: ['/pages/pricing']
+                    },
+                    {
                         label: 'Поддержка',
                         icon: 'pi pi-fw pi-comments',
                         routerLink: ['/pages/support']

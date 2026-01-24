@@ -1,0 +1,141 @@
+<div class="grid grid-cols-12 gap-10">
+
+    <!-- Header -->
+    <div class="col-span-12">
+        <div class="flex items-start gap-4">
+            <div
+                class="flex items-center justify-center w-12 h-12 rounded-full
+                       bg-primary-100 dark:bg-primary-900/30">
+                <i class="pi pi-wallet text-primary text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-semibold">Тарифы и токены</h1>
+                <p class="text-muted-color max-w-2xl leading-relaxed">
+                    GuideRAI бесплатен для начала. Платные функции помогают глубже
+                    анализировать варианты и сравнивать сценарии.
+                    Мы не продаём ответы — мы продаём ясность.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Philosophy -->
+    <div class="col-span-12">
+        <div
+            class="card relative overflow-hidden
+                   bg-gradient-to-r from-primary-50 to-transparent
+                   dark:from-primary-900/20">
+
+            <div class="flex items-start gap-3">
+                <i class="pi pi-shield text-primary text-xl mt-1"></i>
+                <p class="text-sm text-muted-color leading-relaxed">
+                    Оплата не гарантирует поступление и не влияет на результаты.
+                    Тарифы и токены дают доступ к дополнительным объяснениям,
+                    аналитике и сравнению сценариев — не подменяя ваш выбор.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plans -->
+    <div class="col-span-12 grid grid-cols-12 gap-6">
+
+        @for (plan of plans; track plan.name) {
+            <div class="col-span-12 md:col-span-4">
+                <div
+                    class="card h-full relative
+                           transition-all duration-300
+                           hover:shadow-xl hover:-translate-y-1
+                           @if (plan.popular) { border-primary }">
+
+                    @if (plan.popular) {
+                        <span
+                            class="absolute top-4 right-4 text-xs px-3 py-1 rounded-full
+                                   bg-primary text-white">
+                            Популярный
+                        </span>
+                    }
+
+                    <div class="mb-4">
+                        <h3 class="mb-1">{{ plan.name }}</h3>
+                        <div class="text-2xl font-semibold">
+                            {{ plan.price }}
+                        </div>
+                        <p class="text-sm text-muted-color mt-1">
+                            {{ plan.description }}
+                        </p>
+                    </div>
+
+                    <ul class="text-sm space-y-2 mb-6">
+                        @for (feature of plan.features; track feature) {
+                            <li class="flex items-start gap-2">
+                                <i class="pi pi-check text-primary mt-1"></i>
+                                {{ feature }}
+                            </li>
+                        }
+                    </ul>
+
+                    <p-button
+                        label="Выбрать тариф"
+                        class="w-full"
+                        outlined
+                    />
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <!-- Tokens -->
+    <div class="col-span-12">
+        <div class="card">
+
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="flex items-center justify-center w-9 h-9 rounded-full
+                           bg-primary-100 dark:bg-primary-900/30">
+                    <i class="pi pi-bolt text-primary"></i>
+                </div>
+                <h3 class="mb-0">Токены — оплата за действие</h3>
+            </div>
+
+            <p class="text-sm text-muted-color mb-6 max-w-2xl">
+                Токены позволяют оплачивать отдельные действия без подписки.
+                Вы платите только за те возможности, которые используете.
+            </p>
+
+            <div class="grid grid-cols-12 gap-4">
+                @for (item of tokenActions; track item.action) {
+                    <div
+                        class="col-span-12 md:col-span-4
+                               p-4 rounded border
+                               border-surface-200 dark:border-surface-700
+                               transition-all duration-300
+                               hover:border-primary hover:shadow-md">
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm">
+                                {{ item.action }}
+                            </span>
+                            <span class="font-semibold text-primary">
+                                {{ item.cost }} токенов
+                            </span>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div
+                class="mt-6 flex items-center justify-between
+                       p-4 rounded bg-surface-50 dark:bg-surface-900/40">
+                <span class="text-sm text-muted-color">
+                    Ваш текущий баланс
+                </span>
+                <span class="text-lg font-semibold">
+                    {{ userTokens }} токенов
+                </span>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -30,6 +30,10 @@ export default [
         loadComponent: (): Promise<unknown> => import('./specialty-details/specialty-details').then((m) => m.SpecialtyDetailsComponent)
     },
     {
+        path: 'pricing',
+        loadComponent: (): Promise<unknown> => import('./pricing/pricing').then((m) => m.Pricing)
+    },
+    {
         path: 'support',
         loadComponent: (): Promise<unknown> => import('./support/support').then((m) => m.SupportComponent)
     },

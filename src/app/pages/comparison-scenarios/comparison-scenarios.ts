@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { LayoutService } from '@/layout/service/layout.service';
+import { FeatureAccess } from '@/pages/feature-access/feature-access';
 
 interface ComparedScenario {
     id: number;
@@ -15,10 +16,13 @@ interface ComparedScenario {
 @Component({
     selector: 'app-comparison-scenarios',
     templateUrl: './comparison-scenarios.html',
+    imports: [FeatureAccess],
     styleUrls: ['./comparison-scenarios.scss']
 })
 export class ComparisonScenarios {
     private layoutService = inject(LayoutService);
+    userTokens = 3;
+    comparisonUnlocked = false;
 
     scenarios: ComparedScenario[] = [
         {
@@ -42,7 +46,17 @@ export class ComparisonScenarios {
             language: 'Английский'
         }
     ];
+
     constructor() {
         this.layoutService.setTitlePage('Сравнение сценарий');
+    }
+
+    unlockComparison() {
+        this.userTokens -= 5;
+        this.comparisonUnlocked = true;
+    }
+
+    goToPricing() {
+        alert('Переход на страницу тарифов (mock)');
     }
 }

@@ -1,0 +1,107 @@
+<div class="grid grid-cols-12 gap-8">
+
+    <!-- Header -->
+    <div class="col-span-12">
+        <div class="flex items-center gap-3">
+            <div
+                class="flex items-center justify-center w-10 h-10 rounded-full
+                       bg-primary-100 dark:bg-primary-900/30">
+                <i class="pi pi-question-circle text-primary text-xl"></i>
+
+            </div>
+            <div>
+                <h1 class="text-2xl font-semibold">Поддержка</h1>
+                <p class="text-muted-color">
+                    Помощь, пояснения и ответы на частые вопросы
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Philosophy -->
+    <div class="col-span-12">
+        <div
+            class="card relative overflow-hidden
+                   bg-gradient-to-r from-primary-50 to-transparent
+                   dark:from-primary-900/20
+                   transition-all duration-300 hover:shadow-lg">
+
+            <div class="flex items-start gap-4">
+                <i class="pi pi-compass text-primary text-2xl mt-1"></i>
+
+                <div>
+                    <h3 class="mb-2">Как мы помогаем принимать решение</h3>
+                    <p class="text-sm text-muted-color leading-relaxed">
+                        GuideRAI — это сценарный помощник выбора образования.
+                        Мы не выбираем за вас и не даём «идеальных ответов».
+                        Сервис помогает сравнивать варианты, понимать последствия
+                        и принимать собственное осознанное решение.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex items-center gap-2 mb-6">
+                <i class="pi pi-question-circle text-primary text-xl"></i>
+                <h3 class="mb-0">Часто задаваемые вопросы</h3>
+            </div>
+
+            <div class="grid grid-cols-12 gap-4">
+                @for (faq of faqs; track faq.question) {
+                    <div
+                        class="col-span-12 md:col-span-6
+                               p-4 rounded border border-surface-200 dark:border-surface-700
+                               transition-all duration-300
+                               hover:border-primary
+                               hover:shadow-md">
+
+                        <div class="flex items-start gap-3">
+                            <i class="pi pi-info-circle text-primary mt-1"></i>
+                            <div>
+                                <div class="font-medium text-surface-900 dark:text-surface-0 mb-1">
+                                    {{ faq.question }}
+                                </div>
+                                <div class="text-sm text-muted-color leading-relaxed">
+                                    {{ faq.answer }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="col-span-12">
+        <div
+            class="card flex flex-col md:flex-row md:items-center md:justify-between
+                   gap-4 transition-all duration-300 hover:shadow-lg">
+
+            <div class="flex items-center gap-3">
+                <div
+                    class="flex items-center justify-center w-10 h-10 rounded-full
+                           bg-primary-100 dark:bg-primary-900/30">
+                    <i class="pi pi-envelope text-primary"></i>
+                </div>
+                <div>
+                    <h3 class="mb-1">Нужна помощь?</h3>
+                    <p class="text-sm text-muted-color">
+                        Мы ответим на вопросы и поможем разобраться
+                    </p>
+                </div>
+            </div>
+
+            <a
+                href="https://t.me/komyor_06"
+                class="p-button p-button-outlined p-button-sm">
+                &#64;komyor_06
+            </a>
+        </div>
+    </div>
+
+</div>

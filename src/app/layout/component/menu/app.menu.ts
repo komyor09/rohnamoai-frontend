@@ -18,7 +18,7 @@ export class AppMenu {
             {
                 label: 'Страницы',
                 items: [
-                    { label: 'Главная', icon: 'pi pi-fw pi-home', routerLink: ['/pages/home'],  },
+                    { label: 'Главная', icon: 'pi pi-fw pi-home', routerLink: ['/pages/home'] },
                     {
                         label: 'Сценарии',
                         icon: 'pi pi-fw pi-home',
@@ -30,9 +30,8 @@ export class AppMenu {
                     },
                     {
                         label: 'Поддержка',
-                        icon: 'pi pi-fw pi-telegram',
-                        url: 'https://t.me/komyor_06',
-                        target: '_blank'
+                        icon: 'pi pi-fw pi-comments',
+                        routerLink: ['/pages/support']
                     }
                 ]
             }

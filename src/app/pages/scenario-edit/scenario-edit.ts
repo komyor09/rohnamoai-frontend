@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Select } from 'primeng/select';
 import { Checkbox } from 'primeng/checkbox';
+import { Button } from 'primeng/button';
+import { InputText } from 'primeng/inputtext';
 
 interface Scenario {
     id: number;
@@ -20,7 +22,7 @@ interface Scenario {
 @Component({
     selector: 'app-scenario-edit',
     templateUrl: './scenario-edit.html',
-    imports: [FormsModule, Select, Checkbox],
+    imports: [FormsModule, Select, Checkbox, Button, InputText],
     styleUrls: ['./scenario-edit.scss']
 })
 export class ScenarioEdit {

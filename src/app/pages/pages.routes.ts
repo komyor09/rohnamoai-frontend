@@ -14,6 +14,10 @@ export default [
         loadComponent: (): Promise<unknown> => import('./scenario-edit/scenario-edit').then((m) => m.ScenarioEdit)
     },
     {
+        path: 'scenario-results',
+        loadComponent: (): Promise<unknown> => import('./scenario-results/scenario-results').then((m) => m.ScenarioResultsComponent)
+    },
+    {
         path: 'scenarios',
         loadComponent: (): Promise<unknown> => import('./scenarios/scenarios').then((m) => m.Scenarios)
     },

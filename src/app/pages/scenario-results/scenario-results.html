@@ -1,0 +1,166 @@
+<div class="grid grid-cols-12 gap-8">
+
+    <!-- Header -->
+    <div class="col-span-12">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="flex items-center justify-center w-11 h-11 rounded-full
+                           bg-primary-100 dark:bg-primary-900/30">
+                    <i class="pi pi-chart-line text-primary text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-semibold">Результаты сценария</h1>
+                    <p class="text-muted-color">
+                        {{ scenarioTitle }}
+                    </p>
+                </div>
+            </div>
+
+            <span
+                class="flex items-center gap-2 px-3 py-1 rounded-full text-sm
+                       bg-green-100 text-green-700
+                       dark:bg-green-900/30 dark:text-green-300">
+                <i class="pi pi-check-circle"></i>
+                Завершён
+            </span>
+        </div>
+    </div>
+
+    <!-- Summary / KPI -->
+    <div class="col-span-12 grid grid-cols-12 gap-4">
+
+        <div class="col-span-12 md:col-span-4">
+            <div class="card flex items-center gap-4">
+                <i class="pi pi-list text-primary text-2xl"></i>
+                <div>
+                    <span class="text-sm text-muted-color">Подходящие специальности</span>
+                    <div class="text-2xl font-semibold">
+                        {{ summary.total }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 md:col-span-4">
+            <div class="card flex items-center gap-4">
+                <i class="pi pi-percentage text-primary text-2xl"></i>
+                <div>
+                    <span class="text-sm text-muted-color">Среднее совпадение</span>
+                    <div class="text-2xl font-semibold">
+                        {{ summary.avgMatch }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 md:col-span-4">
+            <div class="card flex items-center gap-4">
+                <i class="pi pi-filter text-primary text-2xl"></i>
+                <div>
+                    <span class="text-sm text-muted-color">Ключевой фактор</span>
+                    <div class="text-sm font-medium mt-1">
+                        {{ summary.keyFactor }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Results -->
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="pi pi-star text-primary"></i>
+                <h3 class="mb-0">Подходящие варианты</h3>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                @for (item of results; track item.id) {
+                    <div
+                        class="p-4 rounded border
+                               border-surface-200 dark:border-surface-700
+                               transition-all duration-300
+                               hover:shadow-lg hover:border-primary">
+
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <div class="font-medium">
+                                    {{ item.title }}
+                                </div>
+                                <div class="text-sm text-muted-color">
+                                    {{ item.university }}
+                                </div>
+                            </div>
+
+                            <div class="text-right">
+                                <div class="text-primary font-semibold">
+                                    {{ item.match }}%
+                                </div>
+                                <div class="w-24 h-1 bg-surface-200 dark:bg-surface-700 rounded mt-1">
+                                    <div
+                                        class="h-1 rounded bg-primary"
+                                        [style.width.%]="item.match">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-sm text-muted-color">
+                            {{ item.reason }}
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Explainability -->
+    <div class="col-span-12">
+        <div
+            class="card bg-gradient-to-r
+                   from-primary-50 to-transparent
+                   dark:from-primary-900/20">
+
+            <div class="flex items-center gap-2 mb-3">
+                <i class="pi pi-info-circle text-primary"></i>
+                <h3 class="mb-0">Почему эти варианты подходят</h3>
+            </div>
+
+            <ul class="text-sm text-muted-color space-y-2 pl-1">
+                <li class="flex items-start gap-2">
+                    <i class="pi pi-check text-primary mt-1"></i>
+                    Совпадение с выбранной целью поступления
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="pi pi-check text-primary mt-1"></i>
+                    Соответствие бюджетным ограничениям
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="pi pi-check text-primary mt-1"></i>
+                    Подходящий регион и язык обучения
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="col-span-12">
+        <div class="flex gap-3 flex-wrap">
+            <p-button
+                icon="pi pi-pencil"
+                label="Изменить сценарий"
+                outlined
+                routerLink="../edit"
+            />
+
+            <p-button
+                icon="pi pi-sliders-h"
+                label="Сравнить сценарии"
+                routerLink="/scenarios/comparison"
+            />
+        </div>
+    </div>
+
+</div>

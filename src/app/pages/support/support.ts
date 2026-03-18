@@ -1,36 +1,36 @@
-import { Component } from '@angular/core';
-
-interface FaqItem {
-    question: string;
-    answer: string;
-}
+import { Component, inject } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Button } from 'primeng/button';
+import { InputText } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { LayoutService } from '@/layout/service/layout.service';
 
 @Component({
     selector: 'app-support',
+    imports: [FormsModule, Button, InputText, TextareaModule, NgIf],
     templateUrl: './support.html',
     styleUrls: ['./support.scss']
 })
 export class SupportComponent {
-    faqs: FaqItem[] = [
-        {
-            question: 'Как работает GuideRAI?',
-            answer: 'GuideRAI помогает сравнивать сценарии поступления на основе ваших целей, приоритетов и ограничений. Система не принимает решение за вас, а объясняет, почему одни варианты подходят лучше других.'
-        },
-        {
-            question: 'Гарантирует ли сервис поступление?',
-            answer: 'Нет. GuideRAI не гарантирует поступление и не влияет на решения приёмных комиссий. Сервис помогает осознанно выбрать направление и понять последствия выбора.'
-        },
-        {
-            question: 'Почему некоторые функции платные?',
-            answer: 'Платные функции требуют дополнительных вычислений, анализа и хранения данных. Токены позволяют честно оплачивать только те возможности, которые вы используете.'
-        },
-        {
-            question: 'Что делать, если я ошибся в сценарии?',
-            answer: 'Вы можете в любой момент вернуться к сценарию, изменить параметры или создать альтернативный сценарий для сравнения.'
-        },
-        {
-            question: 'Использует ли GuideRAI искусственный интеллект?',
-            answer: 'ИИ используется для объяснения и интерпретации результатов, но не для принятия решений вместо пользователя.'
-        }
-    ];
+    private layoutService = inject(LayoutService);
+
+    form = { subject: '', message: '' };
+    submitted = false;
+    sending = false;
+
+    constructor() {
+        this.layoutService.setTitlePage('Поддержка');
+    }
+
+    send(): void {
+        if (!this.form.subject.trim() || !this.form.message.trim()) return;
+        this.sending = true;
+        // Simulate send (no backend endpoint for support)
+        setTimeout(() => {
+            this.sending = false;
+            this.submitted = true;
+            this.form = { subject: '', message: '' };
+        }, 800);
+    }
 }

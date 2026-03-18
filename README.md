@@ -1,59 +1,79 @@
-# Sakai19
+# Rohnamo AI — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.5.
+Angular 20 frontend for the Rohnamo AI university admission guidance system.
 
-## Development server
-
-To start a local development server, run:
+## Quick Start
 
 ```bash
-ng serve
+npm install
+npm run dev        # alias for: ng serve
+# App runs at http://localhost:4200
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Backend
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Start the GuideRAI backend (FastAPI) at `http://localhost:8000`:
 
 ```bash
-ng generate component component-name
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+The frontend sends `X-User-UUID` header on every request for anonymous user identification.
+UUIDs are auto-generated and persisted in `localStorage`.
 
-```bash
-ng generate --help
+## Project Structure
+
+```
+src/
+  app/
+    core/
+      models/       — TypeScript interfaces matching backend models
+      services/
+        api-client.service.ts     — Base HTTP client
+        scenarios.service.ts      — POST/GET /scenarios
+        search.service.ts         — GET /search/
+        meta.service.ts           — GET /meta/regions|districts|localities
+        ai.service.ts             — POST /ai/explain, /ai/dialog, /ai/scenario/:id/explain
+        analytics.service.ts      — GET /analytics/overview
+        user-identity.service.ts  — UUID generation + localStorage
+      interceptors/
+        user-uuid.interceptor.ts  — Injects X-User-UUID into every request
+    pages/
+      home/                       — Dashboard
+      scenarios/                  — Scenario list
+      new-scenario/               — Create scenario (3-step wizard)
+      scenario-edit/              — Edit scenario params + trigger search
+      scenario-results/           — View search results + AI explanation
+      specialty-details/          — Single specialty deep-dive
+      comparison-scenarios/       — Side-by-side scenario comparison
+      profile/                    — User profile + UUID management
+      pricing/                    — Plan tiers
+      support/                    — Contact form + FAQ
+    layout/                       — AppLayout, Sidebar, Topbar, Menu
 ```
 
-## Building
+## API Endpoints Used
 
-To build the project run:
+| Service | Endpoint |
+|---------|----------|
+| List scenarios | `GET /scenarios` |
+| Create scenario | `POST /scenarios` |
+| Get scenario | `GET /scenarios/:id` |
+| Delete scenario | `DELETE /scenarios/:id` |
+| Save step | `POST /scenarios/:id/step` |
+| Complete scenario | `POST /scenarios/:id/complete` |
+| Search | `GET /search/` |
+| Regions | `GET /meta/regions` |
+| Districts | `GET /meta/districts?region_id=` |
+| Localities | `GET /meta/localities?district_id=` |
+| AI Explain | `POST /ai/explain` |
+| AI Dialog | `POST /ai/dialog` |
+| AI Scenario Explain | `GET /ai/scenario/:id/explain` |
+| Analytics | `GET /analytics/overview` |
 
-```bash
-ng build
-```
+## Auth
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+No JWT. Every request carries `X-User-UUID` header.  
+The backend auto-creates a user record on first request.

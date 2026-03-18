@@ -1,101 +1,98 @@
-@if (!comparisonUnlocked) {
-    <app-feature-access
-        (confirm)="unlockComparison()"
-        (upgrade)="goToPricing()"
-        [requiredTokens]="5"
-        [userTokens]="3"
-        description="Сравнение позволяет увидеть различия между сценариями и понять последствия выбора."
-        featureTitle="Сравнение сценариев"
-    />
-} @else {
-    <div class="grid grid-cols-12 gap-8">
+<div class="grid grid-cols-12 gap-8">
 
-        <!-- Header -->
-        <div class="col-span-12">
-            <h1 class="text-2xl font-semibold">Сравнение сценариев</h1>
-            <p class="text-muted-color">
-                Сравните разные подходы к поступлению и их последствия
-            </p>
+    <div class="col-span-12">
+        <p class="text-muted-color">Выберите до 3 завершённых сценариев для сравнения</p>
+    </div>
+
+    @if (loading) {
+        <div class="col-span-12 text-center text-muted-color py-8">Загрузка...</div>
+    }
+
+    @if (!loading && scenarios.length === 0) {
+        <div class="col-span-12 card text-center text-muted-color py-8">
+            Нет завершённых сценариев для сравнения.
+            <div class="mt-4">
+                <a class="p-button p-button-sm" routerLink="/pages/new-scenario">Создать сценарий</a>
+            </div>
         </div>
+    }
 
-        <!-- Comparison Table -->
+    @if (!loading && scenarios.length > 0) {
+
+        <!-- Scenario selection -->
         <div class="col-span-12">
-            <div class="card overflow-x-auto">
-
-                <table class="w-full border-collapse">
-                    <thead>
-                    <tr class="text-left text-sm text-muted-color border-b border-surface-200 dark:border-surface-700">
-                        <th class="py-3 pr-4">Параметр</th>
-                        @for (scenario of scenarios; track scenario.id) {
-                            <th class="py-3 pr-4">
-                                {{ scenario.title }}
-                            </th>
-                        }
-                    </tr>
-                    </thead>
-
-                    <tbody>
-
-                    <tr class="border-b border-surface-200 dark:border-surface-700">
-                        <td class="py-3 font-medium">Цель</td>
-                        @for (scenario of scenarios; track scenario.id) {
-                            <td class="py-3">{{ scenario.goal }}</td>
-                        }
-                    </tr>
-
-                    <tr class="border-b border-surface-200 dark:border-surface-700">
-                        <td class="py-3 font-medium">Регион</td>
-                        @for (scenario of scenarios; track scenario.id) {
-                            <td class="py-3">{{ scenario.region }}</td>
-                        }
-                    </tr>
-
-                    <tr class="border-b border-surface-200 dark:border-surface-700">
-                        <td class="py-3 font-medium">Подходящие варианты</td>
-                        @for (scenario of scenarios; track scenario.id) {
-                            <td class="py-3">
-                                {{ scenario.resultsCount }}
-                            </td>
-                        }
-                    </tr>
-
-                    <tr class="border-b border-surface-200 dark:border-surface-700">
-                        <td class="py-3 font-medium">Средний уровень совпадения</td>
-                        @for (scenario of scenarios; track scenario.id) {
-                            <td class="py-3 text-primary font-medium">
-                                {{ scenario.matchRate }}%
-                            </td>
-                        }
-                    </tr>
-
-                    <tr class="border-b border-surface-200 dark:border-surface-700">
-                        <td class="py-3 font-medium">Только бюджет</td>
-                        @for (scenario of scenarios; track scenario.id) {
-                            <td class="py-3">
-                                {{ scenario.budgetOnly ? 'Да' : 'Нет' }}
-                            </td>
-                        }
-                    </tr>
-
-                    <tr>
-                        <td class="py-3 font-medium">Язык обучения</td>
-                        @for (scenario of scenarios; track scenario.id) {
-                            <td class="py-3">
-                                {{ scenario.language }}
-                            </td>
-                        }
-                    </tr>
-
-                    </tbody>
-                </table>
-
+            <div class="card">
+                <h3 class="mb-4">Выберите сценарии</h3>
+                <div class="flex flex-col gap-3">
+                    @for (s of scenarios; track s.id) {
+                        <div class="flex items-center gap-3 p-3 rounded border-2 cursor-pointer transition-colors"
+                             [class.border-primary]="isSelected(s.id)"
+                             [class.border-surface-200]="!isSelected(s.id)"
+                             [class.dark:border-surface-700]="!isSelected(s.id)"
+                             (click)="toggleSelect(s.id)">
+                            <div class="w-5 h-5 rounded border-2 flex items-center justify-center"
+                                 [class.bg-primary]="isSelected(s.id)"
+                                 [class.border-primary]="isSelected(s.id)"
+                                 [class.border-surface-300]="!isSelected(s.id)">
+                                @if (isSelected(s.id)) {
+                                    <i class="pi pi-check text-white text-xs"></i>
+                                }
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium">{{ s.title }}</div>
+                                <div class="text-sm text-muted-color">Цель: {{ goalLabel(s.goal) }}</div>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
 
-        <!-- Hint -->
-        <div class="col-span-12 text-xs text-muted-color">
-            Сравнение помогает увидеть различия сценариев, но окончательное решение остаётся за вами.
-        </div>
+        <!-- Comparison table -->
+        @if (selectedScenarios.length >= 2) {
+            <div class="col-span-12">
+                <div class="card overflow-auto">
+                    <h3 class="mb-4">Сравнение</h3>
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-surface-200 dark:border-surface-700">
+                                <th class="text-left py-2 pr-4 text-muted-color font-medium">Параметр</th>
+                                @for (s of selectedScenarios; track s.id) {
+                                    <th class="text-left py-2 px-4 font-semibold">{{ s.title }}</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-surface-200 dark:border-surface-700">
+                                <td class="py-3 pr-4 text-muted-color">Цель</td>
+                                @for (s of selectedScenarios; track s.id) {
+                                    <td class="py-3 px-4">{{ goalLabel(s.goal) }}</td>
+                                }
+                            </tr>
+                            <tr class="border-b border-surface-200 dark:border-surface-700">
+                                <td class="py-3 pr-4 text-muted-color">Статус</td>
+                                @for (s of selectedScenarios; track s.id) {
+                                    <td class="py-3 px-4">
+                                        <span class="px-2 py-1 text-xs rounded bg-green-100 dark:bg-green-400/10 text-green-600">Завершён</span>
+                                    </td>
+                                }
+                            </tr>
+                            <tr>
+                                <td class="py-3 pr-4 text-muted-color">Результаты</td>
+                                @for (s of selectedScenarios; track s.id) {
+                                    <td class="py-3 px-4">
+                                        <a class="text-primary text-sm" [routerLink]="['/pages/scenario-results', s.id]">
+                                            Открыть →
+                                        </a>
+                                    </td>
+                                }
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
 
-    </div>
-}
+    }
+
+</div>

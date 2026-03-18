@@ -1,92 +1,106 @@
-<div class="card">
-    <h2 class="mb-2">Новый сценарий поступления</h2>
-    <p class="text-muted-color mb-4">
-        Ответьте на несколько вопросов — система подберёт варианты и объяснит результат.
-    </p>
+<div class="grid grid-cols-12 gap-8 max-w-2xl mx-auto">
 
-    <!-- STEP 1: Goal -->
-    @if (step === 0) {
-        <h3 class="mb-3">Цель поступления</h3>
-        <p-selectbutton
-            [(ngModel)]="scenario.goal"
-            [options]="goals"
-            optionLabel="label"
-            optionValue="value"></p-selectbutton>
-    }
+    <div class="col-span-12">
+        <div class="card">
+            <!-- Step indicator -->
+            <div class="flex items-center gap-2 mb-6">
+                @for (i of [0, 1, 2]; track i) {
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors"
+                             [class.bg-primary]="step >= i"
+                             [class.text-white]="step >= i"
+                             [class.bg-surface-200]="step < i"
+                             [class.dark:bg-surface-700]="step < i"
+                             [class.text-muted-color]="step < i">
+                            {{ i + 1 }}
+                        </div>
+                        @if (i < 2) {
+                            <div class="h-px w-8 bg-surface-200 dark:bg-surface-700"></div>
+                        }
+                    </div>
+                }
+                <span class="ml-2 text-sm text-muted-color">
+                    @if (step === 0) { Выберите цель }
+                    @if (step === 1) { Укажите предпочтения }
+                    @if (step === 2) { Название и подтверждение }
+                </span>
+            </div>
 
-    <!-- STEP 2: Region -->
-    @if (step === 1) {
-        <h3 class="mb-3">География</h3>
-        <p-select
-            [(ngModel)]="scenario.region"
-            [options]="regions"
-            class="w-full"
-            placeholder="Выберите регион"
-        />
-    }
+            @if (error) {
+                <div class="mb-4 p-3 rounded bg-red-50 dark:bg-red-900/20 text-red-600 text-sm">{{ error }}</div>
+            }
 
-    <!-- STEP 3: Fields -->
-    @if (step === 2) {
-        <h3 class="mb-3">Интересующие направления</h3>
-        <div class="flex flex-col gap-2">
-            @for (field of fields; track field) {
-                <p-checkbox
-                    (onChange)="
-                        $event.checked
-                        ? scenario.fields.push(field)
-                        : scenario.fields.splice(scenario.fields.indexOf(field), 1)
-                    "
-                    [binary]="true"
-                    [ngModel]="scenario.fields.includes(field)"
-                />
+            <!-- STEP 0: Goal -->
+            @if (step === 0) {
+                <h3 class="mb-4">Какова ваша главная цель поступления?</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    @for (g of goals; track g.value) {
+                        <div class="p-4 rounded border-2 cursor-pointer transition-colors"
+                             [class.border-primary]="scenario.goal === g.value"
+                             [class.border-surface-200]="scenario.goal !== g.value"
+                             [class.dark:border-surface-700]="scenario.goal !== g.value"
+                             (click)="scenario.goal = g.value">
+                            <div class="font-medium">{{ g.label }}</div>
+                        </div>
+                    }
+                </div>
+                <div class="flex justify-end mt-6">
+                    <button class="p-button" (click)="next()" [disabled]="!canProceedStep0">Далее</button>
+                </div>
+            }
+
+            <!-- STEP 1: Preferences -->
+            @if (step === 1) {
+                <h3 class="mb-4">Дополнительные предпочтения</h3>
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Регион обучения</label>
+                        <p-select [options]="regionOptions" [(ngModel)]="scenario.region_id"
+                                  placeholder="Любой регион" styleClass="w-full"></p-select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Язык обучения</label>
+                        <p-select [options]="languages" optionLabel="label" optionValue="value"
+                                  [(ngModel)]="scenario.language" placeholder="Любой язык" styleClass="w-full"></p-select>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <p-checkbox [(ngModel)]="scenario.budgetOnly" [binary]="true" inputId="budget"></p-checkbox>
+                        <label for="budget" class="cursor-pointer">Только бюджетные места</label>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button class="p-button p-button-outlined" (click)="back()">Назад</button>
+                    <button class="p-button" (click)="next()">Далее</button>
+                </div>
+            }
+
+            <!-- STEP 2: Title & Confirm -->
+            @if (step === 2) {
+                <h3 class="mb-4">Название сценария</h3>
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Название (необязательно)</label>
+                        <input pInputText class="w-full" [(ngModel)]="scenario.title"
+                               [placeholder]="goals.find(g => g.value === scenario.goal)?.label ?? 'Мой сценарий'" />
+                    </div>
+                    <div class="p-4 rounded bg-surface-50 dark:bg-surface-800 text-sm">
+                        <div class="font-medium mb-2">Сводка сценария:</div>
+                        <div class="text-muted-color">
+                            <div>Цель: {{ goals.find(g => g.value === scenario.goal)?.label }}</div>
+                            @if (scenario.region_id) { <div>Регион: {{ regionOptions.find(r => r.value === scenario.region_id)?.label }}</div> }
+                            @if (scenario.language) { <div>Язык: {{ languages.find(l => l.value === scenario.language)?.label }}</div> }
+                            @if (scenario.budgetOnly) { <div>Только бюджет: да</div> }
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button class="p-button p-button-outlined" (click)="back()">Назад</button>
+                    <button class="p-button" (click)="submit()" [disabled]="submitting">
+                        {{ submitting ? 'Создание...' : 'Создать сценарий' }}
+                    </button>
+                </div>
             }
         </div>
-    }
-
-    <!-- STEP 4: Constraints -->
-    @if (step === 3) {
-        <h3 class="mb-3">Ограничения</h3>
-
-        <p-checkbox
-            [(ngModel)]="scenario.constraints.budgetOnly"
-            binary="true"
-            label="Только бюджетное обучение"
-        />
-
-        <div class="mt-3">
-            <p-select
-                [(ngModel)]="scenario.constraints.language"
-                [options]="languages"
-                class="w-full"
-                placeholder="Язык обучения"
-            />
-        </div>
-    }
-
-    <!-- CONTROLS -->
-    <div class="flex justify-between mt-6">
-        <button
-            (click)="back()"
-            [disabled]="step === 0"
-            class="p-button p-button-text"
-        >
-            Назад
-        </button>
-
-        @if (step < 3) {
-            <button
-                (click)="next()"
-                class="p-button p-button-primary"
-            >
-                Далее
-            </button>
-        } @else {
-            <button
-                (click)="submit()"
-                class="p-button p-button-success"
-            >
-                Создать сценарий
-            </button>
-        }
     </div>
+
 </div>

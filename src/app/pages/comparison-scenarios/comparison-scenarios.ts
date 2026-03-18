@@ -1,62 +1,53 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { NgIf, NgFor, NgClass } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { LayoutService } from '@/layout/service/layout.service';
-import { FeatureAccess } from '@/pages/feature-access/feature-access';
-
-interface ComparedScenario {
-    id: number;
-    title: string;
-    goal: string;
-    region: string;
-    resultsCount: number;
-    matchRate: number;
-    budgetOnly: boolean;
-    language: string;
-}
+import { ScenariosService } from '@/core/services/scenarios.service';
+import { Scenario } from '@/core/models';
 
 @Component({
     selector: 'app-comparison-scenarios',
     templateUrl: './comparison-scenarios.html',
-    imports: [FeatureAccess],
+    imports: [NgIf, NgFor, NgClass, RouterLink],
     styleUrls: ['./comparison-scenarios.scss']
 })
-export class ComparisonScenarios {
+export class ComparisonScenarios implements OnInit {
     private layoutService = inject(LayoutService);
-    userTokens = 3;
-    comparisonUnlocked = false;
+    private scenariosService = inject(ScenariosService);
 
-    scenarios: ComparedScenario[] = [
-        {
-            id: 1,
-            title: 'Бюджетное IT-обучение',
-            goal: 'Бюджет',
-            region: 'Душанбе',
-            resultsCount: 6,
-            matchRate: 84,
-            budgetOnly: true,
-            language: 'Русский'
-        },
-        {
-            id: 2,
-            title: 'Престижное образование',
-            goal: 'Престиж',
-            region: 'СНГ',
-            resultsCount: 9,
-            matchRate: 78,
-            budgetOnly: false,
-            language: 'Английский'
-        }
-    ];
+    scenarios: Scenario[] = [];
+    selectedIds: number[] = [];
+    loading = true;
 
     constructor() {
-        this.layoutService.setTitlePage('Сравнение сценарий');
+        this.layoutService.setTitlePage('Сравнение сценариев');
     }
 
-    unlockComparison() {
-        this.userTokens -= 5;
-        this.comparisonUnlocked = true;
+    ngOnInit(): void {
+        this.scenariosService.list().subscribe({
+            next: (data) => { this.scenarios = data.filter(s => s.status === 'completed'); this.loading = false; },
+            error: () => { this.loading = false; }
+        });
     }
 
-    goToPricing() {
-        alert('Переход на страницу тарифов (mock)');
+    toggleSelect(id: number): void {
+        if (this.selectedIds.includes(id)) {
+            this.selectedIds = this.selectedIds.filter(i => i !== id);
+        } else if (this.selectedIds.length < 3) {
+            this.selectedIds = [...this.selectedIds, id];
+        }
+    }
+
+    isSelected(id: number): boolean {
+        return this.selectedIds.includes(id);
+    }
+
+    get selectedScenarios(): Scenario[] {
+        return this.scenarios.filter(s => this.selectedIds.includes(s.id));
+    }
+
+    goalLabel(goal: string): string {
+        const map: Record<string, string> = { budget: 'Бюджет', prestige: 'Престиж', job: 'Трудоустройство', location: 'Локация' };
+        return map[goal] ?? goal;
     }
 }

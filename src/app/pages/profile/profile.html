@@ -1,115 +1,90 @@
-<div class="grid grid-cols-12 gap-8">
+<div class="grid grid-cols-12 gap-8 max-w-2xl mx-auto">
 
-    <!-- Header -->
+    <!-- Identity Card -->
     <div class="col-span-12">
-        <div class="flex items-center gap-4">
-            <div
-                class="flex items-center justify-center w-12 h-12 rounded-full
-                       bg-primary-100 dark:bg-primary-900/30">
-                <i class="pi pi-user text-primary text-xl"></i>
-            </div>
-            <div>
-                <h1 class="text-2xl font-semibold">Профиль</h1>
-                <p class="text-muted-color">
-                    Управление ресурсами, сценариями и настройками
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Resources -->
-    <div class="col-span-12 grid grid-cols-12 gap-4">
-
-        <div class="col-span-12 md:col-span-4">
-            <div class="card flex items-center gap-4">
-                <i class="pi pi-bolt text-primary text-2xl"></i>
-                <div>
-                    <span class="text-sm text-muted-color">Токены</span>
-                    <div class="text-2xl font-semibold">
-                        {{ user.tokens }}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-span-12 md:col-span-4">
-            <div class="card flex items-center gap-4">
-                <i class="pi pi-list text-primary text-2xl"></i>
-                <div>
-                    <span class="text-sm text-muted-color">Сценарии</span>
-                    <div class="text-2xl font-semibold">
-                        {{ user.scenariosUsed }} / {{ user.scenarioLimit }}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-span-12 md:col-span-4">
-            <div class="card flex items-center gap-4">
-                <i class="pi pi-id-card text-primary text-2xl"></i>
-                <div>
-                    <span class="text-sm text-muted-color">ID пользователя</span>
-                    <div class="text-sm font-medium">
-                        {{ user.id }}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Scenarios -->
-    <div class="col-span-12 lg:col-span-7">
         <div class="card">
-            <h3 class="mb-4">Мои сценарии</h3>
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white text-xl font-bold">
+                    <i class="pi pi-user"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold">Анонимный пользователь</h2>
+                    <div class="text-xs text-muted-color font-mono truncate max-w-xs">{{ uuid }}</div>
+                </div>
+                <button class="p-button p-button-text p-button-sm ml-auto" (click)="copyUuid()" title="Скопировать UUID">
+                    <i class="pi pi-copy"></i>
+                </button>
+            </div>
+            <div class="text-xs text-muted-color">
+                Ваш UUID используется для идентификации. Сохраните его, если хотите восстановить доступ.
+            </div>
+        </div>
+    </div>
 
-            <div class="flex flex-col gap-3">
-                @for (scenario of scenarios; track scenario.id) {
-                    <div
-                        class="flex items-center justify-between p-3 rounded
-                               border border-surface-200 dark:border-surface-700
-                               hover:border-primary transition-all">
+    <!-- Stats -->
+    <div class="col-span-12 grid grid-cols-3 gap-4">
+        <div class="card mb-0 text-center">
+            <div class="text-2xl font-bold text-primary">{{ scenarios.length }}</div>
+            <div class="text-sm text-muted-color">всего сценариев</div>
+        </div>
+        <div class="card mb-0 text-center">
+            <div class="text-2xl font-bold text-green-500">{{ completedCount }}</div>
+            <div class="text-sm text-muted-color">завершено</div>
+        </div>
+        <div class="card mb-0 text-center">
+            <div class="text-2xl font-bold text-orange-500">{{ draftCount }}</div>
+            <div class="text-sm text-muted-color">черновиков</div>
+        </div>
+    </div>
 
+    <!-- Scenarios list -->
+    <div class="col-span-12">
+        <div class="card">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="mb-0">Мои сценарии</h3>
+                <a class="p-button p-button-sm" routerLink="/pages/new-scenario">+ Новый</a>
+            </div>
+
+            @if (loading) {
+                <div class="text-center text-muted-color py-4">Загрузка...</div>
+            } @else if (scenarios.length === 0) {
+                <div class="text-center text-muted-color py-4">Нет сценариев</div>
+            } @else {
+                @for (s of scenarios; track s.id) {
+                    <div class="flex justify-between items-center py-3 border-b border-surface-200 dark:border-surface-700 last:border-b-0">
                         <div>
-                            <div class="font-medium">
-                                {{ scenario.title }}
-                            </div>
-                            <div class="text-sm text-muted-color">
-                                {{ scenario.status === 'completed'
-                                ? 'Завершён'
-                                : 'Черновик' }}
-                            </div>
+                            <div class="font-medium">{{ s.title }}</div>
+                            <div class="text-sm text-muted-color">{{ goalLabel(s.goal) }}</div>
                         </div>
-
-                        <p-button
-                            size="small"
-                            label="Открыть"
-                            outlined
-                            routerLink="/scenarios/{{ scenario.id }}"
-                        />
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs px-2 py-1 rounded"
+                                  [class.bg-green-100]="s.status === 'completed'"
+                                  [class.text-green-600]="s.status === 'completed'"
+                                  [class.bg-orange-100]="s.status === 'draft'"
+                                  [class.text-orange-600]="s.status === 'draft'">
+                                {{ s.status === 'completed' ? 'Завершён' : 'Черновик' }}
+                            </span>
+                            @if (s.status === 'completed') {
+                                <a class="p-button p-button-text p-button-sm" [routerLink]="['/pages/scenario-results', s.id]">Открыть</a>
+                            } @else {
+                                <a class="p-button p-button-text p-button-sm" [routerLink]="['/pages/scenario-edit', s.id]">Продолжить</a>
+                            }
+                        </div>
                     </div>
                 }
-            </div>
+            }
         </div>
     </div>
 
-    <!-- Settings -->
-    <div class="col-span-12 lg:col-span-5">
-        <div class="card">
-            <h3 class="mb-4">Настройки</h3>
-
-            <div class="flex flex-col gap-4">
-
-                <div class="flex items-center justify-between">
-                    <span class="text-sm">Тёмная тема</span>
-                    <p-inputSwitch [(ngModel)]="settings.darkMode" />
+    <!-- Plan info -->
+    <div class="col-span-12">
+        <div class="card bg-surface-50 dark:bg-surface-800">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="mb-1">Тарифный план</h3>
+                    <div class="text-muted-color text-sm">Текущий план: <strong>Free</strong> · до 3 сценариев</div>
                 </div>
-
-                <div class="flex items-center justify-between">
-                    <span class="text-sm">Показывать объяснения</span>
-                    <p-inputSwitch [(ngModel)]="settings.explanations" />
-                </div>
-
+                <a class="p-button p-button-sm" routerLink="/pages/pricing">Обновить план</a>
             </div>
         </div>
     </div>

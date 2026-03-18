@@ -14,12 +14,16 @@ export default [
         loadComponent: (): Promise<unknown> => import('./new-scenario/new-scenario').then((m) => m.NewScenarioComponent)
     },
     {
-        path: 'scenario-edit',
+        path: 'scenario-edit/:id',
         loadComponent: (): Promise<unknown> => import('./scenario-edit/scenario-edit').then((m) => m.ScenarioEdit)
     },
     {
-        path: 'scenario-results',
+        path: 'scenario-results/:id',
         loadComponent: (): Promise<unknown> => import('./scenario-results/scenario-results').then((m) => m.ScenarioResultsComponent)
+    },
+    {
+        path: 'specialty-details/:institution/:specialty',
+        loadComponent: (): Promise<unknown> => import('./specialty-details/specialty-details').then((m) => m.SpecialtyDetailsComponent)
     },
     {
         path: 'scenarios',
@@ -28,10 +32,6 @@ export default [
     {
         path: 'comparison-scenarios',
         loadComponent: (): Promise<unknown> => import('./comparison-scenarios/comparison-scenarios').then((m) => m.ComparisonScenarios)
-    },
-    {
-        path: 'specialty-details',
-        loadComponent: (): Promise<unknown> => import('./specialty-details/specialty-details').then((m) => m.SpecialtyDetailsComponent)
     },
     {
         path: 'pricing',

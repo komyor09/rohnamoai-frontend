@@ -1,166 +1,109 @@
 <div class="grid grid-cols-12 gap-8">
 
-    <!-- Header -->
-    <div class="col-span-12">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div
-                    class="flex items-center justify-center w-11 h-11 rounded-full
-                           bg-primary-100 dark:bg-primary-900/30">
-                    <i class="pi pi-chart-line text-primary text-xl"></i>
+    @if (loading) {
+        <div class="col-span-12 text-center text-muted-color py-8">Загрузка результатов...</div>
+    }
+
+    @if (error) {
+        <div class="col-span-12 card bg-red-50 dark:bg-red-900/20 text-red-600 p-4">{{ error }}</div>
+    }
+
+    @if (!loading && scenario) {
+
+        <!-- Header -->
+        <div class="col-span-12 flex justify-between items-center">
+            <div>
+                <h2 class="text-xl font-semibold">{{ scenario.title }}</h2>
+                <p class="text-muted-color">Результаты поиска · {{ results.length }} вариантов</p>
+            </div>
+            <div class="flex gap-2">
+                <a class="p-button p-button-outlined p-button-sm" [routerLink]="['/pages/scenario-edit', scenario.id]">
+                    Изменить
+                </a>
+                <a class="p-button p-button-outlined p-button-sm" routerLink="/pages/scenarios">
+                    Все сценарии
+                </a>
+            </div>
+        </div>
+
+        <!-- Summary cards -->
+        <div class="col-span-12 grid grid-cols-3 gap-4">
+            <div class="card mb-0 text-center">
+                <div class="text-2xl font-bold text-primary">{{ results.length }}</div>
+                <div class="text-sm text-muted-color">вариантов найдено</div>
+            </div>
+            <div class="card mb-0 text-center">
+                <div class="text-2xl font-bold text-green-500">
+                    {{ results.filter(r => r.price === null).length }}
                 </div>
-                <div>
-                    <h1 class="text-2xl font-semibold">Результаты сценария</h1>
-                    <p class="text-muted-color">
-                        {{ scenarioTitle }}
+                <div class="text-sm text-muted-color">бюджетных мест</div>
+            </div>
+            <div class="card mb-0 text-center">
+                <div class="text-2xl font-bold text-blue-500">
+                    {{ results.filter(r => r.price !== null).length }}
+                </div>
+                <div class="text-sm text-muted-color">платных программ</div>
+            </div>
+        </div>
+
+        <!-- AI Explanation -->
+        <div class="col-span-12">
+            <div class="card bg-primary-50 dark:bg-primary-900/20">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <i class="pi pi-sparkles text-primary"></i>
+                        <h3 class="mb-0">AI-объяснение результатов</h3>
+                    </div>
+                    @if (!aiExplanation) {
+                        <button class="p-button p-button-sm" (click)="getAiExplanation()" [disabled]="loadingAi">
+                            {{ loadingAi ? 'Анализирую...' : 'Объяснить результаты' }}
+                        </button>
+                    }
+                </div>
+                @if (aiExplanation) {
+                    <p class="text-sm">{{ aiExplanation }}</p>
+                } @else {
+                    <p class="text-sm text-muted-color">
+                        Нажмите кнопку, чтобы получить AI-анализ найденных специальностей.
                     </p>
-                </div>
+                }
             </div>
-
-            <span
-                class="flex items-center gap-2 px-3 py-1 rounded-full text-sm
-                       bg-green-100 text-green-700
-                       dark:bg-green-900/30 dark:text-green-300">
-                <i class="pi pi-check-circle"></i>
-                Завершён
-            </span>
         </div>
-    </div>
 
-    <!-- Summary / KPI -->
-    <div class="col-span-12 grid grid-cols-12 gap-4">
+        <!-- Results list -->
+        <div class="col-span-12">
+            <div class="card">
+                <h3 class="mb-4">Найденные специальности</h3>
 
-        <div class="col-span-12 md:col-span-4">
-            <div class="card flex items-center gap-4">
-                <i class="pi pi-list text-primary text-2xl"></i>
-                <div>
-                    <span class="text-sm text-muted-color">Подходящие специальности</span>
-                    <div class="text-2xl font-semibold">
-                        {{ summary.total }}
+                @if (results.length === 0) {
+                    <div class="text-center text-muted-color py-6">
+                        По параметрам сценария ничего не найдено. Попробуйте изменить фильтры.
                     </div>
-                </div>
-            </div>
-        </div>
+                }
 
-        <div class="col-span-12 md:col-span-4">
-            <div class="card flex items-center gap-4">
-                <i class="pi pi-percentage text-primary text-2xl"></i>
-                <div>
-                    <span class="text-sm text-muted-color">Среднее совпадение</span>
-                    <div class="text-2xl font-semibold">
-                        {{ summary.avgMatch }}%
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-span-12 md:col-span-4">
-            <div class="card flex items-center gap-4">
-                <i class="pi pi-filter text-primary text-2xl"></i>
-                <div>
-                    <span class="text-sm text-muted-color">Ключевой фактор</span>
-                    <div class="text-sm font-medium mt-1">
-                        {{ summary.keyFactor }}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Results -->
-    <div class="col-span-12">
-        <div class="card">
-            <div class="flex items-center gap-2 mb-4">
-                <i class="pi pi-star text-primary"></i>
-                <h3 class="mb-0">Подходящие варианты</h3>
-            </div>
-
-            <div class="flex flex-col gap-4">
-                @for (item of results; track item.id) {
-                    <div
-                        class="p-4 rounded border
-                               border-surface-200 dark:border-surface-700
-                               transition-all duration-300
-                               hover:shadow-lg hover:border-primary">
-
-                        <div class="flex justify-between items-center mb-2">
-                            <div>
-                                <div class="font-medium">
-                                    {{ item.title }}
-                                </div>
-                                <div class="text-sm text-muted-color">
-                                    {{ item.university }}
-                                </div>
-                            </div>
-
-                            <div class="text-right">
-                                <div class="text-primary font-semibold">
-                                    {{ item.match }}%
-                                </div>
-                                <div class="w-24 h-1 bg-surface-200 dark:bg-surface-700 rounded mt-1">
-                                    <div
-                                        class="h-1 rounded bg-primary"
-                                        [style.width.%]="item.match">
-                                    </div>
-                                </div>
-                            </div>
+                @for (r of results; track $index) {
+                    <div class="flex justify-between items-center py-4 border-b border-surface-200 dark:border-surface-700 last:border-b-0">
+                        <div class="flex-1">
+                            <div class="font-medium text-surface-900 dark:text-surface-0">{{ r.specialty }}</div>
+                            <div class="text-sm text-muted-color">{{ r.institution }} · {{ r.region }}</div>
+                            <div class="text-xs text-muted-color mt-1">Язык: {{ r.language }} · Мест: {{ r.plan_count }}</div>
                         </div>
-
-                        <div class="text-sm text-muted-color">
-                            {{ item.reason }}
+                        <div class="flex items-center gap-4 ml-4">
+                            <div class="text-right">
+                                <div class="text-sm font-medium" [ngClass]="r.price === null ? 'text-green-500' : 'text-surface-900 dark:text-surface-0'">
+                                    {{ budgetLabel(r.price) }}
+                                </div>
+                            </div>
+                            <a class="p-button p-button-text p-button-sm"
+                               [routerLink]="['/pages/specialty-details', r.institution, r.specialty]">
+                                Подробнее
+                            </a>
                         </div>
                     </div>
                 }
             </div>
         </div>
-    </div>
 
-    <!-- Explainability -->
-    <div class="col-span-12">
-        <div
-            class="card bg-gradient-to-r
-                   from-primary-50 to-transparent
-                   dark:from-primary-900/20">
-
-            <div class="flex items-center gap-2 mb-3">
-                <i class="pi pi-info-circle text-primary"></i>
-                <h3 class="mb-0">Почему эти варианты подходят</h3>
-            </div>
-
-            <ul class="text-sm text-muted-color space-y-2 pl-1">
-                <li class="flex items-start gap-2">
-                    <i class="pi pi-check text-primary mt-1"></i>
-                    Совпадение с выбранной целью поступления
-                </li>
-                <li class="flex items-start gap-2">
-                    <i class="pi pi-check text-primary mt-1"></i>
-                    Соответствие бюджетным ограничениям
-                </li>
-                <li class="flex items-start gap-2">
-                    <i class="pi pi-check text-primary mt-1"></i>
-                    Подходящий регион и язык обучения
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Actions -->
-    <div class="col-span-12">
-        <div class="flex gap-3 flex-wrap">
-            <p-button
-                icon="pi pi-pencil"
-                label="Изменить сценарий"
-                outlined
-                routerLink="../edit"
-            />
-
-            <p-button
-                icon="pi pi-sliders-h"
-                label="Сравнить сценарии"
-                routerLink="/scenarios/comparison"
-            />
-        </div>
-    </div>
+    }
 
 </div>

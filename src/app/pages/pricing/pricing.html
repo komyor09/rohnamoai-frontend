@@ -1,140 +1,57 @@
-<div class="grid grid-cols-12 gap-10">
+<div class="grid grid-cols-12 gap-8">
 
-    <!-- Header -->
-    <div class="col-span-12">
-        <div class="flex items-start gap-4">
-            <div
-                class="flex items-center justify-center w-12 h-12 rounded-full
-                       bg-primary-100 dark:bg-primary-900/30">
-                <i class="pi pi-wallet text-primary text-xl"></i>
-            </div>
-            <div>
-                <h1 class="text-2xl font-semibold">Тарифы и токены</h1>
-                <p class="text-muted-color max-w-2xl leading-relaxed">
-                    GuideRAI бесплатен для начала. Платные функции помогают глубже
-                    анализировать варианты и сравнивать сценарии.
-                    Мы не продаём ответы — мы продаём ясность.
-                </p>
-            </div>
-        </div>
+    <div class="col-span-12 text-center">
+        <p class="text-muted-color">Выберите подходящий тариф для работы с Rohnamo AI</p>
     </div>
 
-    <!-- Philosophy -->
-    <div class="col-span-12">
-        <div
-            class="card relative overflow-hidden
-                   bg-gradient-to-r from-primary-50 to-transparent
-                   dark:from-primary-900/20">
+    @for (plan of plans; track plan.id) {
+        <div class="col-span-12 md:col-span-6 mx-auto md:mx-0 max-w-sm w-full">
+            <div class="card h-full flex flex-col"
+                 [class.border-2]="plan.id === 'pro'"
+                 [class.border-primary]="plan.id === 'pro'">
 
-            <div class="flex items-start gap-3">
-                <i class="pi pi-shield text-primary text-xl mt-1"></i>
-                <p class="text-sm text-muted-color leading-relaxed">
-                    Оплата не гарантирует поступление и не влияет на результаты.
-                    Тарифы и токены дают доступ к дополнительным объяснениям,
-                    аналитике и сравнению сценариев — не подменяя ваш выбор.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Plans -->
-    <div class="col-span-12 grid grid-cols-12 gap-6">
-
-        @for (plan of plans; track plan.name) {
-            <div class="col-span-12 md:col-span-4">
-                <div
-                    class="card h-full relative
-                           transition-all duration-300
-                           hover:shadow-xl hover:-translate-y-1
-                           @if (plan.popular) { border-primary }">
-
-                    @if (plan.popular) {
-                        <span
-                            class="absolute top-4 right-4 text-xs px-3 py-1 rounded-full
-                                   bg-primary text-white">
-                            Популярный
-                        </span>
-                    }
-
-                    <div class="mb-4">
-                        <h3 class="mb-1">{{ plan.name }}</h3>
-                        <div class="text-2xl font-semibold">
-                            {{ plan.price }}
-                        </div>
-                        <p class="text-sm text-muted-color mt-1">
-                            {{ plan.description }}
-                        </p>
-                    </div>
-
-                    <ul class="text-sm space-y-2 mb-6">
-                        @for (feature of plan.features; track feature) {
-                            <li class="flex items-start gap-2">
-                                <i class="pi pi-check text-primary mt-1"></i>
-                                {{ feature }}
-                            </li>
-                        }
-                    </ul>
-
-                    <p-button
-                        label="Выбрать тариф"
-                        class="w-full"
-                        outlined
-                    />
-                </div>
-            </div>
-        }
-
-    </div>
-
-    <!-- Tokens -->
-    <div class="col-span-12">
-        <div class="card">
-
-            <div class="flex items-center gap-3 mb-4">
-                <div
-                    class="flex items-center justify-center w-9 h-9 rounded-full
-                           bg-primary-100 dark:bg-primary-900/30">
-                    <i class="pi pi-bolt text-primary"></i>
-                </div>
-                <h3 class="mb-0">Токены — оплата за действие</h3>
-            </div>
-
-            <p class="text-sm text-muted-color mb-6 max-w-2xl">
-                Токены позволяют оплачивать отдельные действия без подписки.
-                Вы платите только за те возможности, которые используете.
-            </p>
-
-            <div class="grid grid-cols-12 gap-4">
-                @for (item of tokenActions; track item.action) {
-                    <div
-                        class="col-span-12 md:col-span-4
-                               p-4 rounded border
-                               border-surface-200 dark:border-surface-700
-                               transition-all duration-300
-                               hover:border-primary hover:shadow-md">
-
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm">
-                                {{ item.action }}
-                            </span>
-                            <span class="font-semibold text-primary">
-                                {{ item.cost }} токенов
-                            </span>
-                        </div>
-                    </div>
+                @if (plan.id === 'pro') {
+                    <div class="text-xs font-semibold text-primary mb-2 uppercase tracking-wide">Рекомендуется</div>
                 }
-            </div>
 
-            <div
-                class="mt-6 flex items-center justify-between
-                       p-4 rounded bg-surface-50 dark:bg-surface-900/40">
-                <span class="text-sm text-muted-color">
-                    Ваш текущий баланс
-                </span>
-                <span class="text-lg font-semibold">
-                    {{ userTokens }} токенов
-                </span>
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold">{{ plan.name }}</h3>
+                    <div class="flex items-baseline gap-1 mt-2">
+                        <span class="text-3xl font-bold">{{ plan.price }}</span>
+                        <span class="text-muted-color text-sm">{{ plan.currency }}</span>
+                    </div>
+                </div>
+
+                <div class="flex-1">
+                    @for (f of plan.features; track f) {
+                        <div class="flex items-center gap-2 py-1">
+                            <i class="pi pi-check text-green-500 text-sm"></i>
+                            <span class="text-sm">{{ f }}</span>
+                        </div>
+                    }
+                    @for (l of plan.limitations; track l) {
+                        <div class="flex items-center gap-2 py-1 opacity-50">
+                            <i class="pi pi-times text-surface-400 text-sm"></i>
+                            <span class="text-sm text-muted-color">{{ l }}</span>
+                        </div>
+                    }
+                </div>
+
+                <button class="p-button w-full mt-6"
+                        [class.p-button-outlined]="plan.id === 'free'"
+                        [disabled]="plan.disabled">
+                    {{ plan.cta }}
+                </button>
+
             </div>
+        </div>
+    }
+
+    <!-- Info box -->
+    <div class="col-span-12">
+        <div class="card bg-surface-50 dark:bg-surface-800 text-sm text-muted-color">
+            <i class="pi pi-info-circle mr-2"></i>
+            Оплата и управление тарифами доступны после регистрации. Сейчас система работает в демо-режиме.
         </div>
     </div>
 

@@ -1,39 +1,59 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Button } from 'primeng/button';
+import { LayoutService } from '@/layout/service/layout.service';
+import { UserIdentityService } from '@/core/services/user-identity.service';
 
 @Component({
     selector: 'app-pricing',
-    imports: [Button],
-    templateUrl: './pricing.html'
+    imports: [Button, RouterLink, NgIf],
+    templateUrl: './pricing.html',
+    styleUrls: ['./pricing.scss']
 })
 export class Pricing {
-    userTokens = 3;
+    private layoutService = inject(LayoutService);
+    identity = inject(UserIdentityService);
+
+    currentPlan: 'free' | 'pro' = 'free';
+
+    constructor() {
+        this.layoutService.setTitlePage('Тарифы и токены');
+    }
 
     plans = [
         {
+            id: 'free',
             name: 'Бесплатный',
             price: '0',
-            description: 'Для первого знакомства с сервисом',
-            features: ['До 2 сценариев', 'Базовые результаты', 'Ограниченные объяснения']
+            currency: 'сом/мес',
+            features: [
+                'До 3 сценариев',
+                'Базовый поиск специальностей',
+                'Просмотр результатов',
+            ],
+            limitations: [
+                'Без AI-объяснений',
+                'Без сравнения сценариев',
+            ],
+            cta: 'Текущий план',
+            disabled: true
         },
         {
-            name: 'Стандарт',
-            price: '49 сомони',
-            description: 'Для осознанного выбора',
-            features: ['До 10 сценариев', 'Сравнение сценариев', 'Расширенные объяснения', 'История изменений'],
-            popular: true
-        },
-        {
-            name: 'Премиум',
-            price: '99 сомони',
-            description: 'Максимальная ясность и контроль',
-            features: ['Неограниченные сценарии', 'Все объяснения', 'Аналитика и рекомендации', 'Приоритетная поддержка']
+            id: 'pro',
+            name: 'Pro',
+            price: '99',
+            currency: 'сом/мес',
+            features: [
+                'До 10 сценариев',
+                'AI-объяснения результатов',
+                'Сравнение сценариев',
+                'Приоритетный поиск',
+                'Экспорт в PDF'
+            ],
+            limitations: [],
+            cta: 'Перейти на Pro',
+            disabled: false
         }
-    ];
-
-    tokenActions = [
-        { action: 'Сравнение сценариев', cost: 5 },
-        { action: 'Расширенное объяснение результатов', cost: 3 },
-        { action: 'Аналитика и рекомендации', cost: 4 }
     ];
 }

@@ -7,7 +7,7 @@ import { AppMenuitem } from '@/layout/component/menuitem/app.menuitem';
 @Component({
     selector: 'app-menu',
     standalone: true,
-    imports: [CommonModule, AppMenuitem, RouterModule, AppMenuitem],
+    imports: [CommonModule, AppMenuitem, RouterModule],
     templateUrl: 'app.menu.html'
 })
 export class AppMenu {
@@ -16,35 +16,20 @@ export class AppMenu {
     ngOnInit() {
         this.model = [
             {
-                label: 'Страницы',
+                label: 'Навигация',
                 items: [
-                    { label: 'Главная', icon: 'pi pi-fw pi-home', routerLink: ['/pages/home'] },
-                    {
-                        label: 'Сценарии',
-                        icon: 'pi pi-fw pi-home',
-                        items: [
-                            { label: 'Создать', icon: 'pi pi-fw pi-plus-circle', routerLink: ['/pages/new-scenario'] },
-                            { label: 'Редактировать', icon: 'pi pi-fw pi-pen-to-square', routerLink: ['/pages/scenario-edit'] },
-                            { label: 'Результаты', icon: 'pi pi-fw pi-check-square', routerLink: ['/pages/scenario-results'] },
-                            { label: 'Мои сценарии', icon: 'pi pi-fw pi-play-circle', routerLink: ['/pages/scenarios'] },
-                            { label: 'Сравнение сценарий', icon: 'pi pi-fw pi-arrow-right-arrow-left', routerLink: ['/pages/comparison-scenarios'] }
-                        ]
-                    },
-                    {
-                        label: 'Детали специальности',
-                        icon: 'pi pi-fw pi-graduation-cap',
-                        routerLink: ['/pages/specialty-details']
-                    },
-                    {
-                        label: 'Тарифы',
-                        icon: 'pi pi-fw pi-shopping-cart',
-                        routerLink: ['/pages/pricing']
-                    },
-                    {
-                        label: 'Поддержка',
-                        icon: 'pi pi-fw pi-comments',
-                        routerLink: ['/pages/support']
-                    }
+                    { label: 'Дашборд', icon: 'pi pi-fw pi-home', routerLink: ['/pages/home'] },
+                    { label: 'Мои сценарии', icon: 'pi pi-fw pi-list', routerLink: ['/pages/scenarios'] },
+                    { label: 'Создать сценарий', icon: 'pi pi-fw pi-plus-circle', routerLink: ['/pages/new-scenario'] },
+                    { label: 'Сравнение', icon: 'pi pi-fw pi-arrow-right-arrow-left', routerLink: ['/pages/comparison-scenarios'] },
+                ]
+            },
+            {
+                label: 'Аккаунт',
+                items: [
+                    { label: 'Профиль', icon: 'pi pi-fw pi-user', routerLink: ['/pages/profile'] },
+                    { label: 'Тарифы', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/pages/pricing'] },
+                    { label: 'Поддержка', icon: 'pi pi-fw pi-comments', routerLink: ['/pages/support'] },
                 ]
             }
         ];

@@ -1,26 +1,52 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Button } from 'primeng/button';
-import { RouterLink } from '@angular/router';
+import { SearchService } from '@/core/services/search.service';
+import { AiService } from '@/core/services/ai.service';
+import { SearchResult } from '@/core/models';
 
 @Component({
     selector: 'app-specialty-details',
-    imports: [Button, RouterLink],
-    templateUrl: './specialty-details.html'
+    imports: [Button, RouterLink, NgIf],
+    templateUrl: './specialty-details.html',
+    styleUrls: ['./specialty-details.scss']
 })
-export class SpecialtyDetailsComponent {
-    specialty = {
-        id: 1,
-        title: 'Информационные технологии',
-        university: 'Таджикский технический университет',
-        match: 82,
-        budget: true,
-        region: 'Душанбе',
-        language: 'Русский',
-        competition: 'Высокая',
-        description: 'Специальность ориентирована на подготовку специалистов в области разработки программного обеспечения, информационных систем и баз данных.'
-    };
+export class SpecialtyDetailsComponent implements OnInit {
+    private route = inject(ActivatedRoute);
+    private searchService = inject(SearchService);
+    private aiService = inject(AiService);
 
-    pros = ['Соответствует выбранной цели поступления', 'Есть бюджетные места', 'Подходящий регион обучения', 'Востребованность на рынке труда'];
+    institution = '';
+    specialtyName = '';
+    result: SearchResult | null = null;
+    aiText: string | null = null;
+    loading = true;
+    loadingAi = false;
 
-    cons = ['Высокая конкуренция при поступлении', 'Требуются хорошие знания математики', 'Интенсивная учебная нагрузка'];
+    ngOnInit(): void {
+        this.institution = decodeURIComponent(this.route.snapshot.paramMap.get('institution') ?? '');
+        this.specialtyName = decodeURIComponent(this.route.snapshot.paramMap.get('specialty') ?? '');
+
+        this.searchService.search({ specialty: this.specialtyName, limit: 5 }).subscribe({
+            next: (data) => {
+                this.result = data.find(r => r.institution === this.institution) ?? data[0] ?? null;
+                this.loading = false;
+            },
+            error: () => { this.loading = false; }
+        });
+    }
+
+    getAiInsight(): void {
+        if (!this.result) return;
+        this.loadingAi = true;
+        this.aiService.explain({ results: [this.result] }).subscribe({
+            next: (res) => { this.aiText = res.text; this.loadingAi = false; },
+            error: () => { this.loadingAi = false; }
+        });
+    }
+
+    budgetLabel(price: number | null): string {
+        return price === null ? 'Бюджет (бесплатно)' : `${price.toLocaleString()} сом/год`;
+    }
 }

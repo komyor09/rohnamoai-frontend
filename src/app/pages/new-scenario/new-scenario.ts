@@ -64,12 +64,25 @@ export class NewScenarioComponent implements OnInit {
 
     ngOnInit(): void {
         this.metaService.getRegions().subscribe({
-            next: (data) => { this.regions = data; }
+            next: (data) => {
+                this.regions = data;
+            }
         });
+    }
+    get selectedGoalLabel(): string {
+        return this.goals.find((g) => g.value === this.scenario.goal)?.label || 'Мой сценарий';
+    }
+
+    get selectedRegionLabel(): string | null {
+        return this.regionOptions.find((r) => r.value === this.scenario.region_id)?.label || null;
+    }
+
+    get selectedLanguageLabel(): string | null {
+        return this.languages.find((l) => l.value === this.scenario.language)?.label || null;
     }
 
     get regionOptions() {
-        return this.regions.map(r => ({ label: r.name, value: r.id }));
+        return this.regions.map((r) => ({ label: r.name, value: r.id }));
     }
 
     next(): void {
@@ -89,7 +102,7 @@ export class NewScenarioComponent implements OnInit {
         this.submitting = true;
         this.error = null;
 
-        const title = this.scenario.title.trim() || this.goals.find(g => g.value === this.scenario.goal)?.label || 'Новый сценарий';
+        const title = this.scenario.title.trim() || this.goals.find((g) => g.value === this.scenario.goal)?.label || 'Новый сценарий';
 
         this.scenariosService.create({ title, goal: this.scenario.goal }).subscribe({
             next: (created) => {
@@ -99,14 +112,21 @@ export class NewScenarioComponent implements OnInit {
                 if (this.scenario.language) steps.push({ step_key: 'language', step_value: this.scenario.language });
                 if (this.scenario.budgetOnly) steps.push({ step_key: 'budget', step_value: 'true' });
 
-                const saves = steps.map(s => this.scenariosService.saveStep(created.id, s));
+                const saves = steps.map((s) => this.scenariosService.saveStep(created.id, s));
                 if (saves.length === 0) {
                     this.router.navigate(['/pages/scenario-edit', created.id]);
                     return;
                 }
 
                 let done = 0;
-                saves.forEach(obs => obs.subscribe({ next: () => { done++; if (done === saves.length) this.router.navigate(['/pages/scenario-edit', created.id]); } }));
+                saves.forEach((obs) =>
+                    obs.subscribe({
+                        next: () => {
+                            done++;
+                            if (done === saves.length) this.router.navigate(['/pages/scenario-edit', created.id]);
+                        }
+                    })
+                );
             },
             error: (err) => {
                 this.submitting = false;

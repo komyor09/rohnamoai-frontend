@@ -81,14 +81,14 @@
                     <div>
                         <label class="block text-sm font-medium mb-2">Название (необязательно)</label>
                         <input pInputText class="w-full" [(ngModel)]="scenario.title"
-                               [placeholder]="goals.find(g => g.value === scenario.goal)?.label ?? 'Мой сценарий'" />
+                               [placeholder]="selectedGoalLabel" />
                     </div>
                     <div class="p-4 rounded bg-surface-50 dark:bg-surface-800 text-sm">
                         <div class="font-medium mb-2">Сводка сценария:</div>
                         <div class="text-muted-color">
-                            <div>Цель: {{ goals.find(g => g.value === scenario.goal)?.label }}</div>
-                            @if (scenario.region_id) { <div>Регион: {{ regionOptions.find(r => r.value === scenario.region_id)?.label }}</div> }
-                            @if (scenario.language) { <div>Язык: {{ languages.find(l => l.value === scenario.language)?.label }}</div> }
+                            <div>Цель: {{ selectedGoalLabel }}</div>
+                            @if (scenario.region_id) { <div>Регион: {{ selectedRegionLabel  }}</div> }
+                            @if (scenario.language) { <div>Язык: {{ selectedLanguageLabel  }}</div> }
                             @if (scenario.budgetOnly) { <div>Только бюджет: да</div> }
                         </div>
                     </div>

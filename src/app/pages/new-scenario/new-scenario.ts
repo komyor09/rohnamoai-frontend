@@ -23,7 +23,7 @@ interface ScenarioDraft {
 @Component({
     selector: 'app-new-scenario',
     templateUrl: './new-scenario.html',
-    imports: [Select, Checkbox, FormsModule, SelectButton, Button, NgIf, NgFor, InputText],
+    imports: [Select, Checkbox, FormsModule, InputText],
     styleUrls: ['./new-scenario.scss']
 })
 export class NewScenarioComponent implements OnInit {

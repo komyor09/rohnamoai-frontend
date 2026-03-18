@@ -17,7 +17,7 @@
                 <p class="text-muted-color">Результаты поиска · {{ results.length }} вариантов</p>
             </div>
             <div class="flex gap-2">
-                <a class="p-button p-button-outlined p-button-sm" [routerLink]="['/pages/scenario-edit', scenario.id]">
+                <a [routerLink]="['/pages/scenario-edit', scenario.id]" class="p-button p-button-outlined p-button-sm">
                     Изменить
                 </a>
                 <a class="p-button p-button-outlined p-button-sm" routerLink="/pages/scenarios">
@@ -34,13 +34,13 @@
             </div>
             <div class="card mb-0 text-center">
                 <div class="text-2xl font-bold text-green-500">
-                    {{ results.filter(r => r.price === null).length }}
+                    {{ freeCount }}
                 </div>
                 <div class="text-sm text-muted-color">бюджетных мест</div>
             </div>
             <div class="card mb-0 text-center">
                 <div class="text-2xl font-bold text-blue-500">
-                    {{ results.filter(r => r.price !== null).length }}
+                    {{ paidCount }}
                 </div>
                 <div class="text-sm text-muted-color">платных программ</div>
             </div>
@@ -55,7 +55,7 @@
                         <h3 class="mb-0">AI-объяснение результатов</h3>
                     </div>
                     @if (!aiExplanation) {
-                        <button class="p-button p-button-sm" (click)="getAiExplanation()" [disabled]="loadingAi">
+                        <button (click)="getAiExplanation()" [disabled]="loadingAi" class="p-button p-button-sm">
                             {{ loadingAi ? 'Анализирую...' : 'Объяснить результаты' }}
                         </button>
                     }
@@ -82,20 +82,24 @@
                 }
 
                 @for (r of results; track $index) {
-                    <div class="flex justify-between items-center py-4 border-b border-surface-200 dark:border-surface-700 last:border-b-0">
+                    <div
+                        class="flex justify-between items-center py-4 border-b border-surface-200 dark:border-surface-700 last:border-b-0">
                         <div class="flex-1">
                             <div class="font-medium text-surface-900 dark:text-surface-0">{{ r.specialty }}</div>
                             <div class="text-sm text-muted-color">{{ r.institution }} · {{ r.region }}</div>
-                            <div class="text-xs text-muted-color mt-1">Язык: {{ r.language }} · Мест: {{ r.plan_count }}</div>
+                            <div class="text-xs text-muted-color mt-1">Язык: {{ r.language }} ·
+                                Мест: {{ r.plan_count }}
+                            </div>
                         </div>
                         <div class="flex items-center gap-4 ml-4">
                             <div class="text-right">
-                                <div class="text-sm font-medium" [ngClass]="r.price === null ? 'text-green-500' : 'text-surface-900 dark:text-surface-0'">
+                                <div [ngClass]="r.price === null ? 'text-green-500' : 'text-surface-900 dark:text-surface-0'"
+                                     class="text-sm font-medium">
                                     {{ budgetLabel(r.price) }}
                                 </div>
                             </div>
-                            <a class="p-button p-button-text p-button-sm"
-                               [routerLink]="['/pages/specialty-details', r.institution, r.specialty]">
+                            <a [routerLink]="['/pages/specialty-details', r.institution, r.specialty]"
+                               class="p-button p-button-text p-button-sm">
                                 Подробнее
                             </a>
                         </div>

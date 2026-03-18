@@ -1,12 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { NgIf, NgFor } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Select } from 'primeng/select';
 import { InputText } from 'primeng/inputtext';
 import { Checkbox } from 'primeng/checkbox';
-import { SelectButton } from 'primeng/selectbutton';
-import { Button } from 'primeng/button';
 import { LayoutService } from '@/layout/service/layout.service';
 import { ScenariosService } from '@/core/services/scenarios.service';
 import { MetaService } from '@/core/services/meta.service';

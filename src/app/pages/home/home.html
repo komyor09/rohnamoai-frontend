@@ -99,9 +99,9 @@
                     <div class="flex items-center gap-3">
                         <p-tag class="px-2 py-1 text-xs rounded" [severity]="statusClass(s.status)"> {{ statusLabel(s.status) }} </p-tag>
                         @if (s.status === 'completed') {
-                        <p-button class="p-button p-button-text p-button-sm" [routerLink]="['/pages/scenario-results', s.id]" icon="pi pi-eye" text pTooltip="Результаты"></p-button>
+                        <p-button [routerLink]="['/pages/scenario-results', s.id]" icon="pi pi-eye" outlined rounded pTooltip="Результаты" ></p-button>
                         } @else {
-                        <p-button class="p-button p-button-text p-button-sm" [routerLink]="['/pages/scenario-edit', s.id]" icon="pi pi-pencil" text pTooltip="Продолжить"></p-button>
+                        <p-button [routerLink]="['/pages/scenario-edit', s.id]" icon="pi pi-pencil" outlined rounded pTooltip="Продолжить"></p-button>
                         }
                     </div>
                 </div>

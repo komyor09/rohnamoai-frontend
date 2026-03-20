@@ -23,13 +23,13 @@
                     <p-chip class="m-1" icon="pi pi-star" [label]="goalLabel(scenario.goal)" pTooltip="Цель"></p-chip>
                 </div>
                 <div class="flex items-center gap-3">
+                    <p-tag class="m-1" rounded [icon]="getStatusIcon(scenario.status)" [severity]="getStatusStyle(scenario.status)" [value]="getStatusLabel(scenario.status)"></p-tag>
                     @if (scenario.status === 'draft') {
                     <p-button icon="pi pi-pencil" (click)="openScenario(scenario)" pToolTip="Продолжить" rounded></p-button>
                     } @else {
                     <p-button icon="pi pi-eye" severity="success" (click)="openScenario(scenario)" pToolTip="Результаты" rounded></p-button>
                     }
                     <p-button class="text-red-500" icon="pi pi-trash" severity="danger" rounded (click)="deleteScenario(scenario.id, $event)" [disabled]="deletingId === scenario.id"> </p-button>
-                    <p-tag class="m-1" rounded [icon]="getStatusIcon(scenario.status)" [severity]="getStatusStyle(scenario.status)" [value]="getStatusLabel(scenario.status)"></p-tag>
                 </div>
             </div>
             } }

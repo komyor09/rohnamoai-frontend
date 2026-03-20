@@ -1,14 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Button } from 'primeng/button';
 import { SearchService } from '@/core/services/search.service';
 import { AiService } from '@/core/services/ai.service';
 import { SearchResult } from '@/core/models';
 
 @Component({
     selector: 'app-specialty-details',
-    imports: [Button, RouterLink, NgIf],
+    imports: [RouterLink],
     templateUrl: './specialty-details.html',
     styleUrls: ['./specialty-details.scss']
 })

@@ -1,7 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
 import { ScenariosService } from '@/core/services/scenarios.service';
 import { UserIdentityService } from '@/core/services/user-identity.service';
@@ -9,7 +7,7 @@ import { Scenario } from '@/core/models';
 
 @Component({
     selector: 'app-profile',
-    imports: [FormsModule, Button, RouterLink, NgIf, NgFor],
+    imports: [FormsModule, RouterLink],
     templateUrl: './profile.html'
 })
 export class Profile implements OnInit {

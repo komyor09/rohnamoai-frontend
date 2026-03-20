@@ -1,10 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { NgIf, NgFor } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Select } from 'primeng/select';
 import { Checkbox } from 'primeng/checkbox';
-import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { ScenariosService } from '@/core/services/scenarios.service';
 import { MetaService } from '@/core/services/meta.service';
@@ -13,7 +11,7 @@ import { Scenario, Region } from '@/core/models';
 @Component({
     selector: 'app-scenario-edit',
     templateUrl: './scenario-edit.html',
-    imports: [FormsModule, Select, Checkbox, Button, InputText, NgIf, NgFor, RouterLink],
+    imports: [FormsModule, Select, Checkbox, InputText, RouterLink],
     styleUrls: ['./scenario-edit.scss']
 })
 export class ScenarioEdit implements OnInit {

@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { NgIf, NgFor, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { LayoutService } from '@/layout/service/layout.service';
 import { ScenariosService } from '@/core/services/scenarios.service';
@@ -8,7 +7,7 @@ import { Scenario } from '@/core/models';
 @Component({
     selector: 'app-comparison-scenarios',
     templateUrl: './comparison-scenarios.html',
-    imports: [NgIf, NgFor, NgClass, RouterLink],
+    imports: [RouterLink],
     styleUrls: ['./comparison-scenarios.scss']
 })
 export class ComparisonScenarios implements OnInit {

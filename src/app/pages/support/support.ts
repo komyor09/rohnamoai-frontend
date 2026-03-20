@@ -1,14 +1,12 @@
 import { Component, inject } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { LayoutService } from '@/layout/service/layout.service';
 
 @Component({
     selector: 'app-support',
-    imports: [FormsModule, Button, InputText, TextareaModule, NgIf],
+    imports: [FormsModule, InputText, TextareaModule],
     templateUrl: './support.html',
     styleUrls: ['./support.scss']
 })

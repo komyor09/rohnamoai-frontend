@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { NgClass, NgIf, NgFor, DecimalPipe } from '@angular/common';
+import { NgClass, DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Button } from 'primeng/button';
 import { LayoutService } from '@/layout/service/layout.service';
 import { ScenariosService } from '@/core/services/scenarios.service';
 import { AnalyticsService } from '@/core/services/analytics.service';
@@ -9,7 +8,7 @@ import { Scenario } from '@/core/models';
 
 @Component({
     selector: 'app-home',
-    imports: [Button, NgClass, NgIf, NgFor, RouterLink, DecimalPipe],
+    imports: [NgClass, RouterLink],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })

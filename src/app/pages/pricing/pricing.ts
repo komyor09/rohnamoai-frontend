@@ -1,13 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { NgIf } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Button } from 'primeng/button';
 import { LayoutService } from '@/layout/service/layout.service';
 import { UserIdentityService } from '@/core/services/user-identity.service';
 
 @Component({
     selector: 'app-pricing',
-    imports: [Button, RouterLink, NgIf],
     templateUrl: './pricing.html',
     styleUrls: ['./pricing.scss']
 })

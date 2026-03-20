@@ -5,10 +5,15 @@ import { LayoutService } from '@/layout/service/layout.service';
 import { ScenariosService } from '@/core/services/scenarios.service';
 import { Scenario } from '@/core/models';
 
+import { Button } from 'primeng/button';
+import { Message } from 'primeng/message';
+import { Tooltip } from 'primeng/tooltip';
+import { Card } from 'primeng/card';
+import { Tag } from 'primeng/tag';
 @Component({
     selector: 'app-scenarios',
     templateUrl: './scenarios.html',
-    imports: [NgClass, RouterLink],
+    imports: [NgClass, RouterLink, Button, Message, Tooltip, Card, Tag],
     styleUrls: ['./scenarios.scss']
 })
 export class Scenarios implements OnInit {
@@ -21,6 +26,8 @@ export class Scenarios implements OnInit {
     error: string | null = null;
     deletingId: number | null = null;
 
+    welcomeMessage = 'Каждый сценарий — отдельный путь выбора поступления';
+
     constructor() {
         this.layoutService.setTitlePage('Мои сценарии');
     }
@@ -32,8 +39,14 @@ export class Scenarios implements OnInit {
     load(): void {
         this.loading = true;
         this.scenariosService.list().subscribe({
-            next: (data) => { this.scenarios = data; this.loading = false; },
-            error: () => { this.error = 'Ошибка загрузки'; this.loading = false; }
+            next: (data) => {
+                this.scenarios = data;
+                this.loading = false;
+            },
+            error: () => {
+                this.error = 'Ошибка загрузки';
+                this.loading = false;
+            }
         });
     }
 
@@ -50,8 +63,13 @@ export class Scenarios implements OnInit {
         if (!confirm('Удалить сценарий?')) return;
         this.deletingId = id;
         this.scenariosService.delete(id).subscribe({
-            next: () => { this.scenarios = this.scenarios.filter(s => s.id !== id); this.deletingId = null; },
-            error: () => { this.deletingId = null; }
+            next: () => {
+                this.scenarios = this.scenarios.filter((s) => s.id !== id);
+                this.deletingId = null;
+            },
+            error: () => {
+                this.deletingId = null;
+            }
         });
     }
 
@@ -65,8 +83,10 @@ export class Scenarios implements OnInit {
     }
 
     getStatusStyle(status: string): string {
-        return status === 'completed'
-            ? 'bg-green-100 dark:bg-green-400/10 text-green-600'
-            : 'bg-orange-100 dark:bg-orange-400/10 text-orange-600';
+        return status === 'completed' ? 'success' : 'warn';
+    }
+
+    getStatusIcon(status: string): string {
+        return status === 'completed' ? 'pi pi-check' : 'pi pi-clock';
     }
 }

@@ -1,50 +1,38 @@
 <div class="grid grid-cols-12 gap-8">
-
     <div class="col-span-12 flex justify-between items-center">
         <div>
-            <p class="text-muted-color">Каждый сценарий — отдельный путь выбора поступления</p>
+            <p-message class="text-muted-color">{{ welcomeMessage }}</p-message>
         </div>
-        <a class="p-button p-button-primary" [routerLink]="['/pages/new-scenario']">+ Новый сценарий</a>
+        <p-button [routerLink]="['/pages/new-scenario']" icon="pi pi-pencil" label="Создать" pTooltip="Создать сценарий"></p-button>
     </div>
 
     @if (error) {
-        <div class="col-span-12 card bg-red-50 dark:bg-red-900/20 text-red-600 p-4">{{ error }}</div>
+    <div class="col-span-12 card bg-red-50 dark:bg-red-900/20 text-red-600 p-4">{{ error }}</div>
     }
 
     <div class="col-span-12">
         <div class="card">
             @if (loading) {
-                <div class="text-center text-muted-color py-8">Загрузка...</div>
+            <div class="text-center text-muted-color py-8">Загрузка...</div>
             } @else if (scenarios.length === 0) {
-                <div class="text-center text-muted-color py-6">
-                    У вас пока нет сценариев. Создайте первый сценарий поступления.
+            <div class="text-center text-muted-color py-6">У вас пока нет сценариев. Создайте первый сценарий поступления.</div>
+            } @else { @for (scenario of scenarios; track scenario.id) {
+            <div class="flex justify-between items-center py-4 border-b border-surface-200 dark:border-surface-700 last:border-b-0">
+                <div class="cursor-pointer flex-1" (click)="openScenario(scenario)">
+                    <div class="font-medium text-surface-900 dark:text-surface-0 p-1">{{ scenario.title }}</div>
+                    <div class="text-sm text-muted-color p-1">Цель: {{ goalLabel(scenario.goal) }}</div>
+                    <p-tag class="text-xs rounded" [icon]="getStatusIcon(scenario.status)" [severity]="getStatusStyle(scenario.status)" [value]="getStatusLabel(scenario.status)"></p-tag>
                 </div>
-            } @else {
-                @for (scenario of scenarios; track scenario.id) {
-                    <div class="flex justify-between items-center py-4 border-b border-surface-200 dark:border-surface-700 last:border-b-0">
-                        <div class="cursor-pointer flex-1" (click)="openScenario(scenario)">
-                            <div class="font-medium text-surface-900 dark:text-surface-0">{{ scenario.title }}</div>
-                            <div class="text-sm text-muted-color">Цель: {{ goalLabel(scenario.goal) }}</div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="px-2 py-1 text-xs rounded" [ngClass]="getStatusStyle(scenario.status)">
-                                {{ getStatusLabel(scenario.status) }}
-                            </span>
-                            @if (scenario.status === 'draft') {
-                                <button class="p-button p-button-text p-button-sm" (click)="openScenario(scenario)">Продолжить</button>
-                            } @else {
-                                <button class="p-button p-button-text p-button-sm" (click)="openScenario(scenario)">Результаты</button>
-                            }
-                            <button class="p-button p-button-text p-button-sm text-red-500"
-                                    (click)="deleteScenario(scenario.id, $event)"
-                                    [disabled]="deletingId === scenario.id">
-                                <i class="pi pi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                }
-            }
+                <div class="flex items-center gap-3">
+                    @if (scenario.status === 'draft') {
+                    <p-button icon="pi pi-pencil" (click)="openScenario(scenario)" pToolTip="Продолжить" rounded></p-button>
+                    } @else {
+                    <p-button icon="pi pi-eye" severity="success" (click)="openScenario(scenario)" pToolTip="Результаты" rounded></p-button>
+                    }
+                    <p-button class="text-red-500" icon="pi pi-trash" severity="danger" rounded (click)="deleteScenario(scenario.id, $event)" [disabled]="deletingId === scenario.id"> </p-button>
+                </div>
+            </div>
+            } }
         </div>
     </div>
-
 </div>

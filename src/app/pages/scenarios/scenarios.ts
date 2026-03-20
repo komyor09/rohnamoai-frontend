@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { NgClass } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { LayoutService } from '@/layout/service/layout.service';
 import { ScenariosService } from '@/core/services/scenarios.service';
@@ -8,12 +7,13 @@ import { Scenario } from '@/core/models';
 import { Button } from 'primeng/button';
 import { Message } from 'primeng/message';
 import { Tooltip } from 'primeng/tooltip';
-import { Card } from 'primeng/card';
 import { Tag } from 'primeng/tag';
+import { Chip } from 'primeng/chip';
+
 @Component({
     selector: 'app-scenarios',
     templateUrl: './scenarios.html',
-    imports: [NgClass, RouterLink, Button, Message, Tooltip, Card, Tag],
+    imports: [RouterLink, Button, Message, Tooltip, Tag, Chip],
     styleUrls: ['./scenarios.scss']
 })
 export class Scenarios implements OnInit {

@@ -1,5 +1,4 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { NgClass, DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { LayoutService } from '@/layout/service/layout.service';
 import { ScenariosService } from '@/core/services/scenarios.service';
@@ -12,7 +11,7 @@ import { Card } from 'primeng/card';
 import { Tag } from 'primeng/tag';
 @Component({
     selector: 'app-home',
-    imports: [NgClass, RouterLink, Button, Message, Tooltip, Card, Tag],
+    imports: [RouterLink, Button, Message, Tooltip, Card, Tag],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })

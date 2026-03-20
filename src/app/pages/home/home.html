@@ -1,150 +1,132 @@
-<div class="grid grid-cols-12 gap-8">
-
+<div class="grid grid-cols-12 gap-4">
     <div class="col-span-12 flex justify-between items-center">
         <div>
-            <p class="text-muted-color">Сравнивайте сценарии и принимайте осознанные решения о поступлении</p>
+            <p-message class="text-muted-color">{{ welcomeMessage }}</p-message>
         </div>
-        <a class="p-button" [routerLink]="['/pages/new-scenario']">+ Создать сценарий</a>
+        <p-button [routerLink]="['/pages/new-scenario']" icon="pi pi-pencil" label="Создать" pTooltip="Создать сценарий"></p-button>
     </div>
 
     @if (error) {
-        <div class="col-span-12">
-            <div class="card bg-red-50 dark:bg-red-900/20 text-red-600 p-4">{{ error }}</div>
-        </div>
-    }
-
-    @if (loading) {
-        <div class="col-span-12 text-center text-muted-color py-8">Загрузка...</div>
-    }
-
-    @if (!loading) {
-        <!-- KPI Cards -->
-        <div class="col-span-12">
-            <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-12 md:col-span-6 xl:col-span-3">
-                    <div class="card mb-0">
-                        <div class="flex justify-between mb-4">
-                            <div>
-                                <span class="block text-muted-color font-medium mb-4">Сценарии</span>
-                                <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ scenarios.length }}</div>
-                            </div>
-                            <div class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border" style="width:2.5rem;height:2.5rem;">
-                                <i class="pi pi-sitemap text-blue-500 text-xl!"></i>
-                            </div>
-                        </div>
-                        <span class="text-primary font-medium">{{ draftScenarios.length }} </span>
-                        <span class="text-muted-color">в процессе</span>
-                    </div>
-                </div>
-                <div class="col-span-12 md:col-span-6 xl:col-span-3">
-                    <div class="card mb-0">
-                        <div class="flex justify-between mb-4">
-                            <div>
-                                <span class="block text-muted-color font-medium mb-4">Завершено</span>
-                                <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ completedScenarios.length }}</div>
-                            </div>
-                            <div class="flex items-center justify-center bg-green-100 dark:bg-green-400/10 rounded-border" style="width:2.5rem;height:2.5rem;">
-                                <i class="pi pi-check-circle text-green-500 text-xl!"></i>
-                            </div>
-                        </div>
-                        <span class="text-primary font-medium">{{ completedScenarios.length }} </span>
-                        <span class="text-muted-color">с результатами</span>
-                    </div>
-                </div>
-                <div class="col-span-12 md:col-span-6 xl:col-span-3">
-                    <div class="card mb-0">
-                        <div class="flex justify-between mb-4">
-                            <div>
-                                <span class="block text-muted-color font-medium mb-4">Поисков в системе</span>
-                                <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ totalSearches }}</div>
-                            </div>
-                            <div class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/10 rounded-border" style="width:2.5rem;height:2.5rem;">
-                                <i class="pi pi-chart-line text-cyan-500 text-xl!"></i>
-                            </div>
-                        </div>
-                        <span class="text-muted-color">всего запросов</span>
-                    </div>
-                </div>
-                <div class="col-span-12 md:col-span-6 xl:col-span-3">
-                    <div class="card mb-0">
-                        <div class="flex justify-between mb-4">
-                            <div>
-                                <span class="block text-muted-color font-medium mb-4">Готовность</span>
-                                <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ readinessPercent }}%</div>
-                            </div>
-                            <div class="flex items-center justify-center bg-purple-100 dark:bg-purple-400/10 rounded-border" style="width:2.5rem;height:2.5rem;">
-                                <i class="pi pi-graduation-cap text-purple-500 text-xl!"></i>
-                            </div>
-                        </div>
-                        <span class="text-muted-color">завершённых сценариев</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Active Scenarios + Next Step -->
-        <div class="col-span-12 lg:col-span-8">
-            <div class="card">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="mb-0">Активные сценарии</h3>
-                    <a class="text-sm text-primary cursor-pointer" [routerLink]="['/pages/scenarios']">Все сценарии</a>
-                </div>
-                @if (scenarios.length === 0) {
-                    <div class="text-center text-muted-color py-6">
-                        У вас пока нет сценариев. <a class="text-primary cursor-pointer" [routerLink]="['/pages/new-scenario']">Создайте первый.</a>
-                    </div>
-                }
-                @for (s of scenarios; track s.id) {
-                    <div class="flex justify-between items-center py-3 border-b border-surface-200 dark:border-surface-700 last:border-b-0">
+    <div class="col-span-12">
+        <div class="card bg-red-50 dark:bg-red-900/20 text-red-600 p-4">{{ error }}</div>
+    </div>
+    } @if (loading) {
+    <div class="col-span-12 text-center text-muted-color py-8">Загрузка...</div>
+    } @if (!loading) {
+    <!-- KPI Cards -->
+    <div class="col-span-12">
+        <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-12 md:col-span-6 xl:col-span-3">
+                <div class="card mb-0">
+                    <div class="flex justify-between mb-4">
                         <div>
-                            <div class="font-medium text-surface-900 dark:text-surface-0">{{ s.title }}</div>
-                            <div class="text-sm text-muted-color">Цель: {{ goalLabel(s.goal) }}</div>
+                            <span class="block text-muted-color font-medium mb-4">Сценарии</span>
+                            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ scenarios.length }}</div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <span class="px-2 py-1 text-xs rounded" [ngClass]="statusClass(s.status)">
-                                {{ statusLabel(s.status) }}
-                            </span>
-                            @if (s.status === 'completed') {
-                                <a class="p-button p-button-text p-button-sm" [routerLink]="['/pages/scenario-results', s.id]">Результаты</a>
-                            } @else {
-                                <a class="p-button p-button-text p-button-sm" [routerLink]="['/pages/scenario-edit', s.id]">Продолжить</a>
-                            }
+                        <div class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                            <i class="pi pi-sitemap text-blue-500 text-xl!"></i>
                         </div>
                     </div>
-                }
+                    <span class="text-primary font-medium">{{ draftScenarios.length }} </span>
+                    <span class="text-muted-color">в процессе</span>
+                </div>
+            </div>
+            <div class="col-span-12 md:col-span-6 xl:col-span-3">
+                <div class="card mb-0">
+                    <div class="flex justify-between mb-4">
+                        <div>
+                            <span class="block text-muted-color font-medium mb-4">Завершено</span>
+                            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ completedScenarios.length }}</div>
+                        </div>
+                        <div class="flex items-center justify-center bg-green-100 dark:bg-green-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                            <i class="pi pi-check-circle text-green-500 text-xl!"></i>
+                        </div>
+                    </div>
+                    <span class="text-primary font-medium">{{ completedScenarios.length }} </span>
+                    <span class="text-muted-color">с результатами</span>
+                </div>
+            </div>
+            <div class="col-span-12 md:col-span-6 xl:col-span-3">
+                <div class="card mb-0">
+                    <div class="flex justify-between mb-4">
+                        <div>
+                            <span class="block text-muted-color font-medium mb-4">Поисков в системе</span>
+                            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ totalSearches }}</div>
+                        </div>
+                        <div class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                            <i class="pi pi-chart-line text-cyan-500 text-xl!"></i>
+                        </div>
+                    </div>
+                    <span class="text-muted-color">всего запросов</span>
+                </div>
+            </div>
+            <div class="col-span-12 md:col-span-6 xl:col-span-3">
+                <div class="card mb-0">
+                    <div class="flex justify-between mb-4">
+                        <div>
+                            <span class="block text-muted-color font-medium mb-4">Готовность</span>
+                            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ readinessPercent }}%</div>
+                        </div>
+                        <div class="flex items-center justify-center bg-purple-100 dark:bg-purple-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                            <i class="pi pi-graduation-cap text-purple-500 text-xl!"></i>
+                        </div>
+                    </div>
+                    <span class="text-muted-color">завершённых сценариев</span>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="col-span-12 lg:col-span-4">
-            <div class="card bg-primary-50 dark:bg-primary-900/20">
-                <div class="flex items-center gap-2 mb-2">
-                    <i class="pi pi-compass text-primary"></i>
-                    <h3 class="mb-0">Следующий шаг</h3>
-                </div>
-                @if (firstDraft) {
-                    <p class="text-sm text-surface-700 dark:text-surface-200 mb-3">
-                        Завершите сценарий <strong>«{{ firstDraft.title }}»</strong> чтобы получить рекомендации.
-                    </p>
-                    <a class="p-button p-button-sm w-full block text-center" [routerLink]="['/pages/scenario-edit', firstDraft.id]">
-                        Продолжить сценарий
-                    </a>
-                } @else if (scenarios.length === 0) {
-                    <p class="text-sm text-surface-700 dark:text-surface-200 mb-3">
-                        Создайте первый сценарий поступления, чтобы получить рекомендации.
-                    </p>
-                    <a class="p-button p-button-sm w-full block text-center" [routerLink]="['/pages/new-scenario']">
-                        Создать сценарий
-                    </a>
-                } @else {
-                    <p class="text-sm text-surface-700 dark:text-surface-200">
-                        Все сценарии завершены. Посмотрите результаты или создайте новый.
-                    </p>
-                }
-                <div class="mt-4 text-xs text-muted-color">
-                    Вы можете вернуться к сценарию в любое время.
-                </div>
+    <!-- Active Scenarios + Next Step -->
+    <div class="col-span-12 lg:col-span-8">
+        <div class="card">
+            <div class="flex justify-between items-center mb-4">
+                <h3>Активные сценарии</h3>
+                <p-button class="cursor-pointer" outlined icon="pi pi-arrow-right" [routerLink]="['/pages/scenarios']" label="Все сценарии"></p-button>
             </div>
+            @if (scenarios.length === 0) {
+            <p-message severity="warn"
+                >У вас пока нет сценариев.
+                <p-button [routerLink]="['/pages/new-scenario']" icon="pi pi-pencil" label="Создайте первый" text></p-button>
+            </p-message>
+            } @for (s of scenarios; track s.id) {
+            <p-card>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="font-medium text-surface-900 dark:text-surface-0">{{ s.title }}</div>
+                        <div class="text-sm text-muted-color">Цель: {{ goalLabel(s.goal) }}</div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <p-tag class="px-2 py-1 text-xs rounded" [severity]="statusClass(s.status)"> {{ statusLabel(s.status) }} </p-tag>
+                        @if (s.status === 'completed') {
+                        <p-button class="p-button p-button-text p-button-sm" [routerLink]="['/pages/scenario-results', s.id]" icon="pi pi-eye" text pTooltip="Результаты"></p-button>
+                        } @else {
+                        <p-button class="p-button p-button-text p-button-sm" [routerLink]="['/pages/scenario-edit', s.id]" icon="pi pi-pencil" text pTooltip="Продолжить"></p-button>
+                        }
+                    </div>
+                </div>
+            </p-card>
+            }
         </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-4">
+        <div class="card bg-primary-50 dark:bg-primary-900/20">
+            <div class="flex items-center gap-2 mb-1">
+                <i class="pi pi-compass text-primary text text-3xl!"></i>
+                <h3 class="mb-0">Следующий шаг</h3>
+            </div>
+            @if (firstDraft) {
+            <p class="text-sm text-surface-700 dark:text-surface-200 mb-3">Завершите сценарий <strong>«{{ firstDraft.title }}»</strong> чтобы получить рекомендации.</p>
+            <p-button class="w-full block text-center" [routerLink]="['/pages/scenario-edit', firstDraft.id]" icon="pi pi-pencil" label="Продолжить сценарий"></p-button>
+            } @else if (scenarios.length === 0) {
+            <p class="text-sm text-surface-700 dark:text-surface-200 mb-3">Создайте первый сценарий поступления, чтобы получить рекомендации.</p>
+            <p-button [routerLink]="['/pages/new-scenario']" icon="pi pi-pencil" label="Создать сценарий" pTooltip="Создать сценарий"></p-button>
+            } @else {
+            <p class="text-sm text-surface-700 dark:text-surface-200">Все сценарии завершены. Посмотрите результаты или создайте новый.</p>
+            }
+            <div class="mt-4 text-xs text-muted-color">Вы можете вернуться к сценарию в любое время.</div>
+        </div>
+    </div>
     }
-
 </div>

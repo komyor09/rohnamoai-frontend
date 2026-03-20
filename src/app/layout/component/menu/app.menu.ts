@@ -18,7 +18,7 @@ export class AppMenu {
             {
                 label: 'Навигация',
                 items: [
-                    { label: 'Дашборд', icon: 'pi pi-fw pi-home', routerLink: ['/pages/home'] },
+                    { label: 'Главная', icon: 'pi pi-fw pi-home', routerLink: ['/pages/home'] },
                     { label: 'Мои сценарии', icon: 'pi pi-fw pi-list', routerLink: ['/pages/scenarios'] },
                     { label: 'Создать сценарий', icon: 'pi pi-fw pi-plus-circle', routerLink: ['/pages/new-scenario'] },
                     { label: 'Сравнение', icon: 'pi pi-fw pi-arrow-right-arrow-left', routerLink: ['/pages/comparison-scenarios'] },

@@ -1,132 +1,298 @@
-<div class="grid grid-cols-12 gap-4">
-    <div class="col-span-12 flex justify-between items-center">
+<div class="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
+
+    <!-- HERO -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <p-message class="text-muted-color">{{ welcomeMessage }}</p-message>
+            <h1 class="text-2xl font-semibold">Твои сценарии поступления</h1>
+            <p class="text-sm text-muted-color mt-1">
+                Управляй сценариями и принимай решения осознанно
+            </p>
         </div>
-        <p-button [routerLink]="['/pages/new-scenario']" icon="pi pi-pencil" label="Создать" pTooltip="Создать сценарий"></p-button>
+
+        <p-button
+            [routerLink]="['/pages/new-scenario']"
+            class="w-full md:w-auto"
+            icon="pi pi-plus"
+            label="Создать сценарий"
+        />
     </div>
 
-    @if (error) {
-    <div class="col-span-12">
-        <div class="card bg-red-50 dark:bg-red-900/20 text-red-600 p-4">{{ error }}</div>
-    </div>
-    } @if (loading) {
-    <div class="col-span-12 text-center text-muted-color py-8">Загрузка...</div>
-    } @if (!loading) {
-    <!-- KPI Cards -->
-    <div class="col-span-12">
-        <div class="grid grid-cols-12 gap-4">
-            <div class="col-span-12 md:col-span-6 xl:col-span-3">
-                <div class="card mb-0">
-                    <div class="flex justify-between mb-4">
-                        <div>
-                            <span class="block text-muted-color font-medium mb-4">Сценарии</span>
-                            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ scenarios.length }}</div>
-                        </div>
-                        <div class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
-                            <i class="pi pi-sitemap text-blue-500 text-xl!"></i>
-                        </div>
-                    </div>
-                    <span class="text-primary font-medium">{{ draftScenarios.length }} </span>
-                    <span class="text-muted-color">в процессе</span>
-                </div>
-            </div>
-            <div class="col-span-12 md:col-span-6 xl:col-span-3">
-                <div class="card mb-0">
-                    <div class="flex justify-between mb-4">
-                        <div>
-                            <span class="block text-muted-color font-medium mb-4">Завершено</span>
-                            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ completedScenarios.length }}</div>
-                        </div>
-                        <div class="flex items-center justify-center bg-green-100 dark:bg-green-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
-                            <i class="pi pi-check-circle text-green-500 text-xl!"></i>
-                        </div>
-                    </div>
-                    <span class="text-primary font-medium">{{ completedScenarios.length }} </span>
-                    <span class="text-muted-color">с результатами</span>
-                </div>
-            </div>
-            <div class="col-span-12 md:col-span-6 xl:col-span-3">
-                <div class="card mb-0">
-                    <div class="flex justify-between mb-4">
-                        <div>
-                            <span class="block text-muted-color font-medium mb-4">Поисков в системе</span>
-                            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ totalSearches }}</div>
-                        </div>
-                        <div class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
-                            <i class="pi pi-chart-line text-cyan-500 text-xl!"></i>
-                        </div>
-                    </div>
-                    <span class="text-muted-color">всего запросов</span>
-                </div>
-            </div>
-            <div class="col-span-12 md:col-span-6 xl:col-span-3">
-                <div class="card mb-0">
-                    <div class="flex justify-between mb-4">
-                        <div>
-                            <span class="block text-muted-color font-medium mb-4">Готовность</span>
-                            <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ readinessPercent }}%</div>
-                        </div>
-                        <div class="flex items-center justify-center bg-purple-100 dark:bg-purple-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
-                            <i class="pi pi-graduation-cap text-purple-500 text-xl!"></i>
-                        </div>
-                    </div>
-                    <span class="text-muted-color">завершённых сценариев</span>
-                </div>
-            </div>
+    <!-- ERROR -->
+    @if (state.error) {
+        <div class="py-1">
+            <p-message severity="error">{{ state.error }}</p-message>
         </div>
-    </div>
+    } @else {
+        <!-- LOADING -->
+        @if (state.loading) {
+            <div class="text-center py-10 text-muted-color">
+                Загрузка данных...
+            </div>
+        }
 
-    <!-- Active Scenarios + Next Step -->
-    <div class="col-span-12 lg:col-span-8">
-        <div class="card">
-            <div class="flex justify-between items-center mb-4">
-                <h3>Активные сценарии</h3>
-                <p-button class="cursor-pointer" outlined icon="pi pi-arrow-right" [routerLink]="['/pages/scenarios']" label="Все сценарии"></p-button>
-            </div>
-            @if (scenarios.length === 0) {
-            <p-message severity="warn"
-                >У вас пока нет сценариев.
-                <p-button [routerLink]="['/pages/new-scenario']" icon="pi pi-pencil" label="Создайте первый" text></p-button>
-            </p-message>
-            } @for (s of scenarios; track s.id) {
-            <p-card>
-                <div class="flex justify-between items-center">
-                    <div>
-                        <div class="font-medium text-surface-900 dark:text-surface-0">{{ s.title }}</div>
-                        <div class="text-sm text-muted-color">Цель: {{ goalLabel(s.goal) }}</div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <p-tag class="px-2 py-1 text-xs rounded" [severity]="statusClass(s.status)"> {{ statusLabel(s.status) }} </p-tag>
-                        @if (s.status === 'completed') {
-                        <p-button [routerLink]="['/pages/scenario-results', s.id]" icon="pi pi-eye" outlined rounded pTooltip="Результаты" ></p-button>
-                        } @else {
-                        <p-button [routerLink]="['/pages/scenario-edit', s.id]" icon="pi pi-pencil" outlined rounded pTooltip="Продолжить"></p-button>
-                        }
-                    </div>
-                </div>
-            </p-card>
-            }
-        </div>
-    </div>
+        @if (!state.loading) {
 
-    <div class="col-span-12 lg:col-span-4">
-        <div class="card bg-primary-50 dark:bg-primary-900/20">
-            <div class="flex items-center gap-2 mb-1">
-                <i class="pi pi-compass text-primary text text-3xl!"></i>
-                <h3 class="mb-0">Следующий шаг</h3>
+            <!-- KPI -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+
+                <!-- СЦЕНАРИИ -->
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="flex items-center gap-2 px-4 py-3 border-b">
+                            <i class="pi pi-sitemap text-blue-500"></i>
+                            <span class="font-semibold">Сценарии</span>
+                        </div>
+                    </ng-template>
+
+                    <div class="p-4 flex items-center justify-between">
+
+                        <div>
+                            <div class="text-sm text-muted-color">Всего сценарий</div>
+                            <div class="text-xl font-semibold">
+                                {{ state.scenarios.length }}
+                            </div>
+                        </div>
+
+                        <i class="pi pi-chart-bar !text-2xl text-blue-500"></i>
+
+                    </div>
+
+                </p-card>
+
+                <!-- ЧЕРНОВИКИ -->
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="flex items-center gap-2 px-4 py-3 border-b">
+                            <i class="pi pi-pencil text-orange-500"></i>
+                            <span class="font-semibold">Черновики</span>
+                        </div>
+                    </ng-template>
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="px-3 py-3">
+                            <div class="text-lg md:text-xl font-semibold">
+                                {{ draftCount }}
+                            </div>
+                        </div>
+                        <i class="pi pi-pencil !text-2xl text-orange-500"></i>
+                    </div>
+                </p-card>
+
+
+                <!-- ЗАВЕРШЕНО -->
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="flex items-center gap-2 px-4 py-3 border-b">
+                            <i class="pi pi-check-circle text-green-500"></i>
+                            <span class="font-semibold">Завершено</span>
+                        </div>
+                    </ng-template>
+                    <div class="p-4 flex items-center justify-between">
+
+                        <div class="px-3 py-3">
+                            <div class="text-lg md:text-xl font-semibold">
+                                {{ completedCount }}
+                            </div>
+                        </div>
+                        <i class="pi pi-check-circle !text-2xl text-green-500"></i>
+                    </div>
+                </p-card>
+
+
+                <!-- ГОТОВНОСТЬ -->
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="flex items-center gap-2 px-4 py-3 border-b">
+                            <i class="pi pi-chart-bar text-purple-500"></i>
+                            <span class="font-semibold">Готовность</span>
+                        </div>
+                    </ng-template>
+                    <div class="p-4 flex items-center justify-between">
+
+                        <div class="px-3 pb-3">
+                            <div class="text-lg font-semibold mb-2">{{ readiness }}%</div>
+                            <div class="h-2 bg-surface-200 rounded">
+                                <div
+                                    [style.width.%]="readiness"
+                                    class="h-2 bg-purple-500 rounded">
+                                </div>
+                            </div>
+                        </div>
+                        <i class="pi pi-chart-bar !text-2xl text-purple-500"></i>
+                    </div>
+                </p-card>
+
             </div>
-            @if (firstDraft) {
-            <p class="text-sm text-surface-700 dark:text-surface-200 mb-3">Завершите сценарий <strong>«{{ firstDraft.title }}»</strong> чтобы получить рекомендации.</p>
-            <p-button class="w-full block text-center" [routerLink]="['/pages/scenario-edit', firstDraft.id]" icon="pi pi-pencil" label="Продолжить сценарий"></p-button>
-            } @else if (scenarios.length === 0) {
-            <p class="text-sm text-surface-700 dark:text-surface-200 mb-3">Создайте первый сценарий поступления, чтобы получить рекомендации.</p>
-            <p-button [routerLink]="['/pages/new-scenario']" icon="pi pi-pencil" label="Создать сценарий" pTooltip="Создать сценарий"></p-button>
-            } @else {
-            <p class="text-sm text-surface-700 dark:text-surface-200">Все сценарии завершены. Посмотрите результаты или создайте новый.</p>
-            }
-            <div class="mt-4 text-xs text-muted-color">Вы можете вернуться к сценарию в любое время.</div>
-        </div>
-    </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- SCENARIOS -->
+                <div class="lg:col-span-2">
+
+                    <p-card>
+
+                        <!-- HEADER -->
+                        <ng-template pTemplate="header">
+                            <div class="flex items-center justify-between px-4 py-3 border-b">
+                                <h2 class="text-lg font-semibold">Сценарии</h2>
+
+                                <p-button
+                                    [routerLink]="['/pages/scenarios']"
+                                    label="Все"
+                                    size="small"
+                                    text
+                                />
+                            </div>
+                        </ng-template>
+
+                        <!-- CONTENT -->
+                        <div class="flex flex-col divide-y">
+
+                            @if (state.scenarios.length === 0) {
+                                <div class="p-6 text-center">
+                                    <p class="text-muted-color mb-4">
+                                        У тебя пока нет сценариев
+                                    </p>
+
+                                    <p-button
+                                        [routerLink]="['/pages/new-scenario']"
+                                        icon="pi pi-plus"
+                                        label="Создать"
+                                    />
+                                </div>
+                            }
+
+                            @for (s of state.scenarios; track s.id) {
+
+                                <div
+                                    class="p-4 flex items-center justify-between hover:bg-surface-50 dark:hover:bg-surface-800 transition">
+
+                                    <div>
+                                        <div class="font-medium">{{ s.title }}</div>
+                                        <div class="text-sm text-muted-color">{{ s.goal }}</div>
+                                    </div>
+
+                                    <div class="flex items-center gap-3">
+
+                                        <p-tag
+                                            [severity]="s.status === 'completed' ? 'success' : 'warn'"
+                                            [value]="s.status === 'completed' ? 'Готово' : 'Черновик'"
+                                        />
+
+                                        <p-button
+                                            [routerLink]="[
+                                    s.status === 'completed'
+                                    ? '/pages/scenario-results'
+                                    : '/pages/scenario-edit',
+                                    s.id
+                                ]"
+                                            icon="pi pi-arrow-right"
+                                            rounded
+                                            text
+                                        />
+
+                                    </div>
+
+                                </div>
+
+                            }
+
+                        </div>
+
+                    </p-card>
+
+                </div>
+
+
+                <!-- RIGHT PANEL -->
+                <div class="space-y-4 lg:sticky lg:top-6 h-fit">
+
+                    <!-- NEXT STEP -->
+                    <p-card>
+
+                        <ng-template pTemplate="header">
+                            <div class="flex items-center gap-2 px-4 py-3 border-b">
+                                <i class="pi pi-compass text-primary"></i>
+                                <span class="font-semibold">Следующий шаг</span>
+                            </div>
+                        </ng-template>
+
+                        <div class="p-4 space-y-4">
+
+                            @if (firstDraft) {
+
+                                <div class="text-sm text-muted-color">
+                                    Продолжи сценарий <b>{{ firstDraft.title }}</b>
+                                </div>
+
+                                <p-button
+                                    [routerLink]="['/pages/scenario-edit', firstDraft.id]"
+                                    class="w-full"
+                                    icon="pi pi-play"
+                                    label="Продолжить"
+                                />
+
+                            } @else if (state.scenarios.length === 0) {
+
+                                <div class="text-sm text-muted-color">
+                                    Начни с первого сценария
+                                </div>
+
+                                <p-button
+                                    [routerLink]="['/pages/new-scenario']"
+                                    class="w-full"
+                                    icon="pi pi-plus"
+                                    label="Создать сценарий"
+                                />
+
+                            } @else {
+
+                                <div class="text-sm text-muted-color">
+                                    Все сценарии завершены
+                                </div>
+
+                                <p-button
+                                    [routerLink]="['/pages/scenarios']"
+                                    class="w-full"
+                                    label="Посмотреть результаты"
+                                    outlined
+                                />
+
+                            }
+
+                        </div>
+
+                    </p-card>
+
+
+                    <!-- ANALYTICS -->
+                    <p-card>
+
+                        <ng-template pTemplate="header">
+                            <div class="flex items-center gap-2 px-4 py-3 border-b">
+                                <i class="pi pi-chart-line text-blue-500"></i>
+                                <span class="font-semibold">Аналитика</span>
+                            </div>
+                        </ng-template>
+
+                        <div class="p-4 flex items-center justify-between">
+
+                            <div>
+                                <div class="text-sm text-muted-color">Всего поисков</div>
+                                <div class="text-xl font-semibold">
+                                    {{ state.totalSearches }}
+                                </div>
+                            </div>
+
+                            <i class="pi pi-chart-bar text-2xl text-blue-500"></i>
+
+                        </div>
+
+                    </p-card>
+
+                </div>
+
+            </div>
+
+        }
     }
 </div>

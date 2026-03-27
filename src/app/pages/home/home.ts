@@ -6,72 +6,80 @@ import { AnalyticsService } from '@/core/services/analytics.service';
 import { Scenario } from '@/core/models';
 import { Button } from 'primeng/button';
 import { Message } from 'primeng/message';
-import { Tooltip } from 'primeng/tooltip';
-import { Card } from 'primeng/card';
 import { Tag } from 'primeng/tag';
+import { Card } from 'primeng/card';
+import { PrimeTemplate } from 'primeng/api';
+
+interface HomeState {
+    scenarios: Scenario[];
+    totalSearches: number;
+    loading: boolean;
+    error: string | null;
+}
+
 @Component({
     selector: 'app-home',
-    imports: [RouterLink, Button, Message, Tooltip, Card, Tag],
-    templateUrl: './home.html',
-    styleUrl: './home.scss'
+    standalone: true,
+    imports: [RouterLink, Button, Message, Tag, Card, PrimeTemplate],
+    templateUrl: './home.html'
 })
 export class Home implements OnInit, OnDestroy {
     private layoutService = inject(LayoutService);
     private scenariosService = inject(ScenariosService);
     private analyticsService = inject(AnalyticsService);
 
-    scenarios: Scenario[] = [];
-    totalSearches = 0;
-    loading = true;
-    error: string | null = null;
+    state: HomeState = {
+        scenarios: [],
+        totalSearches: 0,
+        loading: true,
+        error: null
+    };
 
     userName = 'Комёр';
-    welcomeMessage = 'Сравнивайте сценарии и принимайте осознанные решения о поступлении';
-    get completedScenarios(): Scenario[] {
-        return this.scenarios.filter((s) => s.status === 'completed');
-    }
-    get draftScenarios(): Scenario[] {
-        return this.scenarios.filter((s) => s.status === 'draft');
-    }
-    get firstDraft(): Scenario | null {
-        return this.draftScenarios[0] ?? null;
-    }
-    get readinessPercent(): number {
-        return this.scenarios.length === 0 ? 0 : Math.round((this.completedScenarios.length / this.scenarios.length) * 100);
-    }
-
-    goalLabel(goal: string): string {
-        const map: Record<string, string> = { budget: 'Бюджет', prestige: 'Престиж', job: 'Трудоустройство', location: 'Локация' };
-        return map[goal] ?? goal;
-    }
-    statusLabel(s: string): string {
-        return s === 'completed' ? 'Завершён' : 'Черновик';
-    }
-    statusClass(s: string): string {
-        return s === 'completed' ? 'success' : 'warn';
-    }
 
     constructor() {
-        this.layoutService.setTitlePage('Добро пожаловать, ' + this.userName + '!');
+        this.layoutService.setTitlePage(`Добро пожаловать, ${this.userName}`);
         this.layoutService.setTransparentBackground(true);
     }
 
     ngOnInit(): void {
+        this.loadData();
+    }
+
+    private loadData() {
         this.scenariosService.list().subscribe({
             next: (data) => {
-                this.scenarios = data;
-                this.loading = false;
+                this.state.scenarios = data;
+                this.state.loading = false;
             },
             error: () => {
-                this.error = 'Не удалось загрузить данные';
-                this.loading = false;
+                this.state.error = 'Ошибка загрузки';
+                this.state.loading = false;
             }
         });
+
         this.analyticsService.getOverview().subscribe({
             next: (data) => {
-                this.totalSearches = data.total_searches;
+                this.state.totalSearches = data.total_searches;
             }
         });
+    }
+
+    get completedCount(): number {
+        return this.state.scenarios.filter((s) => s.status === 'completed').length;
+    }
+
+    get draftCount(): number {
+        return this.state.scenarios.filter((s) => s.status === 'draft').length;
+    }
+
+    get firstDraft(): Scenario | null {
+        return this.state.scenarios.find((s) => s.status === 'draft') ?? null;
+    }
+
+    get readiness(): number {
+        const total = this.state.scenarios.length;
+        return total === 0 ? 0 : Math.round((this.completedCount / total) * 100);
     }
 
     ngOnDestroy(): void {

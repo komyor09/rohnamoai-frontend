@@ -1,32 +1,46 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { LayoutService } from '@/layout/service/layout.service';
 import { ScenariosService } from '@/core/services/scenarios.service';
 import { Scenario } from '@/core/models';
 
 import { Button } from 'primeng/button';
-import { Message } from 'primeng/message';
-import { Tooltip } from 'primeng/tooltip';
 import { Tag } from 'primeng/tag';
-import { Chip } from 'primeng/chip';
+import { FormsModule } from '@angular/forms';
+import { InputText } from 'primeng/inputtext';
+import { TableModule } from 'primeng/table';
+import { Toolbar } from 'primeng/toolbar';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
+import { SelectButton } from 'primeng/selectbutton';
+import { Card } from 'primeng/card';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
     selector: 'app-scenarios',
     templateUrl: './scenarios.html',
-    imports: [RouterLink, Button, Message, Tooltip, Tag, Chip],
+    imports: [Button, Tag, FormsModule, InputText, TableModule, Toolbar, IconField, InputIcon, SelectButton, Card, Tooltip],
     styleUrls: ['./scenarios.scss']
 })
 export class Scenarios implements OnInit {
-    private layoutService = inject(LayoutService);
+    protected layoutService = inject(LayoutService);
     private scenariosService = inject(ScenariosService);
     private router = inject(Router);
 
+    isMobile = this.layoutService.isMobile;
     scenarios: Scenario[] = [];
     loading = true;
     error: string | null = null;
     deletingId: number | null = null;
 
-    welcomeMessage = 'Каждый сценарий — отдельный путь выбора поступления';
+    filterOptions = [
+        { label: 'Все', value: 'all' },
+        { label: 'Черновики', value: 'draft' },
+        { label: 'Завершённые', value: 'completed' }
+    ];
+
+    filter: string = 'all';
+    search = '';
 
     constructor() {
         this.layoutService.setTitlePage('Мои сценарии');
@@ -88,5 +102,14 @@ export class Scenarios implements OnInit {
 
     getStatusIcon(status: string): string {
         return status === 'completed' ? 'pi pi-check' : 'pi pi-clock';
+    }
+
+    get filtered(): Scenario[] {
+        return this.scenarios
+            .filter((s) => {
+                if (this.filter === 'all') return true;
+                return s.status === this.filter;
+            })
+            .filter((s) => s.title.toLowerCase().includes(this.search.toLowerCase()));
     }
 }

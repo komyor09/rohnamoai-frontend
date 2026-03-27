@@ -7,6 +7,7 @@ export interface layoutConfig {
     surface?: string | undefined | null;
     darkTheme?: boolean;
     menuMode?: string;
+    mobile?: boolean;
 }
 
 interface LayoutState {
@@ -33,7 +34,8 @@ export class LayoutService {
         primary: 'blue',
         surface: null,
         darkTheme: window.matchMedia('(prefers-color-scheme: dark)').matches,
-        menuMode: 'static'
+        menuMode: 'static',
+        mobile: false
     };
 
     _state: LayoutState = {
@@ -78,6 +80,11 @@ export class LayoutService {
 
     isOverlay = computed(() => this.layoutConfig().menuMode === 'overlay');
 
+    private _isMobile = signal(window.innerWidth <= 991);
+
+    isMobile = this._isMobile.asReadonly();
+    isDesktop = () => !this._isMobile();
+
     transitionComplete = signal<boolean>(false);
 
     private initialized = false;
@@ -109,6 +116,14 @@ export class LayoutService {
                 }));
             });
         }
+
+        const media = window.matchMedia('(max-width: 991px)');
+
+        this._isMobile.set(media.matches);
+
+        media.addEventListener('change', (e) => {
+            this._isMobile.set(e.matches);
+        });
     }
 
     private handleDarkModeTransition(config: layoutConfig): void {
@@ -168,13 +183,13 @@ export class LayoutService {
         }
     }
 
-    isDesktop() {
-        return window.innerWidth > 991;
-    }
-
-    isMobile() {
-        return !this.isDesktop();
-    }
+    // isDesktop() {
+    //     return window.innerWidth > 991;
+    // }
+    //
+    // isMobile() {
+    //     return !this.isDesktop();
+    // }
 
     onConfigUpdate() {
         this._config = { ...this.layoutConfig() };

@@ -3,21 +3,30 @@
     <!-- Identity Card -->
     <div class="col-span-12">
         <div class="card">
-            <div class="flex items-center gap-4 mb-4">
-                <div class="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white text-xl font-bold">
-                    <i class="pi pi-user"></i>
+            @if (user()) {
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white text-xl font-bold">
+                        {{ user()!.email ? user()!.email![0].toUpperCase() : '?' }}
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-semibold">{{ user()!.email }}</h2>
+                        <div class="text-xs text-muted-color">
+                            План:
+                            <span class="font-medium"
+                                  [class.text-primary]="user()!.plan === 'pro'"
+                                  [class.text-surface-600]="user()!.plan === 'free'">
+                                {{ user()!.plan === 'pro' ? 'Pro' : 'Free' }}
+                            </span>
+                        </div>
+                    </div>
+                    <button class="p-button p-button-outlined p-button-sm ml-auto text-red-500 border-red-300"
+                            (click)="logout()">
+                        <i class="pi pi-sign-out mr-1"></i>Выйти
+                    </button>
                 </div>
-                <div>
-                    <h2 class="text-lg font-semibold">Анонимный пользователь</h2>
-                    <div class="text-xs text-muted-color font-mono truncate max-w-xs">{{ uuid }}</div>
-                </div>
-                <button class="p-button p-button-text p-button-sm ml-auto" (click)="copyUuid()" title="Скопировать UUID">
-                    <i class="pi pi-copy"></i>
-                </button>
-            </div>
-            <div class="text-xs text-muted-color">
-                Ваш UUID используется для идентификации. Сохраните его, если хотите восстановить доступ.
-            </div>
+            } @else {
+                <div class="text-muted-color">Загрузка...</div>
+            }
         </div>
     </div>
 
@@ -58,16 +67,18 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-xs px-2 py-1 rounded"
-                                  [class.bg-green-100]="s.status === 'completed'"
-                                  [class.text-green-600]="s.status === 'completed'"
-                                  [class.bg-orange-100]="s.status === 'draft'"
-                                  [class.text-orange-600]="s.status === 'draft'">
-                                {{ s.status === 'completed' ? 'Завершён' : 'Черновик' }}
+                                  [class.bg-green-100]="statusIsCompleted(s.status)"
+                                  [class.text-green-600]="statusIsCompleted(s.status)"
+                                  [class.bg-orange-100]="!statusIsCompleted(s.status)"
+                                  [class.text-orange-600]="!statusIsCompleted(s.status)">
+                                {{ statusLabel(s.status) }}
                             </span>
-                            @if (s.status === 'completed') {
-                                <a class="p-button p-button-text p-button-sm" [routerLink]="['/pages/scenario-results', s.id]">Открыть</a>
+                            @if (statusIsCompleted(s.status)) {
+                                <a class="p-button p-button-text p-button-sm"
+                                   [routerLink]="['/pages/scenario-results', s.id]">Открыть</a>
                             } @else {
-                                <a class="p-button p-button-text p-button-sm" [routerLink]="['/pages/scenario-edit', s.id]">Продолжить</a>
+                                <a class="p-button p-button-text p-button-sm"
+                                   [routerLink]="['/pages/scenario-edit', s.id]">Продолжить</a>
                             }
                         </div>
                     </div>
@@ -82,9 +93,15 @@
             <div class="flex justify-between items-center">
                 <div>
                     <h3 class="mb-1">Тарифный план</h3>
-                    <div class="text-muted-color text-sm">Текущий план: <strong>Free</strong> · до 3 сценариев</div>
+                    <div class="text-muted-color text-sm">
+                        Текущий план:
+                        <strong>{{ plan() === 'pro' ? 'Pro' : 'Free' }}</strong>
+                        · до {{ plan() === 'pro' ? '10' : '3' }} сценариев
+                    </div>
                 </div>
-                <a class="p-button p-button-sm" routerLink="/pages/pricing">Обновить план</a>
+                <a class="p-button p-button-sm" routerLink="/pages/pricing">
+                    Обновить план
+                </a>
             </div>
         </div>
     </div>

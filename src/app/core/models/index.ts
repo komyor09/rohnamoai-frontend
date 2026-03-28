@@ -110,3 +110,39 @@ export interface DialogResponse {
     priority: string;
   };
 }
+
+// ─── Auth ─────────────────────────────────────────────────────────────────
+export interface AuthUser {
+  id: number;
+  uuid: string;
+  email: string | null;
+  language: string;
+  plan: 'free' | 'pro';
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+}
+
+export interface TokenResponse {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  data?: TokenResponse;
+  message?: string;
+}
+
+export interface MeResponse {
+  success: boolean;
+  data?: AuthUser;
+}

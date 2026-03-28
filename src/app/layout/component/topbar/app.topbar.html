@@ -3,7 +3,7 @@
         <button (click)="layoutService.onMenuToggle()" class="layout-menu-button layout-topbar-action">
             <i class="pi pi-bars"></i>
         </button>
-        <a class="layout-topbar-logo" routerLink="/">
+        <a class="layout-topbar-logo" routerLink="/pages/home">
             <img alt="logo" class="mb-2" height="54" src="/svgs/logo.svg" width="40" />
             <span>RohnamoAI</span>
         </a>
@@ -22,26 +22,33 @@
                     enterFromClass="hidden"
                     leaveActiveClass="animate-fadeout"
                     leaveToClass="hidden"
-                    pStyleClass="@next"
-                >
+                    pStyleClass="@next">
                     <i class="pi pi-palette"></i>
                 </button>
-
                 <app-configurator />
             </div>
-
-
         </div>
 
-        <button [hideOnOutsideClick]="true" class="layout-topbar-menu-button layout-topbar-action"
-                enterActiveClass="animate-scalein"
-                enterFromClass="hidden" leaveActiveClass="animate-fadeout" leaveToClass="hidden"
-                pStyleClass="@next">
+        <button
+            [hideOnOutsideClick]="true"
+            class="layout-topbar-menu-button layout-topbar-action"
+            enterActiveClass="animate-scalein"
+            enterFromClass="hidden"
+            leaveActiveClass="animate-fadeout"
+            leaveToClass="hidden"
+            pStyleClass="@next">
             <i class="pi pi-ellipsis-v"></i>
         </button>
 
         <div class="layout-topbar-menu hidden lg:block">
             <div class="layout-topbar-menu-content">
+
+                <!-- User email badge -->
+                @if (user()) {
+                    <span class="text-sm text-muted-color px-2 hidden xl:inline">
+                        {{ user()!.email }}
+                    </span>
+                }
 
                 <!-- Profile -->
                 <button
@@ -50,31 +57,20 @@
                     routerLinkActive="layout-topbar-action-active"
                     type="button">
                     <i class="pi pi-user"></i>
-                    <span>Profile</span>
+                    <span>Профиль</span>
                 </button>
 
-<!--                &lt;!&ndash; Pricing &ndash;&gt;-->
-<!--                <button-->
-<!--                    class="layout-topbar-action"-->
-<!--                    routerLink="/pricing"-->
-<!--                    routerLinkActive="layout-topbar-action-active"-->
-<!--                    type="button">-->
-<!--                    <i class="pi pi-wallet"></i>-->
-<!--                    <span>Pricing</span>-->
-<!--                </button>-->
-
-<!--                &lt;!&ndash; Support &ndash;&gt;-->
-<!--                <button-->
-<!--                    class="layout-topbar-action"-->
-<!--                    routerLink="/support"-->
-<!--                    routerLinkActive="layout-topbar-action-active"-->
-<!--                    type="button">-->
-<!--                    <i class="pi pi-question-circle"></i>-->
-<!--                    <span>Support</span>-->
-<!--                </button>-->
+                <!-- Logout -->
+                <button
+                    class="layout-topbar-action"
+                    (click)="logout()"
+                    type="button"
+                    title="Выйти">
+                    <i class="pi pi-sign-out"></i>
+                    <span>Выйти</span>
+                </button>
 
             </div>
         </div>
-
     </div>
 </div>

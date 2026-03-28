@@ -4,44 +4,56 @@ import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
+// Эндпоинты, которым НЕ нужен Bearer токен
+const PUBLIC_ENDPOINTS = [
+    '/auth/login',
+    '/auth/register',
+    '/auth/refresh',
+];
+
+function isPublic(url: string): boolean {
+    return PUBLIC_ENDPOINTS.some((e) => url.includes(e));
+}
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-    const authService = inject(AuthService);
+    // Получаем токен напрямую из localStorage — без inject(AuthService)
+    // чтобы избежать circular dependency при инициализации
+    const token = localStorage.getItem('rohnamo_access_token');
     const router = inject(Router);
 
-    // Skip auth header for auth endpoints themselves
-    const isAuthEndpoint =
-        req.url.includes('/auth/login') ||
-        req.url.includes('/auth/register') ||
-        req.url.includes('/auth/refresh');
+    // /auth/me в конструкторе передаёт заголовок вручную — не дублируем
+    const alreadyHasAuth = req.headers.has('Authorization');
 
-    const token = authService.getAccessToken();
-
-    const authReq = token && !isAuthEndpoint
-        ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
-        : req;
+    const authReq =
+        token && !isPublic(req.url) && !alreadyHasAuth
+            ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+            : req;
 
     return next(authReq).pipe(
         catchError((err: HttpErrorResponse) => {
-            if (err.status === 401 && !isAuthEndpoint) {
-                const refresh = authService.getRefreshToken();
-                if (refresh) {
-                    // Try to refresh once, then retry original request
+            if (err.status === 401 && !isPublic(req.url)) {
+                const refreshToken = localStorage.getItem('rohnamo_refresh_token');
+                if (refreshToken) {
+                    // Инжектим AuthService только здесь — не при создании
+                    const authService = inject(AuthService);
                     return authService.refreshToken().pipe(
                         switchMap(() => {
-                            const newToken = authService.getAccessToken();
+                            const newToken = localStorage.getItem('rohnamo_access_token');
                             const retried = req.clone({
                                 setHeaders: { Authorization: `Bearer ${newToken}` },
                             });
                             return next(retried);
                         }),
                         catchError((refreshErr) => {
-                            authService.clearTokens();
+                            localStorage.removeItem('rohnamo_access_token');
+                            localStorage.removeItem('rohnamo_refresh_token');
                             router.navigate(['/auth/login']);
                             return throwError(() => refreshErr);
                         }),
                     );
                 }
-                authService.clearTokens();
+                localStorage.removeItem('rohnamo_access_token');
+                localStorage.removeItem('rohnamo_refresh_token');
                 router.navigate(['/auth/login']);
             }
             return throwError(() => err);

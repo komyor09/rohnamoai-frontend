@@ -11,22 +11,22 @@
 
     <div class="layout-topbar-actions">
         <div class="layout-config-menu">
-            <button (click)="toggleDarkMode()" class="layout-topbar-action" type="button">
+            <p-button (click)="toggleDarkMode()" class="layout-topbar-action" rounded text>
                 <i [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
-            </button>
-            <div class="relative">
-                <button
-                    [hideOnOutsideClick]="true"
-                    class="layout-topbar-action layout-topbar-action-highlight"
-                    enterActiveClass="animate-scalein"
-                    enterFromClass="hidden"
-                    leaveActiveClass="animate-fadeout"
-                    leaveToClass="hidden"
-                    pStyleClass="@next">
-                    <i class="pi pi-palette"></i>
-                </button>
-                <app-configurator />
-            </div>
+            </p-button>
+            <!--      <div class="relative">-->
+            <!--                <button-->
+            <!--                    [hideOnOutsideClick]="true"-->
+            <!--                    class="layout-topbar-action layout-topbar-action-highlight"-->
+            <!--                    enterActiveClass="animate-scalein"-->
+            <!--                    enterFromClass="hidden"-->
+            <!--                    leaveActiveClass="animate-fadeout"-->
+            <!--                    leaveToClass="hidden"-->
+            <!--                    pStyleClass="@next">-->
+            <!--                    <i class="pi pi-palette"></i>-->
+            <!--                </button>-->
+            <!--                <app-configurator />-->
+            <!--            </div>-->
         </div>
 
         <button
@@ -43,29 +43,39 @@
         <div class="layout-topbar-menu hidden lg:block">
             <div class="layout-topbar-menu-content">
 
-                <!-- User email badge -->
                 @if (user()) {
-                    <span class="text-sm text-muted-color px-2 hidden xl:inline">
-                        {{ user()!.email }}
-                    </span>
+                    <div class="hidden xl:flex items-center">
+                        <!-- User info -->
+                        <div class="flex flex-col leading-tight">
+                            <!-- Name / Email -->
+                            <div class="text-sm font-medium text-surface-900 dark:text-surface-0 mb-0.5">
+                                {{ user()?.name || user()?.email }}
+                            </div>
+                            <!-- Plan -->
+                            <p-tag
+                                [severity]="user()?.plan === 'pro' ? 'success' : 'contrast'"
+                                [value]="user()?.plan === 'pro' ? 'PRO' : 'FREE'"
+                                class="w-fit !text-xs"
+                            />
+                        </div>
+                    </div>
+                    <!-- Profile -->
+                    <p-button
+                        class="layout-topbar-action"
+                        rounded
+                        routerLink="/pages/profile"
+                        routerLinkActive="layout-topbar-action-active"
+                    >
+                        {{ (user()?.name || user()?.email)?.[0]?.toUpperCase() }}
+                    </p-button>
                 }
-
-                <!-- Profile -->
-                <button
-                    class="layout-topbar-action"
-                    routerLink="/pages/profile"
-                    routerLinkActive="layout-topbar-action-active"
-                    type="button">
-                    <i class="pi pi-user"></i>
-                    <span>Профиль</span>
-                </button>
 
                 <!-- Logout -->
                 <button
-                    class="layout-topbar-action"
                     (click)="logout()"
-                    type="button"
-                    title="Выйти">
+                    class="layout-topbar-action"
+                    title="Выйти"
+                    type="button">
                     <i class="pi pi-sign-out"></i>
                     <span>Выйти</span>
                 </button>

@@ -38,7 +38,7 @@ export class Home implements OnInit, OnDestroy {
     userName = 'Комёр';
 
     constructor() {
-        this.layoutService.setTitlePage(`Добро пожаловать, ${this.userName}`);
+        this.layoutService.setTitlePage(``);
         this.layoutService.setTransparentBackground(true);
     }
 

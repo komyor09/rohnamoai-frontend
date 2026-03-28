@@ -25,7 +25,7 @@ export class Profile implements OnInit {
     loading = true;
 
     constructor() {
-        this.layoutService.setTitlePage(`Добро пожаловать, ${this.user()?.name}`);
+        this.layoutService.setTitlePage('');
         this.layoutService.setTransparentBackground(true);
     }
     get completedCount(): number {

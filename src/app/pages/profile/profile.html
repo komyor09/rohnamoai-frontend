@@ -10,9 +10,10 @@
                 </div>
                 <!-- Info -->
                 <div class="flex-1 min-w-0">
-                    <div class="font-semibold truncate">
-                        {{ user()!.email }}
+                    <div class="text-3xl font-semibold">
+                        {{ user()!.name || user()!.email }}
                     </div>
+                    <div class="text-xs text-muted-color">{{ user()!.email }}</div>
                     <div class="text-xs text-muted-color">
                         План:
                         <span [class.text-primary]="user()!.plan === 'pro'"

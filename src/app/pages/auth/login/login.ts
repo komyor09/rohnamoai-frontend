@@ -34,10 +34,10 @@ export class LoginComponent {
         this.authService.login({ email: this.email.trim(), password: this.password }).subscribe({
             next: (res) => {
                 this.loading.set(false);
-                if (res.success) {
+                if (res.success && res.data) {
                     this.router.navigate(['/pages/home']);
                 } else {
-                    this.errorMsg.set(res.message ?? 'Ошибка входа');
+                    this.errorMsg.set('Ошибка входа');
                 }
             },
             error: (err) => {

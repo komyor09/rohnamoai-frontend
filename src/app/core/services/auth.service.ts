@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, throwError } from 'rxjs';
+import { Observable, tap, catchError, throwError, of } from 'rxjs';
 import { AuthUser, LoginRequest, RegisterRequest, AuthResponse, MeResponse } from '../models';
 
 const ACCESS_TOKEN_KEY = 'rohnamo_access_token';
@@ -15,18 +15,45 @@ export class AuthService {
 
     // ─── State ───────────────────────────────────────────────────────────
     private _user = signal<AuthUser | null>(null);
+    // Флаг: сессия восстановлена (fetchMe завершён или токена нет)
+    private _initialized = signal(false);
 
     readonly user = this._user.asReadonly();
+    readonly initialized = this._initialized.asReadonly();
     readonly isAuthenticated = computed(() => this._user() !== null);
     readonly userPlan = computed(() => this._user()?.plan ?? 'free');
 
     constructor() {
-        // On app start, if we have a token try to restore session
+        // Восстанавливаем сессию только если токен есть
         if (this.getAccessToken()) {
-            this.fetchMe().subscribe({
-                error: () => this.clearTokens(),
-            });
+            this._restoreSession();
+        } else {
+            // Токена нет — сразу помечаем как инициализировано
+            this._initialized.set(true);
         }
+    }
+
+    // Вызывается из APP_INITIALIZER — гарантирует что user загружен до навигации
+    private _restoreSession(): void {
+        this.http.get<MeResponse>(`${this.baseUrl}/auth/me`, {
+            headers: { Authorization: `Bearer ${this.getAccessToken()}` }
+        }).subscribe({
+            next: (res) => {
+                // Backend возвращает { success: true, data: { ... } }
+                if (res.success && res.data) {
+                    this._user.set(res.data);
+                } else {
+                    // success: false — невалидный ответ, сбрасываем
+                    this.clearTokens();
+                }
+                this._initialized.set(true);
+            },
+            error: () => {
+                // 401 или сеть — сбрасываем токены
+                this.clearTokens();
+                this._initialized.set(true);
+            },
+        });
     }
 
     // ─── Token helpers ───────────────────────────────────────────────────
@@ -38,7 +65,7 @@ export class AuthService {
         return localStorage.getItem(REFRESH_TOKEN_KEY);
     }
 
-    private saveTokens(access: string, refresh: string): void {
+    saveTokens(access: string, refresh: string): void {
         localStorage.setItem(ACCESS_TOKEN_KEY, access);
         localStorage.setItem(REFRESH_TOKEN_KEY, refresh);
     }
@@ -55,7 +82,8 @@ export class AuthService {
             tap((res) => {
                 if (res.success && res.data) {
                     this.saveTokens(res.data.access_token, res.data.refresh_token);
-                    this.fetchMe().subscribe();
+                    // Загружаем профиль сразу после регистрации
+                    this._fetchAndSetUser();
                 }
             }),
         );
@@ -66,12 +94,27 @@ export class AuthService {
             tap((res) => {
                 if (res.success && res.data) {
                     this.saveTokens(res.data.access_token, res.data.refresh_token);
-                    this.fetchMe().subscribe();
+                    // Загружаем профиль сразу после логина
+                    this._fetchAndSetUser();
                 }
             }),
         );
     }
 
+    // Внутренний метод — загружает /auth/me и устанавливает user
+    private _fetchAndSetUser(): void {
+        this.http.get<MeResponse>(`${this.baseUrl}/auth/me`, {
+            headers: { Authorization: `Bearer ${this.getAccessToken()}` }
+        }).subscribe({
+            next: (res) => {
+                if (res.success && res.data) {
+                    this._user.set(res.data);
+                }
+            },
+        });
+    }
+
+    // Публичный fetchMe — возвращает Observable для внешнего использования
     fetchMe(): Observable<MeResponse> {
         return this.http.get<MeResponse>(`${this.baseUrl}/auth/me`).pipe(
             tap((res) => {

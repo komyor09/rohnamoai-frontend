@@ -5,12 +5,15 @@ import { InputText } from 'primeng/inputtext';
 import { Button } from 'primeng/button';
 import { Password } from 'primeng/password';
 import { AuthService } from '@/core/services/auth.service';
+import { Card } from 'primeng/card';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputGroupAddon } from 'primeng/inputgroupaddon';
 
 @Component({
     selector: 'app-register',
-    imports: [FormsModule, RouterLink, InputText, Button, Password],
+    imports: [FormsModule, RouterLink, InputText, Button, Password, Card, InputGroup, InputGroupAddon],
     templateUrl: './register.html',
-    styleUrls: ['./register.scss'],
+    styleUrls: ['./register.scss']
 })
 export class RegisterComponent {
     private authService = inject(AuthService);
@@ -51,7 +54,7 @@ export class RegisterComponent {
             error: (err) => {
                 this.loading.set(false);
                 this.errorMsg.set(err?.error?.detail ?? 'Ошибка регистрации');
-            },
+            }
         });
     }
 }

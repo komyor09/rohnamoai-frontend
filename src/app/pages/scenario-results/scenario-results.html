@@ -1,112 +1,267 @@
-<div class="grid grid-cols-12 gap-8">
-
+<div class="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
     @if (loading) {
-        <div class="col-span-12 text-center text-muted-color py-8">Загрузка результатов...</div>
+        <div class="!mb-3">
+            <p-message severity='info'>Загрузка результатов...</p-message>
+        </div>
     }
-
     @if (error) {
-        <div class="col-span-12 card bg-red-50 dark:bg-red-900/20 text-red-600 p-4">{{ error }}</div>
+        <div class="!mb-3">
+            <p-message severity="error">{{ error }}</p-message>
+        </div>
     }
-
     @if (!loading && scenario) {
 
-        <!-- Header -->
         <div class="col-span-12 flex justify-between items-center">
             <div>
-                <h2 class="text-xl font-semibold">{{ scenario.title }}</h2>
+                <h1 class="text-2xl font-semibold">{{ scenario.title }}</h1>
                 <p class="text-muted-color">Результаты поиска · {{ results.length }} вариантов</p>
             </div>
             <div class="flex gap-2">
-                <a [routerLink]="['/pages/scenario-edit', scenario.id]" class="p-button p-button-outlined p-button-sm">
+                <p-button [routerLink]="['/pages/scenario-edit', scenario.id]" outlined
+                >
                     Изменить
-                </a>
-                <a class="p-button p-button-outlined p-button-sm" routerLink="/pages/scenarios">
+                </p-button>
+                <p-button outlined routerLink="/pages/scenarios">
                     Все сценарии
-                </a>
+                </p-button>
             </div>
         </div>
 
-        <!-- Summary cards -->
         <div class="col-span-12 grid grid-cols-3 gap-4">
-            <div class="card mb-0 text-center">
-                <div class="text-2xl font-bold text-primary">{{ results.length }}</div>
-                <div class="text-sm text-muted-color">вариантов найдено</div>
-            </div>
-            <div class="card mb-0 text-center">
-                <div class="text-2xl font-bold text-green-500">
-                    {{ freeCount }}
+            <p-card class="mb-0">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-2xl font-bold text-primary">
+                            {{ results.length }}
+                        </div>
+                        <div class="text-sm text-muted-color">
+                            вариантов найдено
+                        </div>
+                    </div>
+                    <div
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/30">
+                        <i class="pi pi-list text-primary text-lg"></i>
+                    </div>
                 </div>
-                <div class="text-sm text-muted-color">бюджетных мест</div>
-            </div>
-            <div class="card mb-0 text-center">
-                <div class="text-2xl font-bold text-blue-500">
-                    {{ paidCount }}
+            </p-card>
+            <p-card class="mb-0">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-2xl font-bold text-green-500">
+                            {{ freeCount }}
+                        </div>
+                        <div class="text-sm text-muted-color">
+                            бюджетных мест
+                        </div>
+                    </div>
+                    <div
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                        <i class="pi pi-check-circle text-green-500 text-lg"></i>
+                    </div>
                 </div>
-                <div class="text-sm text-muted-color">платных программ</div>
-            </div>
+            </p-card>
+            <p-card class="mb-0">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-2xl font-bold text-blue-500">
+                            {{ paidCount }}
+                        </div>
+                        <div class="text-sm text-muted-color">
+                            платных программ
+                        </div>
+                    </div>
+                    <div
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
+                        <i class="pi pi-credit-card text-blue-500 text-lg"></i>
+                    </div>
+                </div>
+            </p-card>
         </div>
 
-        <!-- AI Explanation -->
         <div class="col-span-12">
-            <div class="card bg-primary-50 dark:bg-primary-900/20">
+            <p-card class="bg-primary-50 dark:bg-primary-900/20">
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2">
-                        <i class="pi pi-sparkles text-primary"></i>
+                        <i class="pi pi-microchip-ai text-primary !text-5xl"></i>
                         <h3 class="mb-0">AI-объяснение результатов</h3>
                     </div>
                     @if (!aiExplanation) {
-                        <button (click)="getAiExplanation()" [disabled]="loadingAi" class="p-button p-button-sm">
-                            {{ loadingAi ? 'Анализирую...' : 'Объяснить результаты' }}
-                        </button>
+                        <p-button (click)="getAiExplanation()" [disabled]="loadingAi" icon="pi pi-sparkles"
+                                  label="{{ loadingAi ? 'Анализирую...' : 'Объяснить результаты' }}">
+                        </p-button>
                     }
                 </div>
                 @if (aiExplanation) {
-                    <p class="text-sm">{{ aiExplanation }}</p>
+                    <p-panel header="Объяснение">
+                        <p> {{ aiExplanation }}</p>
+                    </p-panel>
                 } @else {
                     <p class="text-sm text-muted-color">
                         Нажмите кнопку, чтобы получить AI-анализ найденных специальностей.
                     </p>
                 }
-            </div>
+            </p-card>
         </div>
 
-        <!-- Results list -->
-        <div class="col-span-12">
-            <div class="card">
-                <h3 class="mb-4">Найденные специальности</h3>
+        <p-card>
 
-                @if (results.length === 0) {
-                    <div class="text-center text-muted-color py-6">
-                        По параметрам сценария ничего не найдено. Попробуйте изменить фильтры.
-                    </div>
-                }
+            <!-- HEADER -->
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-4">
 
-                @for (r of results; track $index) {
-                    <div
-                        class="flex justify-between items-center py-4 border-b border-surface-200 dark:border-surface-700 last:border-b-0">
-                        <div class="flex-1">
-                            <div class="font-medium text-surface-900 dark:text-surface-0">{{ r.specialty }}</div>
-                            <div class="text-sm text-muted-color">{{ r.institution }} · {{ r.region }}</div>
-                            <div class="text-xs text-muted-color mt-1">Язык: {{ r.language }} ·
-                                Мест: {{ r.plan_count }}
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 ml-4">
-                            <div class="text-right">
-                                <div [ngClass]="r.price === null ? 'text-green-500' : 'text-surface-900 dark:text-surface-0'"
-                                     class="text-sm font-medium">
-                                    {{ budgetLabel(r.price) }}
-                                </div>
-                            </div>
-                            <a [routerLink]="['/pages/specialty-details', r.institution, r.specialty]"
-                               class="p-button p-button-text p-button-sm">
-                                Подробнее
-                            </a>
-                        </div>
-                    </div>
-                }
+                <h3 class="m-0">Найденные специальности</h3>
+
+                <!-- TYPE FILTER -->
+                <p-selectbutton
+                    [(ngModel)]="priceFilter"
+                    [options]="priceOptions">
+                </p-selectbutton>
+
             </div>
-        </div>
+
+            <!-- TABLE -->
+            <p-table
+                [rowHover]="true"
+                [stripedRows]="true"
+                [value]="paginatedResults"
+                class="p-datatable-sm"
+                dataKey="id"
+                responsiveLayout="scroll"
+                sortMode="multiple"
+            >
+
+                <!-- HEADER -->
+                <ng-template pTemplate="header">
+                    <tr>
+
+                        <th style="width:60px">№</th>
+
+                        <th>№</th>
+                        <th pSortableColumn="specialty">Специальность</th>
+                        <th pSortableColumn="region">Город</th>
+                        <th pSortableColumn="institution">ВУЗ</th>
+                        <th pSortableColumn="language">Язык</th>
+                        <th pSortableColumn="plan_count">Места</th>
+                        <th pSortableColumn="price">Цена</th>
+                        <th></th>
+                        <p-columnFilter display="menu" field="specialty" type="text" />
+                        <p-columnFilter display="menu" field="institution" type="text" />
+                        <p-columnFilter display="menu" field="region" matchMode="in">
+                            <ng-template let-filter="filterCallback" pTemplate="filter">
+                                <p-multiSelect
+                                    (onChange)="filter($event.value)"
+                                    [options]="regionOptions"
+                                    optionLabel="label"
+                                    optionValue="value"
+                                />
+                            </ng-template>
+                        </p-columnFilter>
+                    </tr>
+                </ng-template>
+
+                <!-- BODY -->
+                <ng-template let-r let-rowIndex="rowIndex" pTemplate="body">
+
+                    <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition">
+
+                        <!-- COUNTER -->
+                        <td>
+                            {{ first2 + rowIndex + 1 }}
+                        </td>
+
+                        <!-- SPECIALTY -->
+                        <td (click)="openDetails(r)" class="font-medium cursor-pointer">
+                            {{ r.specialty }}
+                        </td>
+                        <td>
+                            📍 {{ r.region }}
+                        </td>
+                        <!-- UNIVERSITY -->
+                        <td class="text-sm text-muted-color">
+                            {{ r.institution }}
+                        </td>
+
+                        <!-- LANGUAGE -->
+                        <td>
+                            🌐 {{ r.language }}
+                        </td>
+
+                        <!-- PLACES -->
+                        <td>
+                            👥 {{ r.plan_count }}
+                        </td>
+
+                        <!-- PRICE -->
+                        <td>
+                            <p-tag
+                                [severity]="r.price === null ? 'success' : 'info'">
+                                {{ budgetLabel(r.price) }}
+                            </p-tag>
+                        </td>
+
+                        <!-- ACTION -->
+                        <td class="text-right">
+                            <p-button
+                                (click)="openDetails(r)"
+                                icon="pi pi-arrow-right"
+                                rounded
+                                severity="primary"
+                            />
+                        </td>
+
+                    </tr>
+
+                </ng-template>
+
+                <!-- EMPTY -->
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td class="text-center py-8" colspan="7">
+
+                            <i class="pi pi-search text-2xl text-muted-color mb-2"></i>
+
+                            <div class="text-muted-color">
+                                Ничего не найдено
+                            </div>
+
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <!-- FOOTER (CUSTOM PAGINATOR) -->
+                <ng-template pTemplate="footer">
+
+                    <div class="flex !items-center !justify-end gap-3 !flex-wrap">
+
+                            <span class="text-sm text-muted-color">
+                                Элементов на странице:
+                            </span>
+
+                        <p-select
+                            (ngModelChange)="first2 = 0"
+                            [(ngModel)]="rows2"
+                            [options]="pageOptions"
+                            optionLabel="label"
+                            optionValue="value"
+                        />
+
+                        <p-paginator
+                            (onPageChange)="onPageChange2($event)"
+                            [first]="first2"
+                            [rows]="rows2"
+                            [showCurrentPageReport]="true"
+                            [showFirstLastIcon]="false"
+                            [showPageLinks]="false"
+                            [totalRecords]="filteredResults.length"
+                            currentPageReportTemplate="{first} - {last} из {totalRecords}"
+                        />
+
+                    </div>
+
+                </ng-template>
+
+            </p-table>
+
+        </p-card>
 
     }
 

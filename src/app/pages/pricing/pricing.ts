@@ -14,7 +14,7 @@ export class Pricing {
     currentPlan: 'free' | 'pro' = 'free';
 
     constructor() {
-        this.layoutService.setTitlePage('Тарифы и токены');
+        this.layoutService.setTitlePage('');
     }
 
     plans = [

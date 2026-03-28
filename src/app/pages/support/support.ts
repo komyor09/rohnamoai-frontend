@@ -18,7 +18,7 @@ export class SupportComponent {
     sending = false;
 
     constructor() {
-        this.layoutService.setTitlePage('Поддержка');
+        this.layoutService.setTitlePage('');
     }
 
     send(): void {

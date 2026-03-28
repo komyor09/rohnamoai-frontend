@@ -19,7 +19,7 @@ export class ComparisonScenarios implements OnInit {
     loading = true;
 
     constructor() {
-        this.layoutService.setTitlePage('Сравнение сценариев');
+        this.layoutService.setTitlePage('');
     }
 
     ngOnInit(): void {

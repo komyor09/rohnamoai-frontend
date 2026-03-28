@@ -8,6 +8,12 @@ import { LayoutService } from '@/layout/service/layout.service';
 import { ScenariosService } from '@/core/services/scenarios.service';
 import { MetaService } from '@/core/services/meta.service';
 import { Region, ScenarioGoal } from '@/core/models';
+import { Card } from 'primeng/card';
+import { Steps } from 'primeng/steps';
+import { Message } from 'primeng/message';
+import { Button } from 'primeng/button';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { NgClass } from '@angular/common';
 
 interface ScenarioDraft {
     title: string;
@@ -20,8 +26,14 @@ interface ScenarioDraft {
 @Component({
     selector: 'app-new-scenario',
     templateUrl: './new-scenario.html',
-    imports: [Select, Checkbox, FormsModule, InputText],
-    styleUrls: ['./new-scenario.scss']
+    imports: [Select, Checkbox, FormsModule, InputText, Card, Steps, Message, Button, NgClass],
+    styleUrls: ['./new-scenario.scss'],
+    animations: [
+        trigger('stepAnimation', [
+            transition(':enter', [style({ opacity: 0, transform: 'translateY(10px)' }), animate('200ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))]),
+            transition(':leave', [animate('150ms ease-in', style({ opacity: 0, transform: 'translateY(-10px)' }))])
+        ])
+    ]
 })
 export class NewScenarioComponent implements OnInit {
     private layoutService = inject(LayoutService);
@@ -32,6 +44,21 @@ export class NewScenarioComponent implements OnInit {
     step = 0;
     submitting = false;
     error: string | null = null;
+
+    stepItems = [
+        {
+            label: 'Цель',
+            command: () => this.goToStep(0)
+        },
+        {
+            label: 'Предпочтения',
+            command: () => !this.isStepDisabled(1) && this.goToStep(1)
+        },
+        {
+            label: 'Подтверждение',
+            command: () => !this.isStepDisabled(2) && this.goToStep(2)
+        }
+    ];
 
     scenario: ScenarioDraft = {
         title: '',
@@ -56,7 +83,8 @@ export class NewScenarioComponent implements OnInit {
     ];
 
     constructor() {
-        this.layoutService.setTitlePage('Новый сценарий');
+        this.layoutService.setTitlePage('');
+        this.layoutService.setTransparentBackground(true);
     }
 
     ngOnInit(): void {
@@ -94,6 +122,26 @@ export class NewScenarioComponent implements OnInit {
         return !!this.scenario.goal;
     }
 
+    goToStep(target: number) {
+        switch (target) {
+            case 1:
+                if (!this.scenario.goal) return;
+                break;
+
+            case 2:
+                if (!this.scenario.goal) return;
+                break;
+        }
+
+        this.step = target;
+    }
+
+    isStepDisabled(index: number) {
+        if (index === 1) return !this.scenario.goal;
+        if (index === 2) return !this.scenario.goal;
+        return false;
+    }
+
     submit(): void {
         if (!this.scenario.goal) return;
         this.submitting = true;
@@ -127,7 +175,11 @@ export class NewScenarioComponent implements OnInit {
             },
             error: (err) => {
                 this.submitting = false;
-                this.error = err?.error?.detail ?? 'Ошибка создания сценария';
+                if (err?.error?.detail === 'Scenario limit reached') {
+                    this.error = 'Лимит создания сценарий 3.';
+                } else {
+                    this.error = err?.error?.detail ?? 'Ошибка создания сценария';
+                }
             }
         });
     }

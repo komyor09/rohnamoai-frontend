@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { LayoutService } from '@/layout/service/layout.service';
 import { ScenariosService } from '@/core/services/scenarios.service';
 import { Scenario } from '@/core/models';
@@ -19,7 +19,7 @@ import { Tooltip } from 'primeng/tooltip';
 @Component({
     selector: 'app-scenarios',
     templateUrl: './scenarios.html',
-    imports: [Button, Tag, FormsModule, InputText, TableModule, Toolbar, IconField, InputIcon, SelectButton, Card, Tooltip],
+    imports: [Button, Tag, FormsModule, InputText, TableModule, Toolbar, IconField, InputIcon, SelectButton, Card, Tooltip, RouterLink],
     styleUrls: ['./scenarios.scss']
 })
 export class Scenarios implements OnInit {
@@ -43,7 +43,8 @@ export class Scenarios implements OnInit {
     search = '';
 
     constructor() {
-        this.layoutService.setTitlePage('Мои сценарии');
+        this.layoutService.setTitlePage('');
+        this.layoutService.setTransparentBackground(true);
     }
 
     ngOnInit(): void {

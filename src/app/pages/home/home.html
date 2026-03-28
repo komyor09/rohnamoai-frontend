@@ -1,14 +1,11 @@
 <div class="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
-
-    <!-- HERO -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-semibold">Твои сценарии поступления</h1>
+            <h1 class="text-2xl font-semibold">Главная</h1>
             <p class="text-sm text-muted-color mt-1">
                 Управляй сценариями и принимай решения осознанно
             </p>
         </div>
-
         <p-button
             [routerLink]="['/pages/new-scenario']"
             class="w-full md:w-auto"
@@ -16,125 +13,124 @@
             label="Создать сценарий"
         />
     </div>
-
-    <!-- ERROR -->
     @if (state.error) {
         <div class="py-1">
             <p-message severity="error">{{ state.error }}</p-message>
         </div>
     } @else {
-        <!-- LOADING -->
         @if (state.loading) {
             <div class="text-center py-10 text-muted-color">
                 Загрузка данных...
             </div>
         }
-
         @if (!state.loading) {
-
-            <!-- KPI -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
 
-                <!-- СЦЕНАРИИ -->
-                <p-card>
-                    <ng-template pTemplate="header">
-                        <div class="flex items-center gap-2 px-4 py-3 border-b">
-                            <i class="pi pi-sitemap text-blue-500"></i>
-                            <span class="font-semibold">Сценарии</span>
-                        </div>
-                    </ng-template>
+                <!-- SCENARIOS -->
+                <p-card class="h-full">
+                    <div class="flex flex-col justify-between h-full p-3 md:p-4">
 
-                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex justify-between items-start">
+                <span class="text-xs md:text-sm text-muted-color">
+                    Сценарии
+                </span>
 
-                        <div>
-                            <div class="text-sm text-muted-color">Всего сценарий</div>
-                            <div class="text-xl font-semibold">
-                                {{ state.scenarios.length }}
+                            <div
+                                class="w-9 h-9 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-400/10">
+                                <i class="pi pi-sitemap text-blue-500 text-sm md:!text-xl"></i>
                             </div>
                         </div>
 
-                        <i class="pi pi-chart-bar !text-2xl text-blue-500"></i>
+                        <div class="text-lg md:text-3xl font-semibold mt-2 md:mt-3">
+                            {{ state.scenarios.length }}
+                        </div>
 
                     </div>
-
                 </p-card>
 
-                <!-- ЧЕРНОВИКИ -->
-                <p-card>
-                    <ng-template pTemplate="header">
-                        <div class="flex items-center gap-2 px-4 py-3 border-b">
-                            <i class="pi pi-pencil text-orange-500"></i>
-                            <span class="font-semibold">Черновики</span>
-                        </div>
-                    </ng-template>
-                    <div class="p-4 flex items-center justify-between">
-                        <div class="px-3 py-3">
-                            <div class="text-lg md:text-xl font-semibold">
-                                {{ draftCount }}
+                <!-- DRAFT -->
+                <p-card class="h-full">
+                    <div class="flex flex-col justify-between h-full p-3 md:p-4">
+
+                        <div class="flex justify-between items-start">
+                <span class="text-xs md:text-sm text-muted-color">
+                    Черновики
+                </span>
+
+                            <div
+                                class="w-9 h-9 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-400/10">
+                                <i class="pi pi-pencil text-orange-500 text-sm md:!text-xl"></i>
                             </div>
                         </div>
-                        <i class="pi pi-pencil !text-2xl text-orange-500"></i>
+
+                        <div class="text-lg md:text-3xl font-semibold mt-2 md:mt-3">
+                            {{ draftCount }}
+                        </div>
+
                     </div>
                 </p-card>
 
+                <!-- COMPLETED -->
+                <p-card class="h-full">
+                    <div class="flex flex-col justify-between h-full p-3 md:p-4">
 
-                <!-- ЗАВЕРШЕНО -->
-                <p-card>
-                    <ng-template pTemplate="header">
-                        <div class="flex items-center gap-2 px-4 py-3 border-b">
-                            <i class="pi pi-check-circle text-green-500"></i>
-                            <span class="font-semibold">Завершено</span>
-                        </div>
-                    </ng-template>
-                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex justify-between items-start">
+                <span class="text-xs md:text-sm text-muted-color">
+                    Завершено
+                </span>
 
-                        <div class="px-3 py-3">
-                            <div class="text-lg md:text-xl font-semibold">
-                                {{ completedCount }}
+                            <div
+                                class="w-9 h-9 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-green-100 dark:bg-green-400/10">
+                                <i class="pi pi-check text-green-500 text-sm md:!text-xl"></i>
                             </div>
                         </div>
-                        <i class="pi pi-check-circle !text-2xl text-green-500"></i>
+
+                        <div class="text-lg md:text-3xl font-semibold mt-2 md:mt-3">
+                            {{ completedCount }}
+                        </div>
+
                     </div>
                 </p-card>
 
+                <!-- READINESS -->
+                <p-card class="h-full">
+                    <div class="flex flex-col justify-between h-full p-3 md:p-4">
 
-                <!-- ГОТОВНОСТЬ -->
-                <p-card>
-                    <ng-template pTemplate="header">
-                        <div class="flex items-center gap-2 px-4 py-3 border-b">
-                            <i class="pi pi-chart-bar text-purple-500"></i>
-                            <span class="font-semibold">Готовность</span>
+                        <div class="flex justify-between items-start">
+                <span class="text-xs md:text-sm text-muted-color">
+                    Готовность
+                </span>
+
+                            <div
+                                class="w-9 h-9 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-purple-100 dark:bg-purple-400/10">
+                                <i class="pi pi-chart-bar text-purple-500 text-sm md:!text-xl"></i>
+                            </div>
                         </div>
-                    </ng-template>
-                    <div class="p-4 flex items-center justify-between">
 
-                        <div class="px-3 pb-3">
-                            <div class="text-lg font-semibold mb-2">{{ readiness }}%</div>
-                            <div class="h-2 bg-surface-200 rounded">
+                        <div class="mt-2 md:mt-3">
+                            <div class="text-lg md:text-3xl font-semibold mb-1 md:mb-2">
+                                {{ readiness }}%
+                            </div>
+
+                            <div class="h-1.5 md:h-2 bg-surface-200 dark:bg-surface-700 rounded">
                                 <div
                                     [style.width.%]="readiness"
-                                    class="h-2 bg-purple-500 rounded">
+                                    class="h-1.5 md:h-2 bg-purple-500 rounded">
                                 </div>
                             </div>
                         </div>
-                        <i class="pi pi-chart-bar !text-2xl text-purple-500"></i>
+
                     </div>
                 </p-card>
 
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                <!-- SCENARIOS -->
                 <div class="lg:col-span-2">
-
                     <p-card>
-
-                        <!-- HEADER -->
                         <ng-template pTemplate="header">
                             <div class="flex items-center justify-between px-4 py-3 border-b">
                                 <h2 class="text-lg font-semibold">Сценарии</h2>
-
                                 <p-button
                                     [routerLink]="['/pages/scenarios']"
                                     label="Все"
@@ -143,41 +139,31 @@
                                 />
                             </div>
                         </ng-template>
-
-                        <!-- CONTENT -->
                         <div class="flex flex-col divide-y">
-
                             @if (state.scenarios.length === 0) {
                                 <div class="p-6 text-center">
                                     <p class="text-muted-color mb-4">
                                         У тебя пока нет сценариев
                                     </p>
-
                                     <p-button
                                         [routerLink]="['/pages/new-scenario']"
                                         icon="pi pi-plus"
-                                        label="Создать"
+                                        label="Создать сценарий"
                                     />
                                 </div>
                             }
-
                             @for (s of state.scenarios; track s.id) {
-
                                 <div
                                     class="p-4 flex items-center justify-between hover:bg-surface-50 dark:hover:bg-surface-800 transition">
-
                                     <div>
                                         <div class="font-medium">{{ s.title }}</div>
                                         <div class="text-sm text-muted-color">{{ s.goal }}</div>
                                     </div>
-
                                     <div class="flex items-center gap-3">
-
                                         <p-tag
                                             [severity]="s.status === 'completed' ? 'success' : 'warn'"
                                             [value]="s.status === 'completed' ? 'Готово' : 'Черновик'"
                                         />
-
                                         <p-button
                                             [routerLink]="[
                                     s.status === 'completed'
@@ -189,110 +175,73 @@
                                             rounded
                                             text
                                         />
-
                                     </div>
-
                                 </div>
-
                             }
-
                         </div>
-
                     </p-card>
-
                 </div>
-
-
-                <!-- RIGHT PANEL -->
                 <div class="space-y-4 lg:sticky lg:top-6 h-fit">
-
-                    <!-- NEXT STEP -->
                     <p-card>
-
                         <ng-template pTemplate="header">
                             <div class="flex items-center gap-2 px-4 py-3 border-b">
                                 <i class="pi pi-compass text-primary"></i>
                                 <span class="font-semibold">Следующий шаг</span>
                             </div>
                         </ng-template>
-
                         <div class="p-4 space-y-4">
-
                             @if (firstDraft) {
-
                                 <div class="text-sm text-muted-color">
                                     Продолжи сценарий <b>{{ firstDraft.title }}</b>
                                 </div>
-
                                 <p-button
                                     [routerLink]="['/pages/scenario-edit', firstDraft.id]"
                                     class="w-full"
                                     icon="pi pi-play"
                                     label="Продолжить"
                                 />
-
                             } @else if (state.scenarios.length === 0) {
-
                                 <div class="text-sm text-muted-color">
                                     Начни с первого сценария
                                 </div>
-
                                 <p-button
                                     [routerLink]="['/pages/new-scenario']"
                                     class="w-full"
                                     icon="pi pi-plus"
                                     label="Создать сценарий"
                                 />
-
                             } @else {
-
                                 <div class="text-sm text-muted-color">
                                     Все сценарии завершены
                                 </div>
-
                                 <p-button
                                     [routerLink]="['/pages/scenarios']"
                                     class="w-full"
                                     label="Посмотреть результаты"
                                     outlined
                                 />
-
                             }
-
                         </div>
-
                     </p-card>
-
-
-                    <!-- ANALYTICS -->
                     <p-card>
-
                         <ng-template pTemplate="header">
                             <div class="flex items-center gap-2 px-4 py-3 border-b">
                                 <i class="pi pi-chart-line text-blue-500"></i>
                                 <span class="font-semibold">Аналитика</span>
                             </div>
                         </ng-template>
-
                         <div class="p-4 flex items-center justify-between">
-
                             <div>
                                 <div class="text-sm text-muted-color">Всего поисков</div>
                                 <div class="text-xl font-semibold">
                                     {{ state.totalSearches }}
                                 </div>
                             </div>
-
                             <i class="pi pi-chart-line !text-2xl text-blue-500"></i>
-
                         </div>
-
                     </p-card>
-
                 </div>
-
             </div>
-
         }
     }
 </div>

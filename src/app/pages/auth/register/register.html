@@ -1,0 +1,80 @@
+<div class="min-h-screen flex items-center justify-center bg-surface-50 dark:bg-surface-900">
+    <div class="w-full max-w-md px-4">
+
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <img src="/svgs/logo.svg" alt="RohnamoAI" class="mx-auto mb-4" style="height: 56px;" />
+            <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0">Rohnamo AI</h1>
+            <p class="text-muted-color mt-1">Создайте аккаунт</p>
+        </div>
+
+        <div class="card">
+
+            @if (errorMsg()) {
+                <div class="mb-4 p-3 rounded bg-red-50 dark:bg-red-900/20 text-red-600 text-sm">
+                    <i class="pi pi-exclamation-circle mr-2"></i>{{ errorMsg() }}
+                </div>
+            }
+
+            <div class="flex flex-col gap-4">
+
+                <div>
+                    <label class="block text-sm font-medium mb-2" for="email">Email</label>
+                    <input
+                        id="email"
+                        pInputText
+                        type="email"
+                        class="w-full"
+                        [(ngModel)]="email"
+                        placeholder="example@email.com"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2" for="password">Пароль</label>
+                    <p-password
+                        inputId="password"
+                        [(ngModel)]="password"
+                        [toggleMask]="true"
+                        [feedback]="true"
+                        styleClass="w-full"
+                        inputStyleClass="w-full"
+                        placeholder="Минимум 6 символов"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2" for="passwordConfirm">Подтвердите пароль</label>
+                    <p-password
+                        inputId="passwordConfirm"
+                        [(ngModel)]="passwordConfirm"
+                        [toggleMask]="true"
+                        [feedback]="false"
+                        styleClass="w-full"
+                        inputStyleClass="w-full"
+                        placeholder="Повторите пароль"
+                        (keyup.enter)="submit()"
+                    />
+                </div>
+
+                <button
+                    class="p-button w-full mt-2"
+                    (click)="submit()"
+                    [disabled]="loading()">
+                    <i class="pi pi-user-plus mr-2"></i>
+                    {{ loading() ? 'Регистрация...' : 'Зарегистрироваться' }}
+                </button>
+
+            </div>
+
+            <div class="text-center mt-4 text-sm text-muted-color">
+                Уже есть аккаунт?
+                <a routerLink="/auth/login" class="text-primary font-medium ml-1 cursor-pointer">
+                    Войти
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>

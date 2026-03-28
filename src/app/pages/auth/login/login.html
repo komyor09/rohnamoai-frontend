@@ -1,0 +1,91 @@
+<div class="min-h-screen flex items-center justify-center !bg-surface-50 dark:!bg-surface-900">
+    <div class="w-full max-w-md px-4">
+
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <img alt="RohnamoAI" class="mx-auto mb-4" src="/svgs/logo.svg" style="height: 100px;" />
+            <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0">Rohnamo AI</h1>
+            <p class="text-muted-color mt-1">Войдите в свой аккаунт</p>
+        </div>
+
+        <p-card class="dark:!bg-surface-500/20">
+
+            @if (errorMsg()) {
+                <div class="mb-4 p-3 rounded bg-red-50 dark:bg-red-900/20 text-red-600 text-sm">
+                    <i class="pi pi-exclamation-circle mr-2"></i>{{ errorMsg() }}
+                </div>
+            }
+
+            <div class="flex flex-col gap-4">
+
+                <!-- EMAIL -->
+                <div class="flex flex-col gap-1">
+                    <label
+                        class="text-sm font-medium text-surface-700 dark:text-surface-300"
+                        for="email"
+                    >
+                        Email
+                    </label>
+                    <p-inputgroup class="w-full">
+                        <p-inputgroup-addon>
+                            <i class="pi pi-envelope"></i>
+                        </p-inputgroup-addon>
+                        <input
+                            (keyup.enter)="submit()"
+                            [(ngModel)]="email"
+                            class="w-full"
+                            id="email"
+                            pInputText
+                            type="email"
+                        />
+                    </p-inputgroup>
+                </div>
+
+
+                <!-- PASSWORD -->
+                <div class="flex flex-col gap-1">
+                    <label
+                        class="text-sm font-medium text-surface-700 dark:text-surface-300"
+                        for="password"
+                    >
+                        Пароль
+                    </label>
+                    <p-inputgroup class="w-full">
+                        <p-inputgroup-addon>
+                            <i class="pi pi-lock"></i>
+                        </p-inputgroup-addon>
+
+                        <p-password
+                            (keyup.enter)="submit()"
+                            [(ngModel)]="password"
+                            [feedback]="false"
+                            [toggleMask]="true"
+                            inputId="password"
+                            inputStyleClass="w-full"
+                            styleClass="w-full"
+                        />
+                    </p-inputgroup>
+
+                </div>
+                <div class="text-center m-1">
+                    <p-button
+                        (click)="submit()"
+                        [disabled]="loading()"
+                        class="w-full mt-2 text-xl">
+                        <i class="pi pi-sign-in mr-1"></i>
+                        {{ loading() ? 'Вход...' : 'Войти' }}
+                    </p-button>
+                </div>
+            </div>
+
+            <div class="text-center mt-4 text-sm text-muted-color">
+                Нет аккаунта?
+                <a class="text-primary font-medium ml-1 cursor-pointer" routerLink="/auth/register">
+                    Зарегистрироваться
+                </a>
+            </div>
+
+        </p-card>
+
+    </div>
+</div>

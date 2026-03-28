@@ -1,16 +1,20 @@
-import { Component, inject, OnInit, computed } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Button } from 'primeng/button';
 import { ScenariosService } from '@/core/services/scenarios.service';
 import { AuthService } from '@/core/services/auth.service';
 import { Scenario } from '@/core/models';
+import { Card } from 'primeng/card';
+import { Button } from 'primeng/button';
+import { Tag } from 'primeng/tag';
+import { LayoutService } from '@/layout/service/layout.service';
 
 @Component({
     selector: 'app-profile',
-    imports: [Button, RouterLink],
-    templateUrl: './profile.html',
+    imports: [RouterLink, Card, Button, Tag],
+    templateUrl: './profile.html'
 })
 export class Profile implements OnInit {
+    private layoutService = inject(LayoutService);
     private scenariosService = inject(ScenariosService);
     private authService = inject(AuthService);
 
@@ -20,6 +24,10 @@ export class Profile implements OnInit {
     scenarios: Scenario[] = [];
     loading = true;
 
+    constructor() {
+        this.layoutService.setTitlePage(`Добро пожаловать, ${this.user()?.name}`);
+        this.layoutService.setTransparentBackground(true);
+    }
     get completedCount(): number {
         return this.scenarios.filter((s) => s.status === 'completed').length;
     }
@@ -33,7 +41,7 @@ export class Profile implements OnInit {
             budget: 'Бюджет',
             prestige: 'Престиж',
             job: 'Трудоустройство',
-            location: 'Локация',
+            location: 'Локация'
         };
         return map[goal] ?? goal;
     }
@@ -48,12 +56,19 @@ export class Profile implements OnInit {
 
     ngOnInit(): void {
         this.scenariosService.list().subscribe({
-            next: (data) => { this.scenarios = data; this.loading = false; },
-            error: () => { this.loading = false; },
+            next: (data) => {
+                this.scenarios = data;
+                this.loading = false;
+            },
+            error: () => {
+                this.loading = false;
+            }
         });
     }
 
     logout(): void {
         this.authService.logout();
     }
+
+    protected openScenario(s: Scenario) {}
 }

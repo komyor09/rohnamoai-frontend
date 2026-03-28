@@ -1,9 +1,9 @@
 // ─── User ───────────────────────────────────────────────────────────────────
 export interface User {
-  id: number;
-  uuid: string;
-  language: string;
-  plan: 'free' | 'pro';
+    id: number;
+    uuid: string;
+    language: string;
+    plan: 'free' | 'pro';
 }
 
 // ─── Scenario ───────────────────────────────────────────────────────────────
@@ -11,138 +11,140 @@ export type ScenarioGoal = 'budget' | 'prestige' | 'job' | 'location';
 export type ScenarioStatus = 'draft' | 'completed';
 
 export interface Scenario {
-  id: number;
-  user_id: number;
-  title: string;
-  goal: ScenarioGoal;
-  status: ScenarioStatus;
+    id: number;
+    user_id: number;
+    title: string;
+    goal: ScenarioGoal;
+    status: ScenarioStatus;
 }
 
 export interface CreateScenarioRequest {
-  title: string;
-  goal: ScenarioGoal;
+    title: string;
+    goal: ScenarioGoal;
 }
 
 export interface ScenarioStep {
-  step_key: string;
-  step_value: string;
+    step_key: string;
+    step_value: string;
 }
 
 export interface CompleteScenarioResponse {
-  scenario_id: number;
-  results_count: number;
-  results: number[];
+    scenario_id: number;
+    results_count: number;
+    results: number[];
 }
 
 // ─── Search ──────────────────────────────────────────────────────────────────
 export interface SearchResult {
-  institution: string;
-  region: string;
-  specialty: string;
-  language: string;
-  price: number | null;
-  plan_count: number;
+    institution: string;
+    region: string;
+    specialty: string;
+    language: string;
+    price: number | null;
+    plan_count: number;
 }
 
 export interface SearchParams {
-  language?: string;
-  specialty?: string;
-  budget?: boolean;
-  region_id?: number;
-  district_id?: number;
-  locality_id?: number;
-  sort?: 'price' | 'plan_count' | 'institution';
-  order?: 'asc' | 'desc';
-  limit?: number;
+    language?: string;
+    specialty?: string;
+    budget?: boolean;
+    region_id?: number;
+    district_id?: number;
+    locality_id?: number;
+    sort?: 'price' | 'plan_count' | 'institution';
+    order?: 'asc' | 'desc';
+    limit?: number;
 }
 
 // ─── Meta (Geography) ────────────────────────────────────────────────────────
 export interface Region {
-  id: number;
-  name: string;
-  type: string;
+    id: number;
+    name: string;
+    type: string;
 }
 
 export interface District {
-  id: number;
-  name: string;
-  type: string;
+    id: number;
+    name: string;
+    type: string;
 }
 
 export interface Locality {
-  id: number;
-  name: string;
-  type: string;
+    id: number;
+    name: string;
+    type: string;
 }
 
 // ─── Analytics ───────────────────────────────────────────────────────────────
 export interface AnalyticsOverview {
-  total_searches: number;
-  top_regions: { region_id: number; count: number }[];
-  top_specialties: { specialty: string; count: number }[];
+    total_searches: number;
+    top_regions: { region_id: number; count: number }[];
+    top_specialties: { specialty: string; count: number }[];
 }
 
 // ─── AI ──────────────────────────────────────────────────────────────────────
 export interface ExplainRequest {
-  results: SearchResult[];
-  user_goal?: string;
+    results: SearchResult[];
+    user_goal?: string;
 }
 
 export interface ExplainResponse {
-  text: string;
+    text: string;
 }
 
 export interface DialogRequest {
-  session_id: string;
-  answer?: Record<string, unknown>;
-  results?: SearchResult[];
-  reset?: boolean;
+    session_id: string;
+    answer?: Record<string, unknown>;
+    results?: SearchResult[];
+    reset?: boolean;
 }
 
 export interface DialogResponse {
-  type: 'question' | 'final';
-  text?: string;
-  question?: string;
-  options?: string[];
-  key?: string;
-  state?: {
-    goal: string;
-    priority: string;
-  };
+    type: 'question' | 'final';
+    text?: string;
+    question?: string;
+    options?: string[];
+    key?: string;
+    state?: {
+        goal: string;
+        priority: string;
+    };
 }
 
 // ─── Auth ─────────────────────────────────────────────────────────────────
 export interface AuthUser {
-  id: number;
-  uuid: string;
-  email: string | null;
-  language: string;
-  plan: 'free' | 'pro';
+    id: number;
+    uuid: string;
+    name: string | null;
+    email: string | null;
+    language: string;
+    plan: 'free' | 'pro';
 }
 
 export interface LoginRequest {
-  email: string;
-  password: string;
+    email: string;
+    password: string;
 }
 
 export interface RegisterRequest {
-  email: string;
-  password: string;
+    email: string;
+    password: string;
+    name?: string;
 }
 
 export interface TokenResponse {
-  access_token: string;
-  refresh_token: string;
-  token_type: string;
+    access_token: string;
+    refresh_token: string;
+    token_type: string;
 }
 
 export interface AuthResponse {
-  success: boolean;
-  data?: TokenResponse;
-  message?: string;
+    success: boolean;
+    data?: TokenResponse;
+    message?: string;
 }
 
 export interface MeResponse {
-  success: boolean;
-  data?: AuthUser;
+    success: boolean;
+    data?: AuthUser;
 }

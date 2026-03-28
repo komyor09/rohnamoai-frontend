@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { InputText } from 'primeng/inputtext';
 import { Button } from 'primeng/button';
 import { Password } from 'primeng/password';
@@ -20,6 +20,7 @@ export class RegisterComponent {
     private router = inject(Router);
 
     email = '';
+    name = '';
     password = '';
     passwordConfirm = '';
     loading = signal(false);
@@ -42,19 +43,25 @@ export class RegisterComponent {
         }
 
         this.loading.set(true);
-        this.authService.register({ email: this.email.trim(), password: this.password }).subscribe({
-            next: (res) => {
-                this.loading.set(false);
-                if (res.success) {
-                    this.router.navigate(['/pages/home']);
-                } else {
-                    this.errorMsg.set(res.message ?? 'Ошибка регистрации');
+        this.authService
+            .register({
+                email: this.email.trim(),
+                password: this.password,
+                name: this.name.trim() || undefined
+            })
+            .subscribe({
+                next: (res) => {
+                    this.loading.set(false);
+                    if (res.success) {
+                        this.router.navigate(['/pages/home']);
+                    } else {
+                        this.errorMsg.set(res.message ?? 'Ошибка регистрации');
+                    }
+                },
+                error: (err) => {
+                    this.loading.set(false);
+                    this.errorMsg.set(err?.error?.detail ?? 'Ошибка регистрации');
                 }
-            },
-            error: (err) => {
-                this.loading.set(false);
-                this.errorMsg.set(err?.error?.detail ?? 'Ошибка регистрации');
-            }
-        });
+            });
     }
 }

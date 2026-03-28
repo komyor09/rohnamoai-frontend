@@ -35,13 +35,13 @@
         <div class="space-y-3 mt-4">
             @for (s of filtered; track s.id; let i = $index) {
 
-                <p-card class="border border-surface-700 p-3">
+                <p-card class="border border-surface-700">
 
                     <div class="font-medium">
                         {{ i + 1 }}. {{ s.title }}
                     </div>
 
-                    <div class="text-xs text-muted-color mb-2">
+                    <div class="text-xs text-muted-color mb-1">
                         {{ goalLabel(s.goal) }}
                     </div>
 

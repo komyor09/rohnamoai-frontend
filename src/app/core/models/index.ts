@@ -34,7 +34,7 @@ export interface CompleteScenarioResponse {
     results: number[];
 }
 
-// ─── Search ──────────────────────────────────────────────────────────────────
+// ─── Search Result (с score) ─────────────────────────────────────────────────
 export interface SearchResult {
     institution: string;
     region: string;
@@ -42,6 +42,7 @@ export interface SearchResult {
     language: string;
     price: number | null;
     plan_count: number;
+    score?: number; // 0–100, появляется в /scenarios/:id/results
 }
 
 export interface SearchParams {
@@ -147,4 +148,14 @@ export interface AuthResponse {
 export interface MeResponse {
     success: boolean;
     data?: AuthUser;
+}
+
+export interface SelectOption {
+    label: string;
+    value: string;
+}
+
+export interface BudgetOption {
+    label: string;
+    value: 'all' | 'free' | 'paid';
 }

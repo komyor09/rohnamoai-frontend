@@ -5,7 +5,8 @@ import {
   Scenario,
   CreateScenarioRequest,
   ScenarioStep,
-  CompleteScenarioResponse
+  CompleteScenarioResponse,
+  SearchResult,
 } from '../models';
 
 @Injectable({ providedIn: 'root' })
@@ -34,5 +35,10 @@ export class ScenariosService {
 
   complete(scenarioId: number): Observable<CompleteScenarioResponse> {
     return this.api.post<CompleteScenarioResponse>(`/scenarios/${scenarioId}/complete`, {});
+  }
+
+  // Новый метод — загружает результаты сценария с score
+  getResults(scenarioId: number): Observable<SearchResult[]> {
+    return this.api.get<SearchResult[]>(`/scenarios/${scenarioId}/results`);
   }
 }

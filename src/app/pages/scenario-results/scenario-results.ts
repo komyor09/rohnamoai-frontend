@@ -1,26 +1,22 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ScenariosService } from '@/core/services/scenarios.service';
-import { SearchService } from '@/core/services/search.service';
-import { AiService } from '@/core/services/ai.service';
-import { Scenario, SearchResult } from '@/core/models';
-import { Message } from 'primeng/message';
-import { LayoutService } from '@/layout/service/layout.service';
-import { Button } from 'primeng/button';
-import { Card } from 'primeng/card';
-import { Panel } from 'primeng/panel';
-import { Tag } from 'primeng/tag';
-import { FormsModule } from '@angular/forms';
-import { SelectButton } from 'primeng/selectbutton';
-import { PrimeTemplate } from 'primeng/api';
 import { TableModule } from 'primeng/table';
-import { Paginator } from 'primeng/paginator';
-import { Select } from 'primeng/select';
+import { Button } from 'primeng/button';
+import { Tag } from 'primeng/tag';
 import { MultiSelect } from 'primeng/multiselect';
+import { Message } from 'primeng/message';
+import { Card } from 'primeng/card';
+import { Skeleton } from 'primeng/skeleton';
+import { SelectButton } from 'primeng/selectbutton';
+import { FormsModule } from '@angular/forms';
+import { ScenariosService } from '@/core/services/scenarios.service';
+import { AiService } from '@/core/services/ai.service';
+import { LayoutService } from '@/layout/service/layout.service';
+import { BudgetOption, Scenario, SearchResult, SelectOption } from '@/core/models';
 
 @Component({
     selector: 'app-scenario-results',
-    imports: [RouterLink, Message, Button, Card, Panel, Tag, FormsModule, SelectButton, PrimeTemplate, TableModule, Paginator, Select, MultiSelect],
+    imports: [RouterLink, TableModule, Button, Tag, MultiSelect, Message, Card, Skeleton, SelectButton, FormsModule],
     templateUrl: './scenario-results.html',
     styleUrls: ['./scenario-results.scss']
 })
@@ -29,39 +25,83 @@ export class ScenarioResultsComponent implements OnInit {
     private router = inject(Router);
     private layoutService = inject(LayoutService);
     private scenariosService = inject(ScenariosService);
-    private searchService = inject(SearchService);
     private aiService = inject(AiService);
 
+    // ─── State ───────────────────────────────────────────────────────────
     scenarioId!: number;
     scenario: Scenario | null = null;
-    results: SearchResult[] = [];
-    aiExplanation: string | null = null;
-    loading = true;
-    loadingAi = false;
-    error: string | null = null;
 
-    first2 = 0;
-    rows2 = 5;
-    regionOptions: any[] = [];
-    languageOptions: any[] = [];
+    results = signal<SearchResult[]>([]);
+    loading = signal(true);
+    loadingAi = signal(false);
+    error = signal<string | null>(null);
+    aiExplanation = signal<string | null>(null);
 
-    pageOptions = [
-        { label: 5, value: 5 },
-        { label: 10, value: 10 },
-        { label: 20, value: 20 }
-    ];
+    // ─── Filters state ───────────────────────────────────────────────────
+    selectedRegions = signal<string[]>([]);
+    selectedLanguages = signal<string[]>([]);
+    selectedBudget = signal<'all' | 'free' | 'paid'>('all');
 
-    // FILTER (budget / paid / all)
-    _priceFilter = 'all';
+    // ─── Filter options (computed from data) ─────────────────────────────
+    regionOptions = computed<SelectOption[]>(() => {
+        const unique = [
+            ...new Set(
+                this.results()
+                    .map((r) => r.region)
+                    .filter(Boolean)
+            )
+        ];
+        return unique.sort().map((v) => ({ label: v, value: v }));
+    });
 
-    priceOptions = [
+    languageOptions = computed<SelectOption[]>(() => {
+        const allLangs = this.results().flatMap((r) =>
+            r.language
+                .split(',')
+                .map((l) => l.trim())
+                .filter(Boolean)
+        );
+        const unique = [...new Set(allLangs)];
+        return unique.sort().map((v) => ({ label: v, value: v }));
+    });
+
+    budgetOptions: BudgetOption[] = [
         { label: 'Все', value: 'all' },
         { label: 'Бюджет', value: 'free' },
         { label: 'Платные', value: 'paid' }
     ];
 
+    // ─── Filtered results ─────────────────────────────────────────────────
+    filteredResults = computed<SearchResult[]>(() => {
+        let data = this.results();
+
+        const regions = this.selectedRegions();
+        if (regions.length > 0) {
+            data = data.filter((r) => regions.includes(r.region));
+        }
+
+        const langs = this.selectedLanguages();
+        if (langs.length > 0) {
+            data = data.filter((r) => langs.some((l) => r.language.includes(l)));
+        }
+
+        const budget = this.selectedBudget();
+        if (budget === 'free') data = data.filter((r) => r.price === null);
+        if (budget === 'paid') data = data.filter((r) => r.price !== null);
+
+        return data;
+    });
+
+    // ─── KPI ─────────────────────────────────────────────────────────────
+    freeCount = computed(() => this.results().filter((r) => r.price === null).length);
+    paidCount = computed(() => this.results().filter((r) => r.price !== null).length);
+    avgScore = computed(() => {
+        const list = this.results();
+        if (!list.length) return 0;
+        return Math.round(list.reduce((acc, r) => acc + (r.score ?? 0), 0) / list.length);
+    });
+
     constructor() {
-        this.layoutService.setTitlePage('');
         this.layoutService.setTransparentBackground(true);
     }
 
@@ -70,99 +110,74 @@ export class ScenarioResultsComponent implements OnInit {
         this.scenariosService.get(this.scenarioId).subscribe({
             next: (s) => {
                 this.scenario = s;
-                this.loadResults(s);
+                this.loadResults();
             },
             error: () => {
-                this.error = 'Сценарий не найден';
-                this.loading = false;
+                this.error.set('Сценарий не найден');
+                this.loading.set(false);
             }
         });
-        this.regionOptions = [...new Map(this.results.map((r) => [r.region, { label: r.region, value: r.region }])).values()];
-
-        this.languageOptions = [...new Map(this.results.map((r) => [r.language, { label: r.language, value: r.language }])).values()];
     }
 
-    get freeCount(): number {
-        return this.results?.filter((r) => r.price === null).length || 0;
-    }
-
-    get paidCount(): number {
-        return this.results?.filter((r) => r.price !== null).length || 0;
-    }
-
-    get filteredResults() {
-        if (this.priceFilter === 'free') {
-            return this.results.filter((r) => r.price === null);
-        }
-
-        if (this.priceFilter === 'paid') {
-            return this.results.filter((r) => r.price !== null);
-        }
-
-        return this.results;
-    }
-
-    onPageChange2(event: any) {
-        this.first2 = event.first;
-        this.rows2 = event.rows;
-    }
-
-    loadResults(scenario: Scenario): void {
-        this.searchService.search({ limit: 100 }).subscribe({
+    loadResults(): void {
+        this.scenariosService.getResults(this.scenarioId).subscribe({
             next: (data) => {
-                this.results = data;
-
-                // ✅ ВАЖНО: строим options ПОСЛЕ загрузки
-                this.regionOptions = [...new Map(data.map((r) => [r.region, { label: r.region, value: r.region }])).values()];
-
-                this.languageOptions = [...new Map(data.map((r) => [r.language, { label: r.language, value: r.language }])).values()];
-
-                this.loading = false;
+                this.results.set(data);
+                this.loading.set(false);
             },
             error: () => {
-                this.error = 'Ошибка загрузки результатов';
-                this.loading = false;
+                this.error.set('Ошибка загрузки результатов');
+                this.loading.set(false);
             }
         });
     }
 
     getAiExplanation(): void {
-        this.loadingAi = true;
+        this.loadingAi.set(true);
         this.aiService.explainScenario(this.scenarioId).subscribe({
             next: (res) => {
-                this.aiExplanation = res.text;
-                this.loadingAi = false;
+                this.aiExplanation.set(res.text);
+                this.loadingAi.set(false);
             },
             error: () => {
-                // Fallback to generic explain
-                this.aiService.explain({ results: this.results, user_goal: this.scenario?.goal }).subscribe({
+                this.aiService.explain({ results: this.results(), user_goal: this.scenario?.goal }).subscribe({
                     next: (res) => {
-                        this.aiExplanation = res.text;
-                        this.loadingAi = false;
+                        this.aiExplanation.set(res.text);
+                        this.loadingAi.set(false);
                     },
-                    error: () => {
-                        this.loadingAi = false;
-                    }
+                    error: () => this.loadingAi.set(false)
                 });
             }
         });
     }
 
-    openDetails(r: any) {
+    openDetail(r: SearchResult): void {
         this.router.navigate(['/pages/specialty-details', r.institution, r.specialty]);
     }
 
+    resetFilters(): void {
+        this.selectedRegions.set([]);
+        this.selectedLanguages.set([]);
+        this.selectedBudget.set('all');
+    }
+
+    // ─── UI helpers ──────────────────────────────────────────────────────
+    scoreSeverity(score: number | undefined): 'success' | 'warn' | 'danger' | 'secondary' {
+        if (!score) return 'secondary';
+        if (score >= 70) return 'success';
+        if (score >= 40) return 'warn';
+        return 'danger';
+    }
+
+    budgetSeverity(price: number | null): 'success' | 'secondary' {
+        return price === null ? 'success' : 'secondary';
+    }
+
     budgetLabel(price: number | null): string {
-        return price === null ? 'Бюджет' : `${price.toLocaleString()} сомони/год`;
+        return price === null ? 'Бюджет' : `${price.toLocaleString()} сом`;
     }
-    get paginatedResults() {
-        return this.filteredResults.slice(this.first2, this.first2 + this.rows2);
-    }
-    set priceFilter(value: string) {
-        this._priceFilter = value;
-        this.first2 = 0;
-    }
-    get priceFilter() {
-        return this._priceFilter;
+
+    hasActiveFilters(): boolean {
+        return this.selectedRegions().length > 0 || this.selectedLanguages().length > 0 || this.selectedBudget() !== 'all';
     }
 }

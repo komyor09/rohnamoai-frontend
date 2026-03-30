@@ -1,266 +1,310 @@
 <div class="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
-    @if (loading) {
-        <div class="!mb-3">
-            <p-message severity='info'>Загрузка результатов...</p-message>
-        </div>
-    }
-    @if (error) {
-        <div class="!mb-3">
-            <p-message severity="error">{{ error }}</p-message>
-        </div>
-    }
-    @if (!loading && scenario) {
 
-        <div class="col-span-12 flex justify-between items-center">
+    <!-- Loading state -->
+    @if (loading()) {
+        <div class="space-y-4">
+            <p-skeleton height="2rem" width="40%"></p-skeleton>
+            <div class="grid grid-cols-3 gap-4">
+                <p-skeleton height="6rem"></p-skeleton>
+                <p-skeleton height="6rem"></p-skeleton>
+                <p-skeleton height="6rem"></p-skeleton>
+            </div>
+            <p-skeleton height="20rem"></p-skeleton>
+        </div>
+    }
+
+    <!-- Error state -->
+    @if (error()) {
+        <p-message [text]="error()!" severity="error"></p-message>
+    }
+
+    @if (!loading() && scenario) {
+
+        <!-- ── Header ────────────────────────────────────────────────── -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-semibold">{{ scenario.title }}</h1>
-                <p class="text-muted-color">Результаты поиска · {{ results.length }} вариантов</p>
+                <h1 class="font-semibold">
+                    {{ scenario.title }}
+                </h1>
+                <p class="text-sm text-muted-color mt-1">
+                    {{ filteredResults().length }} из {{ results().length }} специальностей
+                </p>
             </div>
             <div class="flex gap-2">
-                <p-button [routerLink]="['/pages/scenario-edit', scenario.id]" outlined
-                >
-                    Изменить
-                </p-button>
-                <p-button outlined routerLink="/pages/scenarios">
-                    Все сценарии
+                @if (scenario.status === 'draft') {
+                    <p-button
+                        [routerLink]="['/pages/scenario-edit', scenario.id]"
+                        label="Изменить"
+                        outlined>
+                    </p-button>
+                }
+                <p-button
+                    label="Все сценарии"
+                    outlined
+                    routerLink="/pages/scenarios">
                 </p-button>
             </div>
         </div>
 
-        <div class="col-span-12 grid grid-cols-3 gap-4">
-            <p-card class="mb-0">
+        <!-- ── KPI Cards ─────────────────────────────────────────────── -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+            <p-card>
                 <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-2xl font-bold text-primary">
-                            {{ results.length }}
-                        </div>
-                        <div class="text-sm text-muted-color">
-                            вариантов найдено
-                        </div>
+                        <div class="text-2xl font-bold text-primary">{{ results().length }}</div>
+                        <div class="text-sm text-muted-color">найдено</div>
                     </div>
                     <div
                         class="w-10 h-10 flex items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/30">
-                        <i class="pi pi-list text-primary text-lg"></i>
+                        <i class="pi pi-list text-primary"></i>
                     </div>
                 </div>
             </p-card>
-            <p-card class="mb-0">
+
+            <p-card>
                 <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-2xl font-bold text-green-500">
-                            {{ freeCount }}
-                        </div>
-                        <div class="text-sm text-muted-color">
-                            бюджетных мест
-                        </div>
+                        <div class="text-2xl font-bold text-green-500">{{ freeCount() }}</div>
+                        <div class="text-sm text-muted-color">бюджетных</div>
                     </div>
                     <div
                         class="w-10 h-10 flex items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                        <i class="pi pi-check-circle text-green-500 text-lg"></i>
+                        <i class="pi pi-check-circle text-green-500"></i>
                     </div>
                 </div>
             </p-card>
-            <p-card class="mb-0">
+
+            <p-card>
                 <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-2xl font-bold text-blue-500">
-                            {{ paidCount }}
-                        </div>
-                        <div class="text-sm text-muted-color">
-                            платных программ
-                        </div>
+                        <div class="text-2xl font-bold text-blue-500">{{ paidCount() }}</div>
+                        <div class="text-sm text-muted-color">платных</div>
                     </div>
                     <div
                         class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
-                        <i class="pi pi-credit-card text-blue-500 text-lg"></i>
+                        <i class="pi pi-credit-card text-blue-500"></i>
                     </div>
                 </div>
             </p-card>
-        </div>
 
-        <div class="col-span-12">
-            <p-card class="bg-primary-50 dark:bg-primary-900/20">
-                <div class="flex justify-between items-center mb-2">
-                    <div class="flex items-center gap-2">
-                        <i class="pi pi-microchip-ai text-primary !text-5xl"></i>
-                        <h3 class="mb-0">AI-объяснение результатов</h3>
+            <p-card>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-2xl font-bold text-purple-500">{{ avgScore() }}%</div>
+                        <div class="text-sm text-muted-color">совпадение</div>
                     </div>
-                    @if (!aiExplanation) {
-                        <p-button (click)="getAiExplanation()" [disabled]="loadingAi" icon="pi pi-sparkles"
-                                  label="{{ loadingAi ? 'Анализирую...' : 'Объяснить результаты' }}">
-                        </p-button>
-                    }
+                    <div
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
+                        <i class="pi pi-chart-bar text-purple-500"></i>
+                    </div>
                 </div>
-                @if (aiExplanation) {
-                    <p-panel header="Объяснение">
-                        <p> {{ aiExplanation }}</p>
-                    </p-panel>
-                } @else {
-                    <p class="text-sm text-muted-color">
-                        Нажмите кнопку, чтобы получить AI-анализ найденных специальностей.
-                    </p>
-                }
             </p-card>
+
         </div>
 
+        <!-- ── AI Block ───────────────────────────────────────────────── -->
         <p-card>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <i class="pi pi-sparkles text-primary text-lg"></i>
+                    <span class="font-semibold">AI-анализ результатов</span>
+                </div>
+                @if (!aiExplanation()) {
+                    <p-button
+                        (click)="getAiExplanation()"
+                        [loading]="loadingAi()"
+                        icon="pi pi-sparkles"
+                        label="Объяснить результаты">
+                    </p-button>
+                }
+            </div>
+            @if (aiExplanation()) {
+                <p class="text-sm !mt-3 leading-relaxed">{{ aiExplanation() }}</p>
+            } @else if (!loadingAi()) {
+                <p class="text-sm text-muted-color mt-2">
+                    AI объяснит почему эти специальности подходят именно вам.
+                </p>
+            }
+        </p-card>
 
-            <!-- HEADER -->
-            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-4">
+        <!-- ── Filters bar ────────────────────────────────────────────── -->
+        <p-card>
+            <div class="flex flex-wrap items-end gap-4">
 
-                <h3 class="m-0">Найденные специальности</h3>
+                <div class="flex flex-col gap-1 min-w-40">
+                    <label class="text-xs font-medium text-muted-color uppercase tracking-wide">Регион</label>
+                    <p-multiSelect
+                        (ngModelChange)="selectedRegions.set($event)"
+                        [ngModel]="selectedRegions()"
+                        [options]="regionOptions()"
+                        [showClear]="true"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Все регионы"
+                        styleClass="w-full">
+                    </p-multiSelect>
+                </div>
 
-                <!-- TYPE FILTER -->
-                <p-selectbutton
-                    [(ngModel)]="priceFilter"
-                    [options]="priceOptions">
-                </p-selectbutton>
+                <div class="flex flex-col gap-1 min-w-40">
+                    <label class="text-xs font-medium text-muted-color uppercase tracking-wide">Язык</label>
+                    <p-multiSelect
+                        (ngModelChange)="selectedLanguages.set($event)"
+                        [ngModel]="selectedLanguages()"
+                        [options]="languageOptions()"
+                        [showClear]="true"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Все языки"
+                        styleClass="w-full">
+                    </p-multiSelect>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-muted-color uppercase tracking-wide">Стоимость</label>
+                    <p-selectButton
+                        (ngModelChange)="selectedBudget.set($event)"
+                        [ngModel]="selectedBudget()"
+                        [options]="budgetOptions"
+                        optionLabel="label"
+                        optionValue="value">
+                    </p-selectButton>
+                </div>
+
+                @if (hasActiveFilters()) {
+                    <p-button
+                        (click)="resetFilters()"
+                        icon="pi pi-times"
+                        label="Сбросить"
+                        severity="secondary"
+                        text>
+                    </p-button>
+                }
 
             </div>
+        </p-card>
 
-            <!-- TABLE -->
+        <!-- ── Table ─────────────────────────────────────────────────── -->
+        <p-card>
             <p-table
+                [paginator]="true"
                 [rowHover]="true"
-                [stripedRows]="true"
-                [value]="paginatedResults"
-                class="p-datatable-sm"
-                dataKey="id"
+                [rowsPerPageOptions]="[10, 15, 25, 50]"
+                [rows]="15"
+                [showCurrentPageReport]="true"
+                [sortMode]="'single'"
+                [value]="filteredResults()"
+                currentPageReportTemplate="{first}–{last} из {totalRecords}"
                 responsiveLayout="scroll"
-                sortMode="multiple"
-            >
+                styleClass="p-datatable-sm">
 
-                <!-- HEADER -->
                 <ng-template pTemplate="header">
                     <tr>
+                        <th style="width: 3rem">#</th>
 
-                        <th style="width:60px">№</th>
+                        <th pSortableColumn="specialty" style="min-width: 14rem">
+                            Специальность
+                            <p-sortIcon field="specialty"></p-sortIcon>
+                        </th>
 
-                        <th>№</th>
-                        <th pSortableColumn="specialty">Специальность</th>
-                        <th pSortableColumn="region">Город</th>
-                        <th pSortableColumn="institution">ВУЗ</th>
-                        <th pSortableColumn="language">Язык</th>
-                        <th pSortableColumn="plan_count">Места</th>
-                        <th pSortableColumn="price">Цена</th>
-                        <th></th>
-                        <p-columnFilter display="menu" field="specialty" type="text" />
-                        <p-columnFilter display="menu" field="institution" type="text" />
-                        <p-columnFilter display="menu" field="region" matchMode="in">
-                            <ng-template let-filter="filterCallback" pTemplate="filter">
-                                <p-multiSelect
-                                    (onChange)="filter($event.value)"
-                                    [options]="regionOptions"
-                                    optionLabel="label"
-                                    optionValue="value"
-                                />
-                            </ng-template>
-                        </p-columnFilter>
+                        <th pSortableColumn="region" style="min-width: 10rem">
+                            Регион
+                            <p-sortIcon field="region"></p-sortIcon>
+                        </th>
+
+                        <th pSortableColumn="institution" style="min-width: 12rem">
+                            ВУЗ
+                            <p-sortIcon field="institution"></p-sortIcon>
+                        </th>
+
+                        <th style="min-width: 8rem">Язык</th>
+
+                        <th class="text-center" pSortableColumn="plan_count" style="width: 6rem">
+                            Мест
+                            <p-sortIcon field="plan_count"></p-sortIcon>
+                        </th>
+
+                        <th class="text-center" pSortableColumn="price" style="width: 9rem">
+                            Цена
+                            <p-sortIcon field="price"></p-sortIcon>
+                        </th>
+
+                        <th class="text-center" pSortableColumn="score" style="width: 8rem">
+                            Совпадение
+                            <p-sortIcon field="score"></p-sortIcon>
+                        </th>
+
+                        <th style="width: 7rem"></th>
                     </tr>
                 </ng-template>
 
-                <!-- BODY -->
                 <ng-template let-r let-rowIndex="rowIndex" pTemplate="body">
+                    <tr (click)="openDetail(r)" class="cursor-pointer">
 
-                    <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition">
+                        <td class="text-muted-color text-sm">{{ rowIndex + 1 }}</td>
 
-                        <!-- COUNTER -->
                         <td>
-                            {{ first2 + rowIndex + 1 }}
+                            <div class="font-medium">{{ r.specialty }}</div>
                         </td>
 
-                        <!-- SPECIALTY -->
-                        <td (click)="openDetails(r)" class="font-medium cursor-pointer">
-                            {{ r.specialty }}
-                        </td>
+                        <td class="text-sm text-muted-color">{{ r.region }}</td>
+
                         <td>
-                            📍 {{ r.region }}
-                        </td>
-                        <!-- UNIVERSITY -->
-                        <td class="text-sm text-muted-color">
-                            {{ r.institution }}
+                            <div class="text-sm">{{ r.institution }}</div>
                         </td>
 
-                        <!-- LANGUAGE -->
-                        <td>
-                            🌐 {{ r.language }}
-                        </td>
+                        <td class="text-sm text-muted-color">{{ r.language }}</td>
 
-                        <!-- PLACES -->
-                        <td>
-                            👥 {{ r.plan_count }}
-                        </td>
+                        <td class="text-center text-sm">{{ r.plan_count }}</td>
 
-                        <!-- PRICE -->
-                        <td>
+                        <td class="text-center">
                             <p-tag
-                                [severity]="r.price === null ? 'success' : 'info'">
-                                {{ budgetLabel(r.price) }}
+                                [severity]="budgetSeverity(r.price)"
+                                [value]="budgetLabel(r.price)">
                             </p-tag>
                         </td>
 
-                        <!-- ACTION -->
-                        <td class="text-right">
+                        <td class="text-center">
+                            @if (r.score !== undefined) {
+                                <p-tag
+                                    [severity]="scoreSeverity(r.score)"
+                                    [value]="r.score + '%'">
+                                </p-tag>
+                            }
+                        </td>
+
+                        <td>
                             <p-button
-                                (click)="openDetails(r)"
-                                icon="pi pi-arrow-right"
-                                rounded
-                                severity="primary"
-                            />
+                                (click)="openDetail(r); $event.stopPropagation()"
+                                label="Открыть"
+                                severity="secondary"
+                                size="small"
+                                text>
+                            </p-button>
                         </td>
 
                     </tr>
-
                 </ng-template>
 
-                <!-- EMPTY -->
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td class="text-center py-8" colspan="7">
-
-                            <i class="pi pi-search text-2xl text-muted-color mb-2"></i>
-
-                            <div class="text-muted-color">
-                                Ничего не найдено
-                            </div>
-
+                        <td class="text-center text-muted-color py-8" colspan="9">
+                            @if (hasActiveFilters()) {
+                                Ничего не найдено по выбранным фильтрам.
+                                <p-button
+                                    (click)="resetFilters()"
+                                    label="Сбросить фильтры"
+                                    size="small"
+                                    text>
+                                </p-button>
+                            } @else {
+                                По параметрам сценария специальности не найдены.
+                            }
                         </td>
                     </tr>
-                </ng-template>
-
-                <!-- FOOTER (CUSTOM PAGINATOR) -->
-                <ng-template pTemplate="footer">
-
-                    <div class="flex !items-center !justify-end gap-3 !flex-wrap">
-
-                            <span class="text-sm text-muted-color">
-                                Элементов на странице:
-                            </span>
-
-                        <p-select
-                            (ngModelChange)="first2 = 0"
-                            [(ngModel)]="rows2"
-                            [options]="pageOptions"
-                            optionLabel="label"
-                            optionValue="value"
-                        />
-
-                        <p-paginator
-                            (onPageChange)="onPageChange2($event)"
-                            [first]="first2"
-                            [rows]="rows2"
-                            [showCurrentPageReport]="true"
-                            [showFirstLastIcon]="false"
-                            [showPageLinks]="false"
-                            [totalRecords]="filteredResults.length"
-                            currentPageReportTemplate="{first} - {last} из {totalRecords}"
-                        />
-
-                    </div>
-
                 </ng-template>
 
             </p-table>
-
         </p-card>
 
     }

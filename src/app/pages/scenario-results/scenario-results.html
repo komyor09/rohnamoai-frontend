@@ -21,9 +21,9 @@
     @if (!loading() && scenario) {
 
         <!-- ── Header ────────────────────────────────────────────────── -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 !mb-4">
             <div>
-                <h1 class="font-semibold">
+                <h1 class="font-semibold !mb-1">
                     {{ scenario.title }}
                 </h1>
                 <p class="text-sm text-muted-color mt-1">
@@ -47,7 +47,7 @@
         </div>
 
         <!-- ── KPI Cards ─────────────────────────────────────────────── -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 !mb-4">
 
             <p-card>
                 <div class="flex items-center justify-between">
@@ -104,7 +104,7 @@
         </div>
 
         <!-- ── AI Block ───────────────────────────────────────────────── -->
-        <p-card>
+        <p-card class="!mb-4">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div class="flex items-center gap-2">
                     <i class="pi pi-sparkles text-primary text-lg"></i>
@@ -129,7 +129,7 @@
         </p-card>
 
         <!-- ── Filters bar ────────────────────────────────────────────── -->
-        <p-card>
+        <p-card class="!mb-4">
             <div class="flex flex-wrap items-end gap-4">
 
                 <div class="flex flex-col gap-1 min-w-40">

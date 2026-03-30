@@ -15,8 +15,7 @@
                     <i class="pi pi-exclamation-circle mr-2"></i>{{ errorMsg() }}
                 </div>
             }
-
-            <div class="flex flex-col gap-4">
+            <form (ngSubmit)="submit()" class="flex flex-col gap-4">
 
                 <!-- EMAIL -->
                 <div class="flex flex-col gap-1">
@@ -31,10 +30,10 @@
                             <i class="pi pi-envelope"></i>
                         </p-inputgroup-addon>
                         <input
-                            (keyup.enter)="submit()"
                             [(ngModel)]="email"
                             class="w-full"
                             id="email"
+                            name="email"
                             pInputText
                             type="email"
                         />
@@ -55,12 +54,12 @@
                         </p-inputgroup-addon>
 
                         <p-password
-                            (keyup.enter)="submit()"
                             [(ngModel)]="password"
                             [feedback]="false"
                             [toggleMask]="true"
                             inputId="password"
                             inputStyleClass="w-full"
+                            name="password"
                             styleClass="w-full"
                         />
                     </p-inputgroup>
@@ -69,15 +68,14 @@
 
                 <div class="text-center m-1">
                     <p-button
-                        (click)="submit()"
                         [disabled]="loading()"
-                        class="w-full mt-2 text-xl">
+                        class="w-full mt-2 text-xl"
+                        type="submit">
                         <i class="pi pi-sign-in mr-1"></i>
                         {{ loading() ? 'Вход...' : 'Войти' }}
                     </p-button>
                 </div>
-            </div>
-
+            </form>
             <div class="text-center mt-4 text-sm text-muted-color">
                 Нет аккаунта?
                 <a class="text-primary font-medium ml-1 cursor-pointer" routerLink="/auth/register">

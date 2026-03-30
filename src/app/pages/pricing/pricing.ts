@@ -1,17 +1,22 @@
 import { Component, inject } from '@angular/core';
 import { LayoutService } from '@/layout/service/layout.service';
 import { UserIdentityService } from '@/core/services/user-identity.service';
+import { Card } from 'primeng/card';
+import { NgClass } from '@angular/common';
+import { Tag } from 'primeng/tag';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'app-pricing',
     templateUrl: './pricing.html',
+    imports: [Card, NgClass, Tag, Button],
     styleUrls: ['./pricing.scss']
 })
 export class Pricing {
     private layoutService = inject(LayoutService);
     identity = inject(UserIdentityService);
 
-    currentPlan: 'free' | 'pro' = 'free';
+    currentPlan = this.identity.plan;
 
     constructor() {
         this.layoutService.setTitlePage('');

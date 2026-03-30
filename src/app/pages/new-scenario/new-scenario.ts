@@ -35,7 +35,7 @@ interface ScenarioDraft {
         ])
     ]
 })
-export class NewScenarioComponent implements OnInit {
+export class NewScenario implements OnInit {
     private layoutService = inject(LayoutService);
     private scenariosService = inject(ScenariosService);
     private metaService = inject(MetaService);

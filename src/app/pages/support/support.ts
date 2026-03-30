@@ -10,7 +10,7 @@ import { LayoutService } from '@/layout/service/layout.service';
     templateUrl: './support.html',
     styleUrls: ['./support.scss']
 })
-export class SupportComponent {
+export class Support {
     private layoutService = inject(LayoutService);
 
     form = { subject: '', message: '' };

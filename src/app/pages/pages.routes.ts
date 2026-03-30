@@ -11,7 +11,7 @@ export default [
     },
     {
         path: 'new-scenario',
-        loadComponent: (): Promise<unknown> => import('./new-scenario/new-scenario').then((m) => m.NewScenarioComponent)
+        loadComponent: (): Promise<unknown> => import('./new-scenario/new-scenario').then((m) => m.NewScenario)
     },
     {
         path: 'scenario-edit/:id',
@@ -19,11 +19,11 @@ export default [
     },
     {
         path: 'scenario-results/:id',
-        loadComponent: (): Promise<unknown> => import('./scenario-results/scenario-results').then((m) => m.ScenarioResultsComponent)
+        loadComponent: (): Promise<unknown> => import('./scenario-results/scenario-results').then((m) => m.ScenarioResults)
     },
     {
         path: 'specialty-details/:institution/:specialty',
-        loadComponent: (): Promise<unknown> => import('./specialty-details/specialty-details').then((m) => m.SpecialtyDetailsComponent)
+        loadComponent: (): Promise<unknown> => import('./specialty-details/specialty-details').then((m) => m.SpecialtyDetails)
     },
     {
         path: 'scenarios',
@@ -39,7 +39,7 @@ export default [
     },
     {
         path: 'support',
-        loadComponent: (): Promise<unknown> => import('./support/support').then((m) => m.SupportComponent)
+        loadComponent: (): Promise<unknown> => import('./support/support').then((m) => m.Support)
     },
     { path: '**', redirectTo: '/notfound' }
 ] as Routes;

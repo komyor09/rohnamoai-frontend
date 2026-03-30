@@ -20,7 +20,7 @@ import { BudgetOption, Scenario, SearchResult, SelectOption } from '@/core/model
     templateUrl: './scenario-results.html',
     styleUrls: ['./scenario-results.scss']
 })
-export class ScenarioResultsComponent implements OnInit {
+export class ScenarioResults implements OnInit {
     private route = inject(ActivatedRoute);
     private router = inject(Router);
     private layoutService = inject(LayoutService);

@@ -10,7 +10,7 @@ import { SearchResult } from '@/core/models';
     templateUrl: './specialty-details.html',
     styleUrls: ['./specialty-details.scss']
 })
-export class SpecialtyDetailsComponent implements OnInit {
+export class SpecialtyDetails implements OnInit {
     private route = inject(ActivatedRoute);
     private searchService = inject(SearchService);
     private aiService = inject(AiService);

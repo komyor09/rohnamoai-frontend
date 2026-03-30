@@ -21,7 +21,7 @@ export class AppMenu {
                     { label: 'Главная', icon: 'pi pi-fw pi-home', routerLink: ['/pages/home'] },
                     { label: 'Мои сценарии', icon: 'pi pi-fw pi-list', routerLink: ['/pages/scenarios'] },
                     { label: 'Создать сценарий', icon: 'pi pi-fw pi-plus-circle', routerLink: ['/pages/new-scenario'] },
-                    { label: 'Сравнение', icon: 'pi pi-fw pi-arrow-right-arrow-left', routerLink: ['/pages/comparison-scenarios'] },
+                    { label: 'Матрица решений', icon: 'pi pi-fw pi-arrow-right-arrow-left', routerLink: ['/pages/comparison-scenarios'] }
                 ]
             },
             {
@@ -29,7 +29,7 @@ export class AppMenu {
                 items: [
                     { label: 'Профиль', icon: 'pi pi-fw pi-user', routerLink: ['/pages/profile'] },
                     { label: 'Тарифы', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/pages/pricing'] },
-                    { label: 'Поддержка', icon: 'pi pi-fw pi-comments', routerLink: ['/pages/support'] },
+                    { label: 'Поддержка', icon: 'pi pi-fw pi-comments', routerLink: ['/pages/support'] }
                 ]
             }
         ];

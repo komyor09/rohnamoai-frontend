@@ -150,11 +150,45 @@ export interface MeResponse {
     data?: AuthUser;
 }
 
+// ─── Comparison (Pro) ─────────────────────────────────────────────────────
+export interface ScenarioAxes extends Record<string, number> {
+    budget: number;
+    region: number;
+    language: number;
+    specialty: number;
+}
+
+export interface ScenarioTopSpecialty {
+    specialty: string;
+    institution: string;
+    price: number | null;
+    plan_count: number;
+}
+
+export interface ScenarioComparisonItem {
+    id: number;
+    title: string;
+    goal: string;
+    goal_label: string;
+    total_results: number;
+    free_count: number;
+    avg_score: number;
+    axes: ScenarioAxes;
+    top_specialties: ScenarioTopSpecialty[];
+    institutions: string[];
+}
+
+export interface ComparisonResult {
+    scenarios: ScenarioComparisonItem[];
+    common_institutions: string[];
+    winner_id: number;
+    winner_title: string;
+}
+
 export interface SelectOption {
     label: string;
     value: string;
 }
-
 export interface BudgetOption {
     label: string;
     value: 'all' | 'free' | 'paid';

@@ -1,96 +1,319 @@
-<div class="grid grid-cols-12 gap-8">
+<div class="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
 
-    <div class="col-span-12">
-        <p class="text-muted-color">Выберите до 3 завершённых сценариев для сравнения</p>
+    <!-- ── Header ──────────────────────────────────────────────────────── -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <h1 class="text-2xl font-semibold">Матрица решений</h1>
+                <p-tag severity="warn" value="PRO" />
+            </div>
+            <p class="text-sm text-muted-color">
+                Выберите 2–3 завершённых сценария и запустите сравнение
+            </p>
+        </div>
+        <p-button
+            [routerLink]="['/pages/new-scenario']"
+            icon="pi pi-plus"
+            label="Новый сценарий"
+            />
     </div>
 
-    @if (loading) {
-        <div class="col-span-12 text-center text-muted-color py-8">Загрузка...</div>
-    }
-
-    @if (!loading && scenarios.length === 0) {
-        <div class="col-span-12 card text-center text-muted-color py-8">
-            Нет завершённых сценариев для сравнения.
-            <div class="mt-4">
-                <a class="p-button p-button-sm" routerLink="/pages/new-scenario">Создать сценарий</a>
-            </div>
+    <!-- ── Loading ─────────────────────────────────────────────────────── -->
+    @if (loading()) {
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <p-skeleton height="5rem" />
+            <p-skeleton height="5rem" />
+            <p-skeleton height="5rem" />
         </div>
     }
 
-    @if (!loading && scenarios.length > 0) {
+    <!-- ── Empty ───────────────────────────────────────────────────────── -->
+    @if (!loading() && scenarios().length === 0) {
+        <p-card>
+            <div class="text-center py-10">
+                <i class="pi pi-chart-bar text-4xl text-muted-color mb-4 block"></i>
+                <p class="text-muted-color mb-4">Нет завершённых сценариев для сравнения</p>
+                <p-button label="Создать сценарий" routerLink="/pages/new-scenario" />
+            </div>
+        </p-card>
+    }
 
-        <!-- Scenario selection -->
-        <div class="col-span-12">
-            <div class="card">
-                <h3 class="mb-4">Выберите сценарии</h3>
-                <div class="flex flex-col gap-3">
-                    @for (s of scenarios; track s.id) {
-                        <div class="flex items-center gap-3 p-3 rounded border-2 cursor-pointer transition-colors"
-                             [class.border-primary]="isSelected(s.id)"
-                             [class.border-surface-200]="!isSelected(s.id)"
-                             [class.dark:border-surface-700]="!isSelected(s.id)"
-                             (click)="toggleSelect(s.id)">
-                            <div class="w-5 h-5 rounded border-2 flex items-center justify-center"
-                                 [class.bg-primary]="isSelected(s.id)"
-                                 [class.border-primary]="isSelected(s.id)"
-                                 [class.border-surface-300]="!isSelected(s.id)">
-                                @if (isSelected(s.id)) {
-                                    <i class="pi pi-check text-white text-xs"></i>
+    <!-- ── STEP 1: Выбор сценариев ─────────────────────────────────────── -->
+    @if (!loading() && scenarios().length > 0) {
+
+        <p-card>
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <div class="font-semibold text-base">Шаг 1 — Выберите сценарии</div>
+                    <div class="text-sm text-muted-color">
+                        Выбрано: {{ selectedIds().length }} / 3
+                    </div>
+                </div>
+                @if (canCompare()) {
+                    <p-button
+                        (click)="runComparison()"
+                        [loading]="loadingCompare()"
+                        icon="pi pi-play"
+                        label="Запустить сравнение" />
+                }
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                @for (s of scenarios(); track s.id; let i = $index) {
+                    <div
+                        (click)="isDisabled(s.id) ? null : toggleSelect(s.id)"
+                        [class.border-primary]="isSelected(s.id)"
+                        [class.border-surface-200]="!isSelected(s.id)"
+                        [class.cursor-not-allowed]="isDisabled(s.id)"
+                        [class.cursor-pointer]="!isDisabled(s.id)"
+                        [class.hover:border-surface-400]="!isSelected(s.id) && !isDisabled(s.id)"
+                        [class.opacity-40]="isDisabled(s.id)"
+                        [class.shadow-md]="isSelected(s.id)"
+                        class="relative p-4 rounded-xl border-2 transition-all duration-200 select-none">
+
+                        <!-- Checkbox -->
+                        <div
+                            [class.bg-primary]="isSelected(s.id)"
+                            [class.border-primary]="isSelected(s.id)"
+                            [class.border-surface-300]="!isSelected(s.id)"
+                            class="absolute top-3 right-3 w-5 h-5 rounded border-2 flex items-center justify-center transition-colors">
+                            @if (isSelected(s.id)) {
+                                <i class="pi pi-check text-white text-xs"></i>
+                            }
+                        </div>
+
+                        <div class="font-semibold mb-1 pr-6">{{ s.title }}</div>
+                        <div class="text-sm text-muted-color mb-3">{{ goalLabel(s.goal) }}</div>
+
+                        <div class="flex items-center gap-3 text-sm">
+                            <span class="text-primary font-semibold">
+                                {{ getResultCount(s) }}
+                            </span>
+                            <span class="text-muted-color">вариантов</span>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </p-card>
+
+        <!-- ── Error ─────────────────────────────────────────────────────── -->
+        @if (compareError()) {
+            <p-message [text]="compareError()!" severity="error" />
+        }
+
+        <!-- ── Loading comparison ──────────────────────────────────────── -->
+        @if (loadingCompare()) {
+            <p-card>
+                <div class="text-center py-8">
+                    <i class="pi pi-spin pi-spinner text-3xl text-primary mb-3 block"></i>
+                    <div class="text-muted-color">Анализируем сценарии...</div>
+                </div>
+            </p-card>
+        }
+
+        <!-- ── РЕЗУЛЬТАТЫ СРАВНЕНИЯ ────────────────────────────────────── -->
+        @if (comparisonData(); as data) {
+
+            <!-- STEP 2: Победитель -->
+            <p-card>
+                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                    <div class="flex-1">
+                        <div class="text-sm text-muted-color mb-1">Рекомендуемый сценарий</div>
+                        <div class="text-xl font-bold">{{ data.winner_title }}</div>
+                        @for (s of data.scenarios; track s.id) {
+                            @if (isWinner(s)) {
+                                <div class="flex items-center gap-2 mt-2">
+                                    <p-tag
+                                        [value]="s.avg_score + '% совпадение'"
+                                        severity="success" />
+                                    <p-tag
+                                        [value]="s.total_results + ' вариантов'"
+                                        severity="secondary" />
+                                    <p-tag
+                                        [value]="s.free_count + ' бюджетных'"
+                                        severity="success" />
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div
+                        class="flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30">
+                        <i class="pi pi-star-fill text-green-500 text-2xl"></i>
+                    </div>
+                </div>
+            </p-card>
+
+            <!-- STEP 3: Radar + Bar -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- Radar -->
+                <p-card>
+                    <div class="font-semibold mb-1">Радар совпадений</div>
+                    <div class="text-xs text-muted-color mb-4">
+                        Насколько каждый сценарий закрывает 4 критерия (0–100%)
+                    </div>
+                    <p-chart
+                        [data]="radarData()"
+                        [options]="radarOptions"
+                        height="300"
+                        type="radar" />
+                </p-card>
+
+                <!-- Bar -->
+                <p-card>
+                    <div class="font-semibold mb-1">Количество вариантов</div>
+                    <div class="text-xs text-muted-color mb-4">
+                        Всего найдено и из них бюджетных
+                    </div>
+                    <p-chart
+                        [data]="barData()"
+                        [options]="barOptions"
+                        height="300"
+                        type="bar" />
+                </p-card>
+
+            </div>
+
+            <!-- STEP 4: Подробная таблица по сценариям -->
+            <p-card>
+                <div class="font-semibold mb-4">Детальное сравнение</div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @for (s of data.scenarios; track s.id; let i = $index) {
+                        <div [class.border-green-400]="isWinner(s)"
+                             [class.border-surface-200]="!isWinner(s)"
+                             class="rounded-xl border p-4 space-y-4">
+
+                            <!-- Title + score -->
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <div class="font-semibold leading-tight">{{ s.title }}</div>
+                                    <div class="text-xs text-muted-color mt-0.5">{{ s.goal_label }}</div>
+                                </div>
+                                <p-tag
+                                    [severity]="scoreSeverity(s.avg_score)"
+                                    [value]="s.avg_score + '%'" />
+                            </div>
+
+                            <!-- Axes bars -->
+                            <div class="space-y-2">
+                                @for (entry of getAxesEntries(s.axes); track entry.key) {
+                                    <div>
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <span class="text-muted-color">{{ axisLabel(entry.key) }}</span>
+                                            <span class="font-medium">{{ entry.value }}%</span>
+                                        </div>
+                                        <div
+                                            class="h-1.5 rounded-full bg-surface-200 dark:bg-surface-700 overflow-hidden">
+                                            <div
+                                                [style.background-color]="scenarioColor(i)"
+                                                [style.width.%]="entry.value"
+                                                class="h-full rounded-full transition-all duration-700">
+                                            </div>
+                                        </div>
+                                    </div>
                                 }
                             </div>
-                            <div class="flex-1">
-                                <div class="font-medium">{{ s.title }}</div>
-                                <div class="text-sm text-muted-color">Цель: {{ goalLabel(s.goal) }}</div>
+
+                            <!-- Stats row -->
+                            <div class="flex gap-3 text-sm pt-1 border-t border-surface-100 dark:border-surface-700">
+                                <div class="text-center flex-1">
+                                    <div class="font-bold text-primary">{{ s.total_results }}</div>
+                                    <div class="text-xs text-muted-color">всего</div>
+                                </div>
+                                <div class="text-center flex-1">
+                                    <div class="font-bold text-green-500">{{ s.free_count }}</div>
+                                    <div class="text-xs text-muted-color">бюджет</div>
+                                </div>
+                                <div class="text-center flex-1">
+                                    <div class="font-bold text-blue-500">{{ s.total_results - s.free_count }}</div>
+                                    <div class="text-xs text-muted-color">платных</div>
+                                </div>
                             </div>
+
+                            <!-- Winner badge -->
+                            @if (isWinner(s)) {
+                                <div class="flex items-center gap-1.5 text-xs text-green-600 font-medium">
+                                    <i class="pi pi-star-fill"></i>
+                                    Рекомендуемый сценарий
+                                </div>
+                            }
+
                         </div>
                     }
                 </div>
-            </div>
-        </div>
+            </p-card>
 
-        <!-- Comparison table -->
-        @if (selectedScenarios.length >= 2) {
-            <div class="col-span-12">
-                <div class="card overflow-auto">
-                    <h3 class="mb-4">Сравнение</h3>
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-surface-200 dark:border-surface-700">
-                                <th class="text-left py-2 pr-4 text-muted-color font-medium">Параметр</th>
-                                @for (s of selectedScenarios; track s.id) {
-                                    <th class="text-left py-2 px-4 font-semibold">{{ s.title }}</th>
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b border-surface-200 dark:border-surface-700">
-                                <td class="py-3 pr-4 text-muted-color">Цель</td>
-                                @for (s of selectedScenarios; track s.id) {
-                                    <td class="py-3 px-4">{{ goalLabel(s.goal) }}</td>
-                                }
-                            </tr>
-                            <tr class="border-b border-surface-200 dark:border-surface-700">
-                                <td class="py-3 pr-4 text-muted-color">Статус</td>
-                                @for (s of selectedScenarios; track s.id) {
-                                    <td class="py-3 px-4">
-                                        <span class="px-2 py-1 text-xs rounded bg-green-100 dark:bg-green-400/10 text-green-600">Завершён</span>
-                                    </td>
-                                }
-                            </tr>
+            <!-- STEP 5: Топ специальности каждого сценария -->
+            <p-card>
+                <div class="font-semibold mb-4">Лучшие специальности по сценариям</div>
+
+                <p-table
+                    [value]="data.scenarios"
+                    responsiveLayout="scroll"
+                    styleClass="p-datatable-sm">
+
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Сценарий</th>
+                            <th>Специальность</th>
+                            <th>ВУЗ</th>
+                            <th class="text-center">Мест</th>
+                            <th class="text-center">Цена</th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template let-s pTemplate="body">
+                        @for (spec of s.top_specialties; track spec.specialty; let first = $first) {
                             <tr>
-                                <td class="py-3 pr-4 text-muted-color">Результаты</td>
-                                @for (s of selectedScenarios; track s.id) {
-                                    <td class="py-3 px-4">
-                                        <a class="text-primary text-sm" [routerLink]="['/pages/scenario-results', s.id]">
-                                            Открыть →
-                                        </a>
-                                    </td>
-                                }
+                                <td>
+                                    @if (first) {
+                                        <div class="flex items-center gap-2">
+                                            <div [style.background-color]="scenarioColor(data.scenarios.indexOf(s))"
+                                                 class="w-2.5 h-2.5 rounded-full flex-shrink-0">
+                                            </div>
+                                            <span class="font-medium text-sm">{{ s.title }}</span>
+                                        </div>
+                                    }
+                                </td>
+                                <td class="text-sm">{{ spec.specialty }}</td>
+                                <td class="text-sm text-muted-color">{{ spec.institution }}</td>
+                                <td class="text-center text-sm">{{ spec.plan_count }}</td>
+                                <td class="text-center">
+                                    <p-tag
+                                        [severity]="spec.price === null ? 'success' : 'secondary'"
+                                        [value]="budgetLabel(spec.price)" />
+                                </td>
                             </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                        }
+                    </ng-template>
+
+                </p-table>
+            </p-card>
+
+            <!-- STEP 6: Общие ВУЗы -->
+            @if (data.common_institutions.length > 0) {
+                <p-card>
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="pi pi-building text-primary"></i>
+                        <span class="font-semibold">Общие учебные заведения</span>
+                        <p-tag [value]="data.common_institutions.length + ' ВУЗов'" severity="secondary" />
+                    </div>
+                    <p class="text-sm text-muted-color mb-3">
+                        Эти ВУЗы присутствуют в нескольких выбранных сценариях
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        @for (inst of data.common_institutions; track inst) {
+                            <span
+                                class="px-3 py-1.5 rounded-full bg-primary-50 dark:bg-primary-900/20 text-primary text-sm font-medium">
+                                {{ inst }}
+                            </span>
+                        }
+                    </div>
+                </p-card>
+            }
+
         }
 
     }

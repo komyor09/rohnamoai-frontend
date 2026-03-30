@@ -2,43 +2,49 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClient } from './api-client.service';
 import {
-  Scenario,
-  CreateScenarioRequest,
-  ScenarioStep,
-  CompleteScenarioResponse,
-  SearchResult,
+    Scenario,
+    CreateScenarioRequest,
+    ScenarioStep,
+    CompleteScenarioResponse,
+    SearchResult,
+    ComparisonResult,
 } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class ScenariosService {
-  private api = inject(ApiClient);
+    private api = inject(ApiClient);
 
-  list(): Observable<Scenario[]> {
-    return this.api.get<Scenario[]>('/scenarios');
-  }
+    list(): Observable<Scenario[]> {
+        return this.api.get<Scenario[]>('/scenarios');
+    }
 
-  get(id: number): Observable<Scenario> {
-    return this.api.get<Scenario>(`/scenarios/${id}`);
-  }
+    get(id: number): Observable<Scenario> {
+        return this.api.get<Scenario>(`/scenarios/${id}`);
+    }
 
-  create(data: CreateScenarioRequest): Observable<Scenario> {
-    return this.api.post<Scenario>('/scenarios', data);
-  }
+    create(data: CreateScenarioRequest): Observable<Scenario> {
+        return this.api.post<Scenario>('/scenarios', data);
+    }
 
-  delete(id: number): Observable<{ ok: boolean }> {
-    return this.api.delete<{ ok: boolean }>(`/scenarios/${id}`);
-  }
+    delete(id: number): Observable<{ ok: boolean }> {
+        return this.api.delete<{ ok: boolean }>(`/scenarios/${id}`);
+    }
 
-  saveStep(scenarioId: number, step: ScenarioStep): Observable<{ ok: boolean }> {
-    return this.api.post<{ ok: boolean }>(`/scenarios/${scenarioId}/step`, step);
-  }
+    saveStep(scenarioId: number, step: ScenarioStep): Observable<{ ok: boolean }> {
+        return this.api.post<{ ok: boolean }>(`/scenarios/${scenarioId}/step`, step);
+    }
 
-  complete(scenarioId: number): Observable<CompleteScenarioResponse> {
-    return this.api.post<CompleteScenarioResponse>(`/scenarios/${scenarioId}/complete`, {});
-  }
+    complete(scenarioId: number): Observable<CompleteScenarioResponse> {
+        return this.api.post<CompleteScenarioResponse>(`/scenarios/${scenarioId}/complete`, {});
+    }
 
-  // Новый метод — загружает результаты сценария с score
-  getResults(scenarioId: number): Observable<SearchResult[]> {
-    return this.api.get<SearchResult[]>(`/scenarios/${scenarioId}/results`);
-  }
+    getResults(scenarioId: number): Observable<SearchResult[]> {
+        return this.api.get<SearchResult[]>(`/scenarios/${scenarioId}/results`);
+    }
+
+    compare(ids: number[]): Observable<ComparisonResult> {
+        return this.api.get<ComparisonResult>('/scenarios/compare', {
+            ids: ids.join(','),
+        });
+    }
 }

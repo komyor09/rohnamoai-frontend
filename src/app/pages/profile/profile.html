@@ -1,121 +1,184 @@
-<div class="max-w-3xl mx-auto px-4 py-4 flex flex-col gap-4">
-    <!-- USER CARD -->
-    <p-card class="dark:!bg-surface-500/20">
+<div class="p-4 md:p-6 max-w-5xl mx-auto space-y-6">
+
+    <!-- ── Header ───────────────────────────────────────── -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+            <h1 class="text-2xl font-semibold">Профиль</h1>
+            <p class="text-sm text-muted-color">
+                Управляйте аккаунтом и своими сценариями
+            </p>
+        </div>
+
+        @if (!isMobile()) {
+            <p-button
+                (click)="logout()"
+                icon="pi pi-sign-out"
+                label="Выйти"
+                severity="danger"
+                text
+            />
+        }
+    </div>
+
+    <!-- ── Account ───────────────────────────────────────── -->
+    <p-card
+        [ngClass]="{
+        '!bg-primary-50 dark:!bg-primary-900': user()?.plan === 'pro'
+    }"
+    >
         @if (user()) {
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-4">
+
                 <!-- Avatar -->
                 <div
-                    class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-semibold">
+                    [ngClass]="{
+                        '!bg-primary': user()?.plan === 'pro',
+                        '!bg-black dark:!bg-black-50': user()?.plan === 'free'
+                        }"
+                    class="w-14 h-14 rounded-full flex items-center justify-center text-white dark:text-black font-semibold text-lg">
                     {{ user()!.email ? user()!.email![0].toUpperCase() : '?' }}
                 </div>
+
                 <!-- Info -->
                 <div class="flex-1 min-w-0">
-                    <div class="text-3xl font-semibold">
+                    <div class="text-xl font-semibold  truncate">
                         {{ user()!.name || user()!.email }}
                     </div>
-                    <div class="text-xs text-muted-color">{{ user()!.email }}</div>
-                    <div class="text-xs text-muted-color">
-                        План:
-                        <span [class.text-primary]="user()!.plan === 'pro'"
-                              class="font-medium">
-                            {{ user()!.plan === 'pro' ? 'Pro' : 'Free' }}
-                        </span>
+
+                    <div class="text-sm  text-muted-color">
+                        {{ user()!.email }}
+                    </div>
+
+                    <div class="mt-1">
+                        <p-tag
+                            [severity]="user()!.plan === 'pro' ? 'success' : 'secondary'"
+                            [value]="user()!.plan === 'pro' ? 'PRO' : 'FREE'"
+                        />
                     </div>
                 </div>
-                <!-- Logout -->
-                <p-button
-                    (click)="logout()"
-                    icon="pi pi-sign-out"
-                    severity="danger"
-                    text
-                />
+
             </div>
         } @else {
-            <div class="text-sm text-muted-color text-center py-3">
-                Загрузка...
+            <div class="flex items-center gap-3">
+                <p-skeleton shape="circle" size="3rem" />
+                <div class="flex-1 space-y-2">
+                    <p-skeleton height="1rem" width="40%" />
+                    <p-skeleton height="0.8rem" width="60%" />
+                </div>
             </div>
         }
     </p-card>
-    <!-- STATS -->
-    <div class="grid grid-cols-3 gap-3">
-        <p-card class="text-center dark:!bg-surface-500/20">
-            <div class="text-lg font-semibold text-primary">
-                {{ scenarios.length }}
-            </div>
-            <div class="text-xs text-muted-color">Сценарии</div>
-        </p-card>
-        <p-card class="text-center dark:!bg-surface-500/20">
-            <div class="text-lg font-semibold text-green-500">
-                {{ completedCount }}
-            </div>
-            <div class="text-xs text-muted-color">Завершено</div>
-        </p-card>
-        <p-card class="text-center dark:!bg-surface-500/20">
-            <div class="text-lg font-semibold text-orange-500">
-                {{ draftCount }}
-            </div>
-            <div class="text-xs text-muted-color">Черновики</div>
-        </p-card>
-    </div>
-    <!-- SCENARIOS -->
-    <p-card class="dark:!bg-surface-500/20">
-        <!-- HEADER -->
-        <div class="flex items-center justify-between mb-3">
 
-            <div class="font-semibold">
-                Мои сценарии
+    <!-- ── Progress ───────────────────────────────────────── -->
+    <p-card>
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <div class="font-semibold">Прогресс</div>
+                <div class="text-sm text-muted-color">
+                    Ваша активность в системе
+                </div>
             </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 text-center">
+
+            <div class="p-3 rounded-lg border border-surface-200">
+                <div class="text-lg font-semibold text-primary">
+                    {{ scenarios.length }}
+                </div>
+                <div class="text-xs text-muted-color">Сценарии</div>
+            </div>
+
+            <div class="p-3 rounded-lg border border-surface-200">
+                <div class="text-lg font-semibold text-green-500">
+                    {{ completedCount }}
+                </div>
+                <div class="text-xs text-muted-color">Завершено</div>
+            </div>
+
+            <div class="p-3 rounded-lg border border-surface-200">
+                <div class="text-lg font-semibold text-orange-500">
+                    {{ draftCount }}
+                </div>
+                <div class="text-xs text-muted-color">Черновики</div>
+            </div>
+
+        </div>
+    </p-card>
+
+    <!-- ── Activity ───────────────────────────────────────── -->
+    <p-card>
+
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <div class="font-semibold">Активность</div>
+                <div class="text-sm text-muted-color">
+                    Последние сценарии
+                </div>
+            </div>
+
             <p-button
                 [routerLink]="['/pages/new-scenario']"
                 icon="pi pi-plus"
-                label="Создать"
-                size="small"
+                label="Создать cценариий"
             />
         </div>
 
-        <!-- CONTENT -->
+        <!-- Loading -->
         @if (loading) {
-            <div class="text-center text-sm text-muted-color py-4">
-                Загрузка...
+            <div class="space-y-3">
+                <p-skeleton height="3rem" />
+                <p-skeleton height="3rem" />
+                <p-skeleton height="3rem" />
             </div>
-        } @else if (scenarios.length === 0) {
-            <div class="text-center text-sm text-muted-color py-4">
-                Нет сценариев
+        }
+
+        <!-- Empty -->
+        @if (!loading && scenarios.length === 0) {
+            <div class="text-center py-8">
+                <i class="pi pi-folder-open text-3xl text-muted-color mb-3 block"></i>
+                <div class="text-muted-color mb-3">
+                    У вас пока нет сценариев
+                </div>
+                <p-button
+                    label="Создать первый сценарий"
+                    routerLink="/pages/new-scenario"
+                />
             </div>
-        } @else {
-            <div class="flex flex-col divide-y divide-surface-200 dark:divide-surface-700">
-                @for (s of scenarios; track s.id) {
+        }
 
-                    <div class="flex items-center justify-between py-3">
+        <!-- List -->
+        @if (!loading && scenarios.length > 0) {
 
-                        <!-- LEFT -->
+            <div class="flex flex-col divide-y divide-surface-200">
+
+                @for (s of scenarios.slice(0, 5); track s.id) {
+
+                    <div
+                        (click)="openScenario(s)"
+                        class="flex items-center justify-between py-3 hover:bg-surface-50 transition-colors cursor-pointer"
+                    >
+
+                        <!-- Left -->
                         <div class="min-w-0">
-
                             <div class="font-medium truncate">
                                 {{ s.title }}
                             </div>
-
                             <div class="text-xs text-muted-color">
                                 {{ goalLabel(s.goal) }}
                             </div>
-
                         </div>
 
-                        <!-- RIGHT -->
+                        <!-- Right -->
                         <div class="flex items-center gap-2">
 
                             <p-tag
                                 [severity]="getStatusStyle(s.status)"
                                 [value]="statusLabel(s.status)"
                             />
-
-                            <p-button
-                                (click)="openScenario(s)"
-                                icon="pi pi-arrow-right"
-                                rounded
-                                text
-                            />
-
+                            <p-button [severity]="getStatusStyle(s.status)" icon="pi pi-arrow-right" text>
+                            </p-button>
                         </div>
 
                     </div>
@@ -124,29 +187,39 @@
 
             </div>
 
+            <!-- Footer -->
+            @if (scenarios.length > 5) {
+                <div class="pt-3 text-center">
+                    <p-button
+                        [routerLink]="['/pages/scenarios']"
+                        label="Показать все"
+                        text
+                    />
+                </div>
+            }
+
         }
 
     </p-card>
 
-    <!-- PLAN -->
-    <p-card class="dark:!bg-surface-500/20">
-
+    <!-- ── Plan ───────────────────────────────────────── -->
+    <p-card>
         <div class="flex items-center justify-between">
-            <div>
-                <div class="font-semibold">
-                    Тарифный план
-                </div>
 
+            <div>
+                <div class="font-semibold">Тариф</div>
                 <div class="text-sm text-muted-color">
-                    {{ plan() === 'pro' ? 'Pro' : 'Free' }} ·
+                    {{ plan() === 'pro' ? 'Pro план' : 'Free план' }} ·
                     до {{ plan() === 'pro' ? '10' : '3' }} сценариев
                 </div>
             </div>
+
             <p-button
                 [routerLink]="['/pages/pricing']"
                 label="Обновить"
                 size="small"
             />
+
         </div>
     </p-card>
 

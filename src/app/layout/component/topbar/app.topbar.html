@@ -51,6 +51,7 @@
                             <div class="text-sm font-medium text-surface-900 dark:text-surface-0 mb-0.5">
                                 {{ user()?.name || user()?.email }}
                             </div>
+
                             <!-- Plan -->
                             <p-tag
                                 [severity]="user()?.plan === 'pro' ? 'success' : 'contrast'"
@@ -63,6 +64,7 @@
                     <p-button
                         class="layout-topbar-action"
                         rounded
+                        [severity]="user()!.plan === 'pro' ? 'primary' : 'contrast'"
                         routerLink="/pages/profile"
                         routerLinkActive="layout-topbar-action-active"
                     >

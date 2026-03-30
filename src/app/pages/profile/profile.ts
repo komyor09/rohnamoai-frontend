@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ScenariosService } from '@/core/services/scenarios.service';
 import { AuthService } from '@/core/services/auth.service';
 import { Scenario } from '@/core/models';
@@ -7,16 +7,21 @@ import { Card } from 'primeng/card';
 import { Button } from 'primeng/button';
 import { Tag } from 'primeng/tag';
 import { LayoutService } from '@/layout/service/layout.service';
+import { Skeleton } from 'primeng/skeleton';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'app-profile',
-    imports: [RouterLink, Card, Button, Tag],
+    imports: [RouterLink, Card, Button, Tag, Skeleton, NgClass],
     templateUrl: './profile.html'
 })
 export class Profile implements OnInit {
     private layoutService = inject(LayoutService);
     private scenariosService = inject(ScenariosService);
     private authService = inject(AuthService);
+    private router = inject(Router);
+
+    isMobile = this.layoutService.isMobile;
 
     user = this.authService.user;
     plan = this.authService.userPlan;
@@ -69,5 +74,11 @@ export class Profile implements OnInit {
         this.authService.logout();
     }
 
-    protected openScenario(s: Scenario) {}
+    openScenario(s: Scenario): void {
+        if (s.status === 'completed') {
+            this.router.navigate(['/pages/scenario-results', s.id]);
+        } else {
+            this.router.navigate(['/pages/scenario-edit', s.id]);
+        }
+    }
 }

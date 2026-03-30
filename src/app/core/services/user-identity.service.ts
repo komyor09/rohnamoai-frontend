@@ -1,4 +1,4 @@
-import { computed, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 
 const USER_UUID_KEY = 'rohnamo_user_uuid';
 const USER_PLAN_KEY = 'user_plan';
@@ -15,6 +15,7 @@ function generateUUID(): string {
     });
 }
 
+@Injectable({ providedIn: 'root' })
 export class UserIdentityService {
     private _uuid = signal<string>('');
     private _plan = signal<'free' | 'pro'>('free');
@@ -22,6 +23,7 @@ export class UserIdentityService {
     constructor() {
         // UUID
         const storedUuid = localStorage.getItem(USER_UUID_KEY);
+
         if (storedUuid) {
             this._uuid.set(storedUuid);
         } else {
@@ -31,10 +33,14 @@ export class UserIdentityService {
         }
 
         // PLAN
-        const storedPlan = localStorage.getItem(USER_PLAN_KEY) as 'free' | 'pro' | null;
-        if (storedPlan) {
+        const storedPlan = localStorage.getItem(USER_PLAN_KEY);
+
+        if (storedPlan === 'free' || storedPlan === 'pro') {
             this._plan.set(storedPlan);
+        } else {
+            this._plan.set('free');
         }
+        console.log('PLAN FROM STORAGE:', storedPlan);
     }
 
     // ─── Public API ─────────────────────────

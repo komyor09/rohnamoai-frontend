@@ -19,7 +19,8 @@ export class Pricing {
     currentPlan = this.identity.plan;
 
     constructor() {
-        this.layoutService.setTitlePage('');
+        this.layoutService.setTransparentBackground(true);
+        console.log(this.currentPlan());
     }
 
     plans = [

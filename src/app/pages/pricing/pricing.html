@@ -1,13 +1,16 @@
-<div class="p-4 md:p-6 max-w-6xl mx-auto space-y-6">
+<div class="p-4 md:p-6 max-w-5xl mx-auto space-y-6">
+
 
     <!-- ── Header ───────────────────────────────────────── -->
-    <div class="text-center max-w-2xl mx-auto">
-        <h1 class="text-2xl font-semibold mb-2">Тарифы</h1>
-        <p class="text-sm text-muted-color">
-            Выберите план для работы с Rohnamo AI
-        </p>
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div
+        >
+            <h1 class="text-2xl font-semibold mb-2">Тарифы</h1>
+            <p class="text-sm text-muted-color">
+                Выберите план для работы с Rohnamo AI
+            </p>
+        </div>
     </div>
-
     <!-- ── Plans ───────────────────────────────────────── -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -23,7 +26,7 @@
                 <!-- Badge -->
                 @if (plan.id === 'pro') {
                     <div class="mb-2">
-                        <p-tag value="Рекомендуется" severity="success" />
+                        <p-tag severity="success" value="Рекомендуется" />
                     </div>
                 }
 
@@ -67,16 +70,16 @@
 
                     @if (currentPlan() === plan.id) {
                         <p-button
-                            label="Текущий план"
                             class="w-full"
                             disabled
+                            label="Текущий план"
                         />
                     } @else {
 
                         <p-button
                             [label]="plan.cta"
-                            class="w-full"
                             [severity]="plan.id === 'pro' ? 'primary' : 'secondary'"
+                            class="w-full"
                         />
 
                     }

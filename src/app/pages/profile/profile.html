@@ -105,7 +105,7 @@
                         <div class="flex items-center gap-2">
 
                             <p-tag
-                                [severity]="statusIsCompleted(s.status) ? 'success' : 'warning'"
+                                [severity]="getStatusStyle(s.status)"
                                 [value]="statusLabel(s.status)"
                             />
 

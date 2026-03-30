@@ -50,10 +50,9 @@ export class Profile implements OnInit {
         return status === 'completed' ? 'Завершён' : 'Черновик';
     }
 
-    statusIsCompleted(status: string): boolean {
-        return status === 'completed';
+    getStatusStyle(status: string): 'success' | 'warn' {
+        return status === 'completed' ? 'success' : 'warn';
     }
-
     ngOnInit(): void {
         this.scenariosService.list().subscribe({
             next: (data) => {

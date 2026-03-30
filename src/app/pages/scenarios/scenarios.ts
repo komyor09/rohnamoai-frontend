@@ -97,7 +97,7 @@ export class Scenarios implements OnInit {
         return status === 'completed' ? 'Завершён' : 'Черновик';
     }
 
-    getStatusStyle(status: string): string {
+    getStatusStyle(status: string): 'success' | 'warn' {
         return status === 'completed' ? 'success' : 'warn';
     }
 

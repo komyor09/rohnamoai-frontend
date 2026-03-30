@@ -20,8 +20,7 @@
                     {{ errorMsg() }}
                 </div>
             }
-
-            <div class="flex flex-col gap-4">
+            <form (ngSubmit)="submit()" class="flex flex-col gap-4">
 
                 <div class="flex flex-col gap-1">
                     <label class="text-sm font-medium text-surface-700 dark:text-surface-300">
@@ -36,6 +35,7 @@
                             [(ngModel)]="name"
                             class="w-full"
                             id="name"
+                            name="name"
                             pInputText
                             placeholder="Как вас зовут?"
                         />
@@ -56,6 +56,7 @@
                         <input
                             [(ngModel)]="email"
                             class="w-full"
+                            name="email"
                             pInputText
                             type="email"
                         />
@@ -78,6 +79,7 @@
                             [feedback]="true"
                             [toggleMask]="true"
                             inputStyleClass="w-full"
+                            name="password"
                             styleClass="w-full"
                         />
                     </p-inputgroup>
@@ -95,11 +97,11 @@
                         </p-inputgroup-addon>
 
                         <p-password
-                            (keyup.enter)="submit()"
                             [(ngModel)]="passwordConfirm"
                             [feedback]="false"
                             [toggleMask]="true"
                             inputStyleClass="w-full"
+                            name="passwordConfirm"
                             styleClass="w-full"
                         />
                     </p-inputgroup>
@@ -108,16 +110,15 @@
                 <!-- BUTTON -->
                 <div class="text-center m-1">
                     <p-button
-                        (click)="submit()"
                         [disabled]="loading()"
                         class="w-full mt-2"
+                        type="submit"
                     >
                         <i class="pi pi-user-plus mr-2"></i>
                         {{ loading() ? 'Регистрация...' : 'Зарегистрироваться' }}
                     </p-button>
                 </div>
-            </div>
-
+            </form>
             <!-- FOOTER -->
             <div class="text-center mt-4 text-sm text-muted-color">
                 Уже есть аккаунт?
